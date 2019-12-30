@@ -15,6 +15,6 @@ import org.json.JSONObject;
 public interface Request {
     JSONObject post(String[]paramter,JSONObject body); 
     JSONObject get(String[]paramter); 
-    JSONObject put(String[]paramter,JSONObject body); 
-    JSONObject delete(String[]paramter); 
+    int put(String[]paramter,JSONObject body); 
+    int delete(String[]paramter); 
 }

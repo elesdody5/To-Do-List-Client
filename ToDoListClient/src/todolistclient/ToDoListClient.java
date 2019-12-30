@@ -10,15 +10,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-/**
- *
- * @author Elesdody
- */
+
 public class ToDoListClient extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/authontication/login.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/authontication/Registeration.fxml"));
         
         Scene scene = new Scene(root);
         
@@ -31,6 +28,7 @@ public class ToDoListClient extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+        
     }
     
 }
