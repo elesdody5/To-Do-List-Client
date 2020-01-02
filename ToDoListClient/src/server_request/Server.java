@@ -6,6 +6,7 @@
 package server_request;
 
 import Enum.REQUEST;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,7 +14,9 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.json.JsonObject;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,14 +32,10 @@ public class Server implements Request {
     PrintStream ps;
     BufferedReader in;
 
-    public Server() {
-        try {
-            socket = new Socket(IP, PORT);
-            ps = new PrintStream(socket.getOutputStream());
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        } catch (IOException ex) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public Server() throws IOException {
+        socket = new Socket(IP, PORT);
+        ps = new PrintStream(socket.getOutputStream());
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
     }
 
@@ -45,14 +44,15 @@ public class Server implements Request {
         ps.println(REQUEST.POST);
         for (String paramter : paramters) {
             System.out.println("server sending " + paramter);
-            ps.print("/");
+            ps.print(REQUEST.END);
             ps.print(paramter);
-
         }
         ps.println();
         ps.println(body.toString());
         // to notifay the client the response was ended 
+
         ps.println(REQUEST.END);
+
         JSONObject json = null;
         try {
             // waiting for responde
@@ -71,7 +71,7 @@ public class Server implements Request {
     public JSONObject get(String[] paramters) {
         ps.println(REQUEST.GET);
         for (String paramter : paramters) {
-            ps.print("/");
+            ps.print(REQUEST.END);
             ps.print(paramter);
         }
         ps.println();
@@ -95,13 +95,15 @@ public class Server implements Request {
     public int put(String[] paramters, JSONObject body) {
         ps.println(REQUEST.PUT);
         for (String paramter : paramters) {
-            ps.print("/");
+            ps.print(REQUEST.END);
+
             ps.print(paramter);
         }
         ps.println();
         ps.println(body.toString());
         // to notifay the client the response was ended 
         ps.println(REQUEST.END);
+
         int response = 0;
         try {
 
@@ -116,13 +118,15 @@ public class Server implements Request {
     @Override
     public int delete(String[] paramters) {
         ps.println(REQUEST.PUT);
+
         for (String paramter : paramters) {
-            ps.print("/");
+            ps.print(REQUEST.END);
             ps.print(paramter);
         }
         ps.println();
         // to notifay the client the response was ended 
         ps.println(REQUEST.END);
+
         int response = 0;
         try {
 
@@ -138,6 +142,7 @@ public class Server implements Request {
         String data = in.readLine();
 
         while (!data.equals(REQUEST.END)) {
+
             body.append(data);
             data = in.readLine();
 

@@ -19,13 +19,14 @@ import javafx.stage.StageStyle;
  *
  * @author Elesdody
  */
+
+
 public class ToDoListClient extends Application {
 
     private double xOffset, yOffset;
 
     @Override
     public void start(Stage stage) throws Exception {
-        
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/authontication/login.fxml"));
         Parent root = (Parent) loader.load();
         //send stage to login controller
@@ -59,6 +60,7 @@ public class ToDoListClient extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+        
     }
 
 }
