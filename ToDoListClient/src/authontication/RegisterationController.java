@@ -17,16 +17,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.apache.http.client.methods.HttpPost;
+//import org.apache.http.client.methods.HttpPost;
 import java.net.URL;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
+import javafx.stage.Stage;/*
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.HttpClients;*/
 import server_request.Server;
 
 /**
