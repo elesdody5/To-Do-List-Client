@@ -5,6 +5,7 @@
  */
 package server_request;
 
+import javax.json.JsonObject;
 import jdk.nashorn.internal.parser.JSONParser;
 import org.json.JSONObject;
 
@@ -15,6 +16,6 @@ import org.json.JSONObject;
 public interface Request {
     JSONObject post(String[]paramter,JSONObject body); 
     JSONObject get(String[]paramter); 
-    JSONObject put(String[]paramter,JSONObject body); 
-    JSONObject delete(String[]paramter); 
+    int put(String[]paramter,JSONObject body); 
+    int delete(String[]paramter); 
 }

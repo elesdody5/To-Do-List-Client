@@ -1,0 +1,36 @@
+
+
+.linear_grad{
+    -fx-background-color: linear-gradient(to bottom left , #6F4CBB ,#431FA0);
+}
+
+.signIn{
+    -fx-background-color: #6F4CBB;
+    -fx-text-fill: #ffffff;
+}
+.signIn:hover{
+    -fx-background-color:#5a29c4;
+}
+.signIn:pressed{
+    -fx-background-color:#3b00ba;
+
+}
+
+.signUp{
+    -fx-background-color: #dbcafa;
+    -fx-text-fill: #6F4CBB;
+    -fx-border-color: #6F4CBB;
+    -fx-border-radius: 5;
+}
+.signUp:hover{
+    -fx-background-color: #dbcafa;
+    -fx-text-fill: #6F4CBB;
+
+
+}
+.signUp:pressed{
+    -fx-background-color: #dbcafa;
+    -fx-text-fill: #c2a7f2;
+    -fx-border-color: #6F4CBB;
+    -fx-border-radius: 5;
+}
