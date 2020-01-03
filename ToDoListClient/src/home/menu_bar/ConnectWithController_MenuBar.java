@@ -68,7 +68,7 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface  {
         }
         if (isPassword) {
             isPassword = false;
-            String[] key = {"setNewName"};
+            String[] key = {"setPassword"};
             JSONObject obj = new JSONObject();
 
             try {
