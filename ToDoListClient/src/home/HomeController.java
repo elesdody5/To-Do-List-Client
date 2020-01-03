@@ -11,6 +11,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import home.list.FXMLListController;
+import home.menu_bar.ConnectWithController_MenuBar;
+import home.menu_bar.ConnectWithLoginView_MenuBar;
 import home.to_do_list.ToDoList;
 import home.to_do_list.ToDoListController;
 import java.io.IOException;
@@ -67,6 +69,13 @@ public class HomeController implements Initializable {
     public void start(User user, ArrayList<ToDoList> todoList) {
         try {
             // TODO
+            // create user menu bar 
+            FXMLLoader menuloader = new FXMLLoader(getClass().getResource("/home/menu_bar/MenuBar.fxml"));
+            Parent menuBar = menuloader.load();
+            ConnectWithLoginView_MenuBar connect = ConnectWithLoginView_MenuBar.getInastance();
+            connect.setUserName(user.getUserName());
+            connect.setId(user.getId()+"");
+            
             // create left list 
             FXMLLoader listloader = new FXMLLoader(getClass().getResource("/home/list/FXMLList.fxml"));
             VBox list = listloader.load();
@@ -80,6 +89,7 @@ public class HomeController implements Initializable {
             // add component to main pane
             borderPane.setLeft(list);
             borderPane.setCenter(todo);
+            borderPane.setTop(menuBar);
 
         } catch (IOException ex) {
             Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);

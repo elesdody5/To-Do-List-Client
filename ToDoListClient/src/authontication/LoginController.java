@@ -232,7 +232,7 @@ public class LoginController implements Initializable {
             Scene scene = new Scene(root);
             //
             Stage stage = new Stage();
-
+            
             stage.setScene(scene);
             stage.show();
             this.stage.close();
