@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package home.list;
+package home.to_do_list;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -19,8 +20,22 @@ public class ToDoList {
     private String startTime;
     private String color;
     private String description;
+    private ArrayList<TaskInfo> tasksInTODOList;
+
+    public void setTasksInTODOList(ArrayList<TaskInfo> tasksInTODOList) {
+        this.tasksInTODOList = tasksInTODOList;
+    }
+
+    public ArrayList<TaskInfo> getTasksInTODOList() {
+        return tasksInTODOList;
+    }
+      public void addTaskToDoList(TaskInfo task)
+    {
+        tasksInTODOList.add(task);
+    }
 
     public ToDoList() {
+        tasksInTODOList = new ArrayList<>();
     }
 
     public ToDoList(String title, int ownerId,String startTime, String deadLine,  String color) {

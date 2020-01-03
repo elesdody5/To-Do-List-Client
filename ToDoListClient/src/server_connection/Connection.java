@@ -9,6 +9,5 @@ package server_connection;
  *
  * @author Elesdody
  */
-public class Connection {
-    
+public class Connection {   
 }

@@ -5,14 +5,13 @@
  */
 package home.list;
 
+import home.to_do_list.ToDoList;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -53,7 +52,6 @@ public class FXMLListController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-       myListView.getItems().add(new ToDoList("title", 0, "time", "time", "time"));
         myListView.setCellFactory((param)
                 -> {
            return new ListAdapter();

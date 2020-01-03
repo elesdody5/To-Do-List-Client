@@ -5,7 +5,6 @@
  */
 package server_request;
 
-import jdk.nashorn.internal.parser.JSONParser;
 import org.json.JSONObject;
 
 /**

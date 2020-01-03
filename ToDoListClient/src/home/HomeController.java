@@ -5,20 +5,30 @@
  */
 package home;
 
+import Entity.User;
+import authontication.LoginController;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import home.list.FXMLListController;
+import home.to_do_list.ToDoList;
+import home.to_do_list.ToDoListController;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+import org.json.JSONException;
+import org.json.JSONObject;
+import server_request.Server;
+import java.lang.reflect.Type;
+import javafx.scene.Parent;
 
 /**
  * FXML Controller class
@@ -32,23 +42,48 @@ public class HomeController implements Initializable {
      */
     @FXML
     BorderPane borderPane;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-       start();
+        try {
+            Server server = new Server();
+            JSONObject json = server.get(new String[]{"todo", LoginController.UserId + ""});
+            System.out.println(json);
+            User user = new User(json.getInt("ID"), json.getString("user name"), json.getString("password"));
+            Gson gson = new GsonBuilder().create();
+            Type ListType = new TypeToken<ArrayList<ToDoList>>() {
+            }.getType();
+            ArrayList<ToDoList> todoList = gson.fromJson(json.getJSONArray("todo_list").toString(), ListType);
+// start home screen
+            start(user, todoList);
+        } catch (IOException ex) {
+            Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JSONException ex) {
+            System.out.println(ex);
+        }
+
     }
-   public void start()
-    {
-    try {
+
+    public void start(User user, ArrayList<ToDoList> todoList) {
+        try {
             // TODO
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/home/list/FXMLList.fxml"));
-            FXMLListController list = loader.getController();
-            VBox root = loader.load();
-            borderPane.setLeft(root);
-            
+            // create left list 
+            FXMLLoader listloader = new FXMLLoader(getClass().getResource("/home/list/FXMLList.fxml"));
+            VBox list = listloader.load();
+            FXMLListController listController = listloader.getController();
+            listController.getMyListView().getItems().addAll(todoList);
+            // create todo loader and controller
+            FXMLLoader todoLoader = new FXMLLoader(getClass().getResource("/home/to_do_list/ToDoList.fxml"));
+            Parent todo = todoLoader.load();
+            ToDoListController todoController = todoLoader.getController();
+            todoController.setTodoList(todoList.get(0));
+            // add component to main pane
+            borderPane.setLeft(list);
+            borderPane.setCenter(todo);
+
         } catch (IOException ex) {
             Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    
+
 }

@@ -5,6 +5,8 @@
  */
 package server_request;
 
+import Enum.REQUEST;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,6 +14,8 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,21 +40,23 @@ public class Server implements Request {
 
     @Override
     public JSONObject post(String[] paramters, JSONObject body) {
-        ps.println("POST");
+        ps.println(REQUEST.POST);
         for (String paramter : paramters) {
             ps.print("/");
             ps.print(paramter);
-            
+
         }
         ps.println();
         ps.println(body.toString());
         // to notifay the client the response was ended 
-        ps.println("-1");
+
+        ps.println(REQUEST.END);
+
         JSONObject json = null;
         try {
             // waiting for responde
             json = readJson();
-            
+
         } catch (IOException | JSONException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -62,14 +68,14 @@ public class Server implements Request {
 
     @Override
     public JSONObject get(String[] paramters) {
-        ps.println("GET");
+        ps.println(REQUEST.GET);
         for (String paramter : paramters) {
             ps.print("/");
             ps.print(paramter);
         }
         ps.println();
         // to notifay the client the response was ended 
-        ps.println("-1");
+        ps.println(REQUEST.END);
         JSONObject json = null;
         try {
             // waiting for responde
@@ -86,15 +92,16 @@ public class Server implements Request {
     // return the element id that inserted in database or -1 if error
     @Override
     public int put(String[] paramters, JSONObject body) {
-        ps.println("PUT");
+        ps.println(REQUEST.PUT);
         for (String paramter : paramters) {
-           ps.print("/");
+            ps.print("/");
             ps.print(paramter);
         }
         ps.println();
         ps.println(body.toString());
         // to notifay the client the response was ended 
-        ps.println("-1");
+        ps.println(REQUEST.END);
+
         int response = 0;
         try {
 
@@ -108,14 +115,16 @@ public class Server implements Request {
     // return the element id that deleted from database or -1 if error
     @Override
     public int delete(String[] paramters) {
-        ps.println("PUT");
+        ps.println(REQUEST.PUT);
+
         for (String paramter : paramters) {
             ps.print("/");
             ps.print(paramter);
         }
         ps.println();
         // to notifay the client the response was ended 
-        ps.println("-1");
+        ps.println(REQUEST.END);
+
         int response = 0;
         try {
 
@@ -130,7 +139,8 @@ public class Server implements Request {
         StringBuilder body = new StringBuilder();
         String data = in.readLine();
 
-        while (!data.equals("-1")) {
+        while (!data.equals(REQUEST.END)) {
+
             body.append(data);
             data = in.readLine();
 
