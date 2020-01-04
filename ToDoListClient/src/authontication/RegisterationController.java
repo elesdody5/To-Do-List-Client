@@ -102,8 +102,6 @@ public class RegisterationController implements Initializable {
         
         } catch (JSONException ex) {
             Logger.getLogger(RegisterationController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(RegisterationController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

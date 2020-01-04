@@ -90,15 +90,11 @@ public class LoginController implements Initializable {
     private Label password_message_id;
 
     private String[] params = {REQUEST.LOGIN};
-    private Server server;
+    //private Server server = new Server();;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        try {
-            server = new Server();
-        } catch (IOException ex) {
-            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            //server = new Server();
     }
 
     @FXML
@@ -194,8 +190,9 @@ public class LoginController implements Initializable {
             /* Issue , when making more than one signIn, UI freez 
                 even if user input (userName , password) are correct
             */
+            Server server = new Server();
             JSONObject response = server.post(params, userJson);
-            
+            System.out.println(response.toString());
             //get respond code (SUCCESS , FAILD)after server request
             int code = response.getInt("Code");
             switch (code) {
@@ -246,4 +243,6 @@ public class LoginController implements Initializable {
         // show wrong access message when wrong password or username got entered from user
         password_message_id.setText(MESSAGES.WRONG_ACCESS);
     }
+    
+   
 }
