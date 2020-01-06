@@ -104,8 +104,8 @@ public class Server implements Request {
 
         int response = 0;
         try {
-
-            response = in.read();
+            
+            response = Integer.parseInt(in.readLine());
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
