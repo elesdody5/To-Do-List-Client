@@ -71,12 +71,12 @@ public class HomeController implements Initializable {
         try {
             // TODO
             // create user menu bar 
-            FXMLLoader menuloader = new FXMLLoader(getClass().getResource("/home/menu_bar/MenuBar.fxml"));
-            Parent menuBar = menuloader.load();
             ConnectWithLoginView_MenuBar connect = ConnectWithLoginView_MenuBar.getInastance();
             connect.setUserName(user.getUserName());
-            connect.setId(user.getId()+"");
-            
+            connect.setId(user.getId() + "");
+            FXMLLoader menuloader = new FXMLLoader(getClass().getResource("/home/menu_bar/MenuBar.fxml"));
+            Parent menuBar = menuloader.load();
+
             // create left list 
             FXMLLoader listloader = new FXMLLoader(getClass().getResource("/home/list/FXMLList.fxml"));
             VBox list = listloader.load();
@@ -86,8 +86,9 @@ public class HomeController implements Initializable {
             FXMLLoader todoLoader = new FXMLLoader(getClass().getResource("/home/to_do_list/ToDoList.fxml"));
             Parent todo = todoLoader.load();
             ToDoListController todoController = todoLoader.getController();
-            if(todoList.size()>1)
+            if (todoList.size() > 1) {
                 todoController.setTodoList(todoList.get(0));
+            }
             // add component to main pane
             borderPane.setLeft(list);
             borderPane.setCenter(todo);
