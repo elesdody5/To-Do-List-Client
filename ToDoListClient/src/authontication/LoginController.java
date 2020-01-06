@@ -35,6 +35,7 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import org.json.JSONException;
 import org.json.JSONObject;
+import server_connection.Connection;
 import server_request.Server;
 
 /**
@@ -46,7 +47,7 @@ public class LoginController implements Initializable {
 
     private Stage stage;
     private boolean isFull;
-    public static int UserId;
+    public static int UserId ;
     @FXML
     private Circle close_id;
     @FXML
@@ -149,21 +150,7 @@ public class LoginController implements Initializable {
 
     //sign up method
     private void signUp() {
-        System.out.println("signUp");
-        String email = sign_up_email_id.getText().trim();
-        String password = sign_up_password_id.getText().trim();
-        String confirm = sign_up_confirm_id.getText().trim();
-        boolean isConfirmed = Validator.checkPasswordEquality(password, confirm);
-        if (isConfirmed) {
-            //TODO: go to home after register user
-        } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.initOwner(stage);
-            alert.setContentText("Password Must Be Identical");
-            alert.setHeaderText("Password Issue");
-            alert.show();
-        }
-
+           goToRegistrationScreen();
     }
 
     //sign in method
@@ -171,7 +158,7 @@ public class LoginController implements Initializable {
         //get userName and password from input field
         String userName = email_id.getText().trim();
         String password = password_id.getText().trim();
-
+        
         //check and validate input, if empty password or user name
         boolean isInputNotEmpty = Validator.checkPasswordAndUserName(userName, password);
 
@@ -183,10 +170,9 @@ public class LoginController implements Initializable {
             //TODO:server request in the background, to not freez UI thread
             /* Issue , when making more than one signIn, UI freez 
                 even if user input (userName , password) are correct
-             */
+             */ 
             try {
                 Server server = new Server();
-
                 JSONObject response = server.post(params, userJson);
 
                 //get respond code (SUCCESS , FAILD)after server request
@@ -201,7 +187,9 @@ public class LoginController implements Initializable {
                         break;
                 }
             } catch (IOException ex) {
-                Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Connection With Server is Disabled");
+                alert.show();
             }
         } else {
             //show alert if userName or password is empty
@@ -245,5 +233,18 @@ public class LoginController implements Initializable {
     private void showFaildAccessMessage() {
         // show wrong access message when wrong password or username got entered from user
         password_message_id.setText(MESSAGES.WRONG_ACCESS);
+    }
+
+    private void goToRegistrationScreen() {
+        String userName = sign_up_email_id.getText();
+        String password = sign_up_password_id.getText();
+        String confirm = sign_up_confirm_id.getText();
+        User user = new User(userName, password);
+        
+        Registeration registration = new Registeration(user,confirm);
+        int result = registration.registerUser();
+        if(result == 1){
+            sign_in_pane_id.toFront();
+        }
     }
 }

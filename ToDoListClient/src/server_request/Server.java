@@ -23,20 +23,21 @@ import org.json.JSONObject;
  *
  * @author Elesdody
  */
-public class Server implements Request {
+public class Server extends Thread implements Request {
 
     private static final String IP = "127.0.0.1";
     private static final int PORT = 5005;
     Socket socket;
     PrintStream ps;
     BufferedReader in;
-
+    
     public Server() throws IOException {
         socket = new Socket(IP, PORT);
         ps = new PrintStream(socket.getOutputStream());
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
     }
+    
 
     @Override
     public JSONObject post(String[] paramters, JSONObject body) {
@@ -52,6 +53,7 @@ public class Server implements Request {
 
         ps.println(REQUEST.END);
 
+        /*waiting*/
         JSONObject json = null;
         try {
             // waiting for responde

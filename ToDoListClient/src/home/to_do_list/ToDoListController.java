@@ -17,6 +17,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import org.json.JSONObject;
+import server_connection.Connection;
 import server_request.Server;
 
 /**

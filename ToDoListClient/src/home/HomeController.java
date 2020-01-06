@@ -31,6 +31,7 @@ import org.json.JSONObject;
 import server_request.Server;
 import java.lang.reflect.Type;
 import javafx.scene.Parent;
+import server_connection.Connection;
 
 /**
  * FXML Controller class
@@ -85,7 +86,8 @@ public class HomeController implements Initializable {
             FXMLLoader todoLoader = new FXMLLoader(getClass().getResource("/home/to_do_list/ToDoList.fxml"));
             Parent todo = todoLoader.load();
             ToDoListController todoController = todoLoader.getController();
-            todoController.setTodoList(todoList.get(0));
+            if(todoList.size()>1)
+                todoController.setTodoList(todoList.get(0));
             // add component to main pane
             borderPane.setLeft(list);
             borderPane.setCenter(todo);

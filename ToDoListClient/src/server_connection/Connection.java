@@ -5,9 +5,20 @@
  */
 package server_connection;
 
+import java.io.IOException;
+import org.json.JSONObject;
+import server_request.Server;
+
 /**
  *
  * @author Elesdody
  */
-public class Connection {   
+public class Connection { 
+    
+    
+    
+    
+    
+    
+    
 }
