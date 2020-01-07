@@ -85,6 +85,7 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface  {
     }
     @Override
     public String sendNameToView() {
+        System.out.println(status);
         if (status == 1) {
             return "true";
         }

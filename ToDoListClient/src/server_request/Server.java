@@ -105,7 +105,7 @@ public class Server implements Request {
         int response = 0;
         try {
 
-            response = in.read();
+            response = Integer.parseInt(in.readLine());
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -115,7 +115,7 @@ public class Server implements Request {
     // return the element id that deleted from database or -1 if error
     @Override
     public int delete(String[] paramters) {
-        ps.println(REQUEST.PUT);
+        ps.println(REQUEST.DELETE);
 
         for (String paramter : paramters) {
             ps.print("/");
@@ -128,7 +128,7 @@ public class Server implements Request {
         int response = 0;
         try {
 
-            response = in.read();
+            response = Integer.parseInt(in.readLine());
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
