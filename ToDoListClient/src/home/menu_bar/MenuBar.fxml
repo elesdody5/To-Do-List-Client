@@ -17,13 +17,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<MenuBar style="-fx-background-color: #6F4CBB;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.menu_bar.MenuBarController">
+<MenuBar fx:id="menu" prefHeight="40.0" prefWidth="681.0" style="-fx-background-color: #6F4CBB;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.menu_bar.MenuBarController">
   <menus>
       <Menu mnemonicParsing="false">
          <graphic>
-            <ToolBar prefWidth="200.0" style="-fx-background-color: #6F4CBB#6F4CBB #6F4CBB#6F4CBB;">
+            <ToolBar prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #6F4CBB#6F4CBB #6F4CBB#6F4CBB;">
                <items>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@icons/lists2.png" />
                      </image>
@@ -34,37 +34,33 @@
                </tooltip></ToolBar>
          </graphic>
       </Menu>
-    <Menu disable="true" mnemonicParsing="false">
-         <graphic>
-            <ImageView fitHeight="40.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@icons/todo.png" />
-               </image>
-            </ImageView>
-         </graphic>
-    </Menu>
-      <Menu disable="true" mnemonicParsing="false">
-         <graphic>
-            <ToolBar disable="true" prefHeight="40.0" prefWidth="50.0" style="-fx-background-color: ffb319;" visible="false" />
-         </graphic>
-      </Menu>
     <Menu mnemonicParsing="false">
          <graphic>
-            <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@icons/friends.png" />
-               </image>
-            </ImageView>
+            <ToolBar prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB;">
+               <items>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/true.png" />
+                     </image>
+                  </ImageView>
+               </items>
+            </ToolBar>
          </graphic>
     </Menu>
     <Menu mnemonicParsing="false">
          <graphic>
-            <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@icons/about.png" />
-               </image>
-            </ImageView>
+            <ToolBar prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB;">
+               <items>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/friends.png" />
+                     </image>
+                  </ImageView>
+               </items>
+            </ToolBar>
          </graphic>
+    </Menu>
+    <Menu mnemonicParsing="false">
          <items>
             <SeparatorMenuItem mnemonicParsing="false">
                <content>
@@ -72,23 +68,38 @@
                </content>
             </SeparatorMenuItem>
          </items>
+         <graphic>
+            <ToolBar prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB;">
+               <items>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/about.png" />
+                     </image>
+                  </ImageView>
+               </items>
+            </ToolBar>
+         </graphic>
     </Menu>
       <Menu mnemonicParsing="false">
          <graphic>
-            <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@icons/not2.png" />
-               </image>
-            </ImageView>
+            <ToolBar prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB;">
+               <items>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/not2.png" />
+                     </image>
+                  </ImageView>
+               </items>
+            </ToolBar>
          </graphic>
       </Menu>
       <Menu mnemonicParsing="false">
          <graphic>
-            <ToolBar prefHeight="52.0" prefWidth="145.0" style="-fx-background-color: #6F4CBB#6F4CBB;">
+            <ToolBar prefHeight="40.0" prefWidth="180.0" style="-fx-background-color: #6F4CBB#6F4CBB;">
                <items>
-                  <Label fx:id="userImage" alignment="CENTER" contentDisplay="CENTER" pickOnBounds="false" prefHeight="40.0" prefWidth="40.0" style="-fx-border-radius: 20; -fx-border-color: white;" text="U" textAlignment="CENTER" textFill="#00b0ff" textOverrun="CLIP">
+                  <Label fx:id="userImage" alignment="CENTER" contentDisplay="CENTER" pickOnBounds="false" prefHeight="30.0" prefWidth="30.0" style="-fx-border-radius: 20; -fx-border-color: white;" text="U" textAlignment="CENTER" textFill="#00b0ff" textOverrun="CLIP">
                      <font>
-                        <Font name="System Bold" size="25.0" />
+                        <Font name="System Bold" size="20.0" />
                      </font></Label>
                   <Label fx:id="userName" text="user name" textFill="WHITE">
                      <padding>
@@ -133,7 +144,7 @@
                                     <TextField fx:id="newPassword" promptText="new password" />
                                  </graphic>
                               </MenuItem>
-                              <MenuItem mnemonicParsing="false">
+                              <MenuItem mnemonicParsing="false" onAction="#handleProfileMenuAction">
                                  <graphic>
                                     <TextField fx:id="verfiyNewPassword" promptText="verfiy new password" />
                                  </graphic>
@@ -146,7 +157,7 @@
                            </items>
                         </MenuButton>
                         <Button fx:id="logout" mnemonicParsing="false" onAction="#handleLogoutAction" text="Logout" />
-                        <Label fx:id="status" style="-fx-background-color: red;" />
+                        <Label fx:id="status" style="-fx-background-color: #c298f5#c298f5;" />
                      </children>
                   </VBox>
                </content>

@@ -5,17 +5,15 @@
  */
 package home.list;
 
+import Entity.User;
 import authontication.LoginController;
 import home.to_do_list.ToDoList;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Observable;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -55,13 +53,15 @@ public class FXMLListController implements Initializable {
     VBox vBox;
     ArrayList<String> sharedList;
     private ToDoList currentToDo;
+    private ArrayList<Entity.User> friendsList;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        friendsList =new ArrayList<>();
         myListView.setCellFactory((param)
                 -> {
-            return new ListAdapter(param);
+            return new ListAdapter(param,friendsList);
         });
 
     }
@@ -139,5 +139,8 @@ public class FXMLListController implements Initializable {
         alert.setContentText(content);
         alert.showAndWait();
     }
-
+public ArrayList<User> getFriendsList()
+{
+    return friendsList;
+}
 }

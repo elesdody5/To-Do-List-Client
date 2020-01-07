@@ -5,22 +5,12 @@
  */
 package authontication;
 
+import Entity.User;
 import java.io.IOException;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.net.URL;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 import server_request.Server;
 
 /**
@@ -28,47 +18,41 @@ import server_request.Server;
  *
  * @author Elesdody
  */
-public class RegisterationController implements Initializable {
+public class Registeration {
 
     /**
      * Initializes the controller class.
      *
      * @param url
      */
-    @FXML
-    Button registerButton;
-    @FXML
-    TextField userNameTextField;
-    @FXML
-    TextField passwordTextField;
-    @FXML
-    TextField confirmPasswordTextField;
-
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-
+    
+    private User user ;
+    private String confirm;
+    
+    public Registeration(User user , String confirmPassword){
+        this.user = user;
+        this.confirm = confirmPassword;
     }
 
-    @FXML
-    public void registerUser(ActionEvent actionEvent) {
-        String userName = userNameTextField.getText();
-        String password = passwordTextField.getText();
-        String confirmPassword = confirmPasswordTextField.getText();
+   
+    public int registerUser() {
+        int result = 0 ;
+        String userName = user.getUserName();
+        String password =user.getPassword();
+        String confirmPassword = confirm;
         validateUserName(userName);
         int validatePassword =validatePassword(password,confirmPassword);
             if (validateUserName(userName)&& validatePassword == 1 ){
              try {
-
-
                 JSONObject userJsonObject = new JSONObject();
                 userJsonObject.put("username", userName);
                 userJsonObject.put("password", password);
-                sendRequest(userJsonObject);
+                result = sendRequest(userJsonObject);
             } catch (JSONException ex) {
                 ex.printStackTrace();
             }
         } else {
+                result = -1;
                 if (!validateUserName(userName))
                     System.out.println("Please enter  valid user name which length greather 6 ");
                 if (validatePassword == 3)
@@ -77,9 +61,10 @@ public class RegisterationController implements Initializable {
                     System.out.println("password length => 4");
               
             }
+            return result;
     }
 
-    public void sendRequest(JSONObject jSONObject) {
+    public int sendRequest(JSONObject jSONObject) {
         try {
             String[] paramters = new String[1];
             String userName = jSONObject.getString("username");
@@ -89,31 +74,32 @@ public class RegisterationController implements Initializable {
             JSONObject resultJsonObject = server.post(paramters, jSONObject);
             String res = resultJsonObject.getString("result");
             if (res.equals("1")) {
-                closeregisterScreenAndOpenLoginScreen();
+                return 1;
+               // closeregisterScreenAndOpenLoginScreen();
             } else {
                 System.out.println("You already exist in DB");
             }
         
         } catch (JSONException ex) {
-            Logger.getLogger(RegisterationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Registeration.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(RegisterationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Registeration.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return -1;
     }
 
-    public void closeregisterScreenAndOpenLoginScreen() {
+    /*public void closeregisterScreenAndOpenLoginScreen() {
         try {
             registerButton.getScene().getWindow().hide();
             Parent root = FXMLLoader.load(getClass().getResource("/authontication/login.fxml"));
-
             Scene scene = new Scene(root);
             Stage stage = (Stage) registerButton.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
         } catch (IOException ex) {
-            Logger.getLogger(RegisterationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Registeration.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
+    }*/
 
     private boolean validateUserName(String userName) {
         return userName.length()>=6 ;

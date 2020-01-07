@@ -5,12 +5,13 @@
  */
 package home.list;
 
+import Entity.User;
 import authontication.LoginController;
 import home.to_do_list.ToDoList;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -36,15 +37,17 @@ import server_request.Server;
  */
 public class ListAdapter extends ListCell<ToDoList> {
     ListView<ToDoList>itemListView;
+    ArrayList<User>friends;
 
-    public ListAdapter(ListView<ToDoList> itemListView) {
+    public ListAdapter(ListView<ToDoList> itemListView,ArrayList<User> friends) {
         this.itemListView = itemListView;
+        this.friends  = friends;
     }
     @Override
     protected void updateItem(ToDoList item, boolean empty) {
         super.updateItem(item, empty);
         if (item!=null&&!empty) {
-            ImageView image = new ImageView(new Image(getClass().getResourceAsStream("note.jpg")));
+            ImageView image = new ImageView(new Image(getClass().getResourceAsStream("lists.png")));
             image.setFitHeight(30);
             image.setFitWidth(30);
             setGraphic(image);
@@ -76,6 +79,13 @@ public class ListAdapter extends ListCell<ToDoList> {
         });
         delete.setOnAction((ActionEvent event) -> {
              delete(item);
+        });
+        share.setOnAction((ActionEvent event) -> {
+            try {
+                openShareList(item.getId());
+            } catch (IOException ex) {
+                Logger.getLogger(ListAdapter.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
         return contextMenu;
     }
@@ -163,4 +173,21 @@ public class ListAdapter extends ListCell<ToDoList> {
             
         }
 }
+    private void openShareList(int listId) throws IOException
+    {
+     FXMLLoader loader = new FXMLLoader(getClass().getResource("/home/list/FriendsList.fxml"));
+        Parent form = loader.load();
+        FriendsListController friendsList = loader.getController();
+        friendsList.setFriendsList(friends);
+        friendsList.setToDoid(listId);
+        Scene scene = new Scene(form);
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("friendship.png")));
+        stage.setTitle("Frineds");
+        stage.initStyle(StageStyle.UTILITY);
+        stage.initOwner(getScene().getWindow());
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.show();
+    }
 }

@@ -15,9 +15,9 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 import org.json.JSONException;
 import org.json.JSONObject;
+import server_connection.Connection;
 
 /**
  *
@@ -25,19 +25,17 @@ import org.json.JSONObject;
  */
 public class Server implements Request {
 
-    private static final String IP = "127.0.0.1";
-    private static final int PORT = 5005;
     Socket socket;
     PrintStream ps;
     BufferedReader in;
 
     public Server() throws IOException {
-        socket = new Socket(IP, PORT);
-        ps = new PrintStream(socket.getOutputStream());
-        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                socket = Connection.getSocketConnection();
+                ps = new PrintStream(socket.getOutputStream());
+                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-    }
-
+            }
+    
     @Override
     public JSONObject post(String[] paramters, JSONObject body) {
         ps.println(REQUEST.POST);
@@ -56,11 +54,10 @@ public class Server implements Request {
         try {
             // waiting for responde
             json = readJson();
-
         } catch (IOException | JSONException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-
+           
             return json;
         }
 
