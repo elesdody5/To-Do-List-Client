@@ -72,7 +72,7 @@ public class Server implements Request {
         }
         ps.println();
         // to notifay the client the response was ended 
-        ps.println(REQUEST.END);
+        //ps.println(REQUEST.END);
         JSONObject json = null;
         try {
             // waiting for responde
