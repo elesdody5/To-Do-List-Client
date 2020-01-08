@@ -84,9 +84,9 @@ public class MenuBarController  implements Initializable  {
      @FXML
     private Tab tabTasksNotification ;
     @FXML 
-    private ListView listsNotification ;
+    private ListView<Notifications> listsNotification ;
     @FXML 
-    private ListView tasksNotification ;
+    private ListView<Notifications> tasksNotification ;
     /* start Aml Variables*/
      @FXML
     private Label label;
@@ -265,9 +265,20 @@ public class MenuBarController  implements Initializable  {
         userNameIns.setText(name);
         userImageIns.setText(("" + name.charAt(0)).toUpperCase());
         //get lists notifications
-       
-        
-        
+        ObservableList<Notifications> notLists = FXCollections.observableArrayList();
+        List <Notifications> lists = getInstance.lists;
+        for(Notifications li : lists){
+           notLists.add(li);
+        }
+        listsNotification.setItems(notLists);
+        //create custom cell
+         ObservableList<Notifications> notTasks = FXCollections.observableArrayList();
+        List <Notifications> tasks = getInstance.tasks;
+        for(Notifications li : tasks){
+           notTasks.add(li);
+        }
+        tasksNotification.setItems(notTasks);
+            //create custom cell
         /*Aml Start*/
         
          ObservableList<Friend> items = FXCollections.observableArrayList();
