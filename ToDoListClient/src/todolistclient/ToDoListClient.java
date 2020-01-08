@@ -33,7 +33,7 @@ public class ToDoListClient extends Application {
         //send stage to login controller
         LoginController loginController = loader.getController();
         loginController.setStage(stage);
-
+       
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.initStyle(StageStyle.TRANSPARENT);

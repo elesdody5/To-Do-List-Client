@@ -18,7 +18,7 @@
             <Image url="@icon.jpg" />
          </image>
       </ImageView>
-      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="0.55" prefHeight="352.0" prefWidth="336.0" style="-fx-background-color: white;">
+      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="0.74" prefHeight="352.0" prefWidth="336.0" style="-fx-background-color: white;">
          <children>
             <TextField fx:id="title" maxWidth="150.0" prefHeight="25.0" prefWidth="170.0" promptText="Title">
                <VBox.margin>
@@ -35,7 +35,7 @@
                   <Insets bottom="20.0" />
                </VBox.margin>
             </DatePicker>
-            <ColorPicker fx:id="color"  prefHeight="28.0" prefWidth="125.0" promptText="Color">
+            <ColorPicker fx:id="color" prefHeight="28.0" prefWidth="125.0" promptText="Color">
                <VBox.margin>
                   <Insets bottom="20.0" />
                </VBox.margin>

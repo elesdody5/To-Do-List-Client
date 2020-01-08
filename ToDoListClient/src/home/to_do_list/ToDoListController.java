@@ -35,6 +35,7 @@ import javafx.stage.WindowEvent;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import server_connection.Connection;
 import server_request.Server;
 
 /**
