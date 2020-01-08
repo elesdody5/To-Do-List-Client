@@ -27,7 +27,7 @@ public class Server implements Request {
 
     private static final String IP = "127.0.0.1";
     private static final int PORT = 5005;
-    Socket socket;
+     Socket socket;
     PrintStream ps;
     BufferedReader in;
 

@@ -5,6 +5,7 @@
  */
 package home.list;
 
+import authontication.LoginController;
 import home.to_do_list.ToDoList;
 import java.io.IOException;
 import java.net.URL;
@@ -109,7 +110,7 @@ public class FXMLListController implements Initializable {
 
     private JSONObject createJson(ToDoList todo) throws JSONException {
         JSONObject json = new JSONObject();
-        json.put("ownerId", 1);
+        json.put("ownerId", LoginController.UserId);
         json.put("title", todo.getTitle());
         json.put("startDate", todo.getStartTime());
         json.put("deadLine", todo.getDeadLine());

@@ -5,14 +5,16 @@
  */
 package home.to_do_list;
 
+import Entity.User;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Observable;
 
 /**
  *
  * @author Elesdody
  */
-public class ToDoList {
+public class ToDoList extends Observable {
     private int id ;
     private String title;
     private int ownerId;
@@ -21,6 +23,15 @@ public class ToDoList {
     private String color;
     private String description;
     private ArrayList<TaskInfo> tasksInTODOList;
+    private ArrayList<User> teamMateInToDoList;
+
+    public ArrayList<User> getTeamMateInToDoList() {
+        return teamMateInToDoList;
+    }
+
+    public void setTeamMateInToDoList(ArrayList<User> teamMateInToDoList) {
+        this.teamMateInToDoList = teamMateInToDoList;
+    }
 
     public void setTasksInTODOList(ArrayList<TaskInfo> tasksInTODOList) {
         this.tasksInTODOList = tasksInTODOList;
@@ -36,6 +47,7 @@ public class ToDoList {
 
     public ToDoList() {
         tasksInTODOList = new ArrayList<>();
+        
     }
 
     public ToDoList(String title, int ownerId,String startTime, String deadLine,  String color) {
