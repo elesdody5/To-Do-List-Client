@@ -5,11 +5,21 @@
  */
 package home.menu_bar;
 
+import Entity.User;
 import authontication.LoginController;
+import home.Notifications;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.net.Socket;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,24 +27,26 @@ import javafx.fxml.Initializable;
 
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.application.Application;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import todolistclient.ToDoListClient;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.scene.control.ListView;
+import javafx.scene.control.Menu;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 
 /**
  * FXML Controller class
  *
  * @author Elesdody
  */
-public class MenuBarController implements Initializable {
+public class MenuBarController  implements Initializable  {
 
     private ToDoListClient app;
 
@@ -66,6 +78,33 @@ public class MenuBarController implements Initializable {
 
     @FXML
     private MenuBar menu;
+    //lists 
+    @FXML
+    private Tab tabListsNotification ;
+     @FXML
+    private Tab tabTasksNotification ;
+    @FXML 
+    private ListView listsNotification ;
+    @FXML 
+    private ListView tasksNotification ;
+    /* start Aml Variables*/
+     @FXML
+    private Label label;
+    
+
+    @FXML
+    private TabPane tabPane;
+    @FXML
+    private ListView<Friend> friendsLV;
+    @FXML
+    private Button searchButton;
+    @FXML
+    private Label resultLabel;
+    /* end Aml*/
+
+    
+    List<String> lists ;  
+    List<String> tasks ; 
 
     class ProcessService extends Service<Void> {
 
@@ -87,13 +126,13 @@ public class MenuBarController implements Initializable {
     @FXML
     private void handleChangeNameAction(ActionEvent event) {
         ConnectWithController_MenuBar.getInastance().setNewName(newName.getText());
-        if (ConnectWithController_MenuBar.getInastance().sendNameToView().equals("true")) {
+        if (ConnectWithController_MenuBar.getInastance().sendDataToView().equals("true")) {
             userName.setText(newName.getText());
             userImage.setText(("" + newName.getText().charAt(0)).toUpperCase());
             userNameIns.setText(newName.getText());
             userImageIns.setText(("" + newName.getText().charAt(0)).toUpperCase());
             newName.setText("");
-        } else if (ConnectWithController_MenuBar.getInastance().sendNameToView().equals("nameFound")) {
+        } else if (ConnectWithController_MenuBar.getInastance().sendDataToView().equals("nameFound")) {
             if (!service.isRunning()) {
                 service.start();
             }
@@ -125,7 +164,7 @@ public class MenuBarController implements Initializable {
     private void handleChangePasswordAction(ActionEvent event) {
         if (newPassword.getText().equals(verfiyNewPassword.getText())) {
             ConnectWithController_MenuBar.getInastance().setNewPassword(newPassword.getText());
-            if (ConnectWithController_MenuBar.getInastance().sendNameToView().equals("true")) {
+            if (ConnectWithController_MenuBar.getInastance().sendDataToView().equals("true")) {
                  if (!service.isRunning()) {
                 service.start();
                  }
@@ -190,17 +229,66 @@ public class MenuBarController implements Initializable {
         }
 
     }
+    
+//    
+//       BufferedReader in;
+//    PrintStream ps;
+//    Socket s;
+//    
+//
+//    public MenuBarController(Socket s) {
+//        try {
+//            this.s = s;
+//            in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+//            ps = new PrintStream(s.getOutputStream());
+//            start();
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        }
+//
+//    }
+    
 
+    
+    /*start Aml Functions */
+    
+    /*end Aml*/
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        // get data of the instance created by login
-        ConnectWithLoginView_MenuBar getName = ConnectWithLoginView_MenuBar.getInastance();
-        String name = getName.sendNameToView();
+        // get data of the instance created by login 
+        //get name
+        ConnectWithLoginView_MenuBar getInstance = ConnectWithLoginView_MenuBar.getInastance();
+        String name = getInstance.sendDataToView();
         userName.setText(name);
         userImage.setText(("" + name.charAt(0)).toUpperCase());
         userNameIns.setText(name);
         userImageIns.setText(("" + name.charAt(0)).toUpperCase());
+        //get lists notifications
+       
+        
+        
+        /*Aml Start*/
+        
+         ObservableList<Friend> items = FXCollections.observableArrayList();
+        
+   
+          items.addAll(
+                new Friend("John Doe", true),
+                new Friend("Jane Doe", false),
+                new Friend("Donte Dunigan", false),
+                new Friend("Gavin Genna", true),
+                new Friend("Darin Dear", true),
+                new Friend("Pura Petty", false),
+                new Friend("Herma Hines", false)
+        );
+
+          friendsLV.setItems(items);
+          friendsLV.setCellFactory((listView) -> new FriendListViewCell());
+        /*Aml End */
+        
+        
     }
+
 
 }

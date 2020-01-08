@@ -10,7 +10,7 @@ package home.menu_bar;
  * @author ghadeerelmahdy
  */
 public  interface  MenuBarModelInterface {
-      String sendNameToView();
+      String sendDataToView();
       String sendIdToView();
       
        
