@@ -77,6 +77,5 @@ public class ToDoListController implements Initializable {
 public void setTodoList(ToDoList toDoList)
 {
     this.todolist = toDoList;
-    System.out.println(toDoList.getTitle());
 }
 }
