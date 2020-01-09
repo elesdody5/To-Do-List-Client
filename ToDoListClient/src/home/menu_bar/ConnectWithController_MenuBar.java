@@ -12,6 +12,7 @@ import server_request.Server;
 import org.json.JSONException;
 import org.json.JSONObject;
 import server_connection.Connection;
+import home.NotificationKeys;
 
 /**
  *
@@ -123,8 +124,6 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
 
     @Override
     public String sendDataToView() {
-    public String sendNameToView() {
-        System.out.println(status);
         if (status == 1) {
             return "true";
         } else if (status == 2) {
