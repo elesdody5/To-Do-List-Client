@@ -51,7 +51,6 @@ public class HomeController implements Initializable {
         try {
             Server server = new Server();
             JSONObject json = server.get(new String[]{"todo", LoginController.UserId + ""});
-            System.out.println(json);
             User user = new User(json.getInt("ID"), json.getString("user name"), json.getString("password"));
             Gson gson = new GsonBuilder().create();
             // convert jsonArray to frindsList

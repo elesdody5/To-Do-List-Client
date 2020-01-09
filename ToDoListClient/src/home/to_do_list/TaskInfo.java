@@ -5,10 +5,6 @@
  */
 package home.to_do_list;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
