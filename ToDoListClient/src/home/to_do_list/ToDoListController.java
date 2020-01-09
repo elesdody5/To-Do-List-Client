@@ -60,32 +60,7 @@ public class ToDoListController implements Initializable, Observer {
 
     @FXML
     private void addTaskToToDoList() throws IOException {
-     /*   GridPane gridPane = new GridPane();
-        //  gridPane.setStyle("-fx-padding: 5;-fx-border-color:#babac9;-fx-border-radius: 5;-fx-background-radius: 20;-fx-background-color: white;");
-        Text title = new Text(titleOfTask.getText());
-        gridPane.add(title, 0, 0);
-
-        if (title.getText() != "") {
-            try {
-
-                listOfTasks.getItems().add(gridPane);
-                TaskInfo taskInfo = new TaskInfo(title.getText().toString(), todolist.getId());
-                todolist.addTaskToDoList(taskInfo);
-                toDoTaskJsonObject = taskInfo.writeTaskInfoObjectAsJson();
-                sendTaskInfoToServer();
-
-                titleOfTask.setText("");
-            } catch (IOException ex) {
-                System.out.println("server Connection loss");
-
-                // Logger.getLogger(ToDoListController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
-        //print list of tasks 
-        for (int i = 0; i < todolist.getTasksInTODOList().size(); i++) {
-            System.out.println(todolist.getTasksInTODOList().get(i).getTitle());
-        }*/
+    
         Stage appStage;
                 Parent root;
                 appStage = new Stage();
@@ -119,10 +94,12 @@ public class ToDoListController implements Initializable, Observer {
     }
 
     private ArrayList<TaskInfo> getFristTaskInfo() throws IOException, JSONException {
-        String[] typrOfRequest = new String[1];
-        typrOfRequest[0] = "getTasksOflist";
+        String[] params = new String[2];
+        params[0] = "getTasksOflist";
+        params[1] =String.valueOf(todolist.getId());
+        System.out.println(todolist.getId());
         Server server = new Server();
-        JSONObject resultOfGetFisrtList = server.get(typrOfRequest);
+        JSONObject resultOfGetFisrtList = server.get(params);
         JSONArray jsonArrayOftodotasks = resultOfGetFisrtList.getJSONArray("listOfTasks");
         ArrayList<TaskInfo> tasksOfToDoList = new ArrayList<TaskInfo>();
         for (int i = 0; i < jsonArrayOftodotasks.length(); i++) {
@@ -143,7 +120,21 @@ public class ToDoListController implements Initializable, Observer {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         //  tasks=new ArrayList<TaskInfo>();
-        todolist = new ToDoList();
+       
+        data();
+       ////////////////////////////
+        listOfTasks.setOnMouseClicked(new ListViewHandler() {
+            @Override
+            public void handle(javafx.scene.input.MouseEvent event) {
+                // System.out.print(listview.getSelectionModel().getSelectedIndex());
+             
+
+            }
+        });
+    }
+    public void data()
+    {
+         todolist = new ToDoList();
         ArrayList <TaskInfo> firstTask = null;
        try {
             firstTask = getFristTaskInfo();
@@ -157,25 +148,16 @@ public class ToDoListController implements Initializable, Observer {
         Text titleOfFirstTask = new Text(firstTask.get(i).getTitle());
         gridpane.add(titleOfFirstTask, 0, 0);
         listOfTasks.getItems().add(gridpane); }
-       
-       ////////////////////////////
-        listOfTasks.setOnMouseClicked(new ListViewHandler() {
-            @Override
-            public void handle(javafx.scene.input.MouseEvent event) {
-                // System.out.print(listview.getSelectionModel().getSelectedIndex());
-             
-
-            }
-        });
     }
    static ToDoList to;
     public void setTodoList(ToDoList toDoList) {
+       
         this.todolist = toDoList;
-        to=todolist;
-        System.out.println(todolist.getTitle());
+        to=toDoList;
+        System.out.println(todolist.getTitle());   
     }
      public static ToDoList getTodoList() {
-                 System.out.println(to.getId());
+     //  System.out.println(to.getId());
        return to;
     }
     

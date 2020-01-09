@@ -70,7 +70,6 @@ public class TaskInformationViewController implements Initializable, Observer {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        todolist = ToDoListController.getTodoList();
         // TODO
         memberList.setVisible(false);
         User user = new User();
@@ -136,6 +135,7 @@ public class TaskInformationViewController implements Initializable, Observer {
     private void saveTaskData(ActionEvent event) {
         if (titleOfTask.getText() != "") {
             try {
+                        todolist = ToDoListController.getTodoList();
                 TaskInfo taskInfo = new TaskInfo(titleOfTask.getText().toString(), todolist.getId());
                 taskInfo.setDescription(description.getText().toString());
                 taskInfo.setStartTime(StartDatePicker.getValue().toString());
