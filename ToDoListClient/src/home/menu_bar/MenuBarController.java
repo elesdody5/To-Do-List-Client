@@ -9,6 +9,7 @@ import Entity.User;
 import authontication.LoginController;
 import home.Notifications;
 import java.io.BufferedReader;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
@@ -102,7 +103,7 @@ public class MenuBarController  implements Initializable  {
     private Label resultLabel;
     /* end Aml*/
 
-    
+    boolean serverout;
     List<String> lists ;  
     List<String> tasks ; 
 
@@ -229,27 +230,28 @@ public class MenuBarController  implements Initializable  {
         }
 
     }
-    
-//    
-//       BufferedReader in;
-//    PrintStream ps;
-//    Socket s;
-//    
-//
-//    public MenuBarController(Socket s) {
-//        try {
-//            this.s = s;
-//            in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-//            ps = new PrintStream(s.getOutputStream());
-//            start();
-//        } catch (IOException ex) {
-//            ex.printStackTrace();
+//        class RealTimeThread extends Thread {
+//        public void run() {
+//            while (serverout == false) {
+//                try {
+//                    String replyMsg = dis.readUTF();
+//                    ta.appendText(replyMsg);
+//                } catch (EOFException e) {
+//                    try {
+//                        mySocket.close();
+//                        dis.close();
+//                        ps.close();
+//                        serverout=true;
+//                        tf.setEditable(false);  
+//                    } catch (IOException ex) {
+//                        Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+//                    } 
+//            }catch (IOException ex) {
+//                    ex.printStackTrace();
+//                }
+//            }
 //        }
-//
-//    }
-    
-
-    
+//    }   
     /*start Aml Functions */
     
     /*end Aml*/
@@ -271,14 +273,14 @@ public class MenuBarController  implements Initializable  {
            notLists.add(li);
         }
         listsNotification.setItems(notLists);
-        //create custom cell
+        listsNotification.setCellFactory((list) -> new ListRequestCell());
          ObservableList<Notifications> notTasks = FXCollections.observableArrayList();
         List <Notifications> tasks = getInstance.tasks;
         for(Notifications li : tasks){
            notTasks.add(li);
         }
         tasksNotification.setItems(notTasks);
-            //create custom cell
+        tasksNotification.setCellFactory((task) -> new TaskRequestCell());
         /*Aml Start*/
         
          ObservableList<Friend> items = FXCollections.observableArrayList();
