@@ -15,8 +15,8 @@ import home.NotificationKeys;
  */
 public class ConnectWithLoginView_MenuBar implements MenuBarModelInterface {
 
-    private String name;
-    private String id;
+    private String name="aseel";
+    private String id="1";
     private boolean isName;
     List<Notifications> notifications;
     List<User> friends;
