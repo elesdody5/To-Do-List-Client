@@ -20,22 +20,23 @@ import javafx.scene.image.ImageView;
  *
  * @author Aml Sakr
  */
-public class FriendListViewCell extends ListCell<Friend> {
+public class FriendListViewCell extends ListCell<User> {
 
 
 
     @Override
-    protected void updateItem(Friend friendItem, boolean empty) {
+    protected void updateItem(User friendItem, boolean empty) {
                    super.updateItem(friendItem, empty);
 
         if (friendItem != null){
        
             String imageURL = "";
-            setText(friendItem.getName());            
-            if (friendItem.isOnline())
-                imageURL = "online.png";
-            else 
-               imageURL = "offline.png";
+            setText(friendItem.getUserName());
+            
+//            if (friendItem.isOnline())
+//                imageURL = "online.png";
+//            else 
+//               imageURL = "offline.png";
             
             
             Image image = new Image(getClass().getResourceAsStream(imageURL));

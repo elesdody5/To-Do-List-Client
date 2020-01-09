@@ -47,7 +47,7 @@ import javafx.scene.control.TabPane;
  *
  * @author Elesdody
  */
-public class MenuBarController  implements Initializable  {
+public class MenuBarController implements Initializable {
 
     private ToDoListClient app;
 
@@ -81,31 +81,31 @@ public class MenuBarController  implements Initializable  {
     private MenuBar menu;
     //lists 
     @FXML
-    private Tab tabListsNotification ;
-     @FXML
-    private Tab tabTasksNotification ;
-    @FXML 
-    private ListView<Notifications> listsNotification ;
-    @FXML 
-    private ListView<Notifications> tasksNotification ;
+    private Tab tabListsNotification;
+    @FXML
+    private Tab tabTasksNotification;
+    @FXML
+    private ListView<Notifications> listsNotification;
+    @FXML
+    private ListView<Notifications> tasksNotification;
     /* start Aml Variables*/
-     @FXML
+    @FXML
     private Label label;
-    
-
     @FXML
     private TabPane tabPane;
     @FXML
-    private ListView<Friend> friendsLV;
+    private ListView<User> friendsLV;
     @FXML
     private Button searchButton;
     @FXML
     private Label resultLabel;
+    List<User> friendsOfUser;
+    ConnectWithLoginView_MenuBar getInstance  ;
     /* end Aml*/
 
     boolean serverout;
-    List<String> lists ;  
-    List<String> tasks ; 
+    List<String> lists;
+    List<String> tasks;
 
     class ProcessService extends Service<Void> {
 
@@ -166,9 +166,9 @@ public class MenuBarController  implements Initializable  {
         if (newPassword.getText().equals(verfiyNewPassword.getText())) {
             ConnectWithController_MenuBar.getInastance().setNewPassword(newPassword.getText());
             if (ConnectWithController_MenuBar.getInastance().sendDataToView().equals("true")) {
-                 if (!service.isRunning()) {
-                service.start();
-                 }
+                if (!service.isRunning()) {
+                    service.start();
+                }
                 status.setVisible(true);
                 status.setText("your password is changed");
                 newPassword.setText("");
@@ -179,30 +179,30 @@ public class MenuBarController  implements Initializable  {
                     service.reset();
                 });
             } else {
-                 if (!service.isRunning()) {
-                service.start();
-            }
+                if (!service.isRunning()) {
+                    service.start();
+                }
                 newPassword.setText("");
                 verfiyNewPassword.setText("");
                 status.setVisible(true);
                 status.setText("your Password cannot be changed");
-                      service.setOnSucceeded(e -> {
+                service.setOnSucceeded(e -> {
                     status.setVisible(false);
                     //reset service
                     service.reset();
                 });
             }
         } else {
-             if (!service.isRunning()) {
+            if (!service.isRunning()) {
                 service.start();
             }
             status.setVisible(true);
             status.setText("your Password verfication is not identical");
-                  service.setOnSucceeded(e -> {
-                    status.setVisible(false);
-                    //reset service
-                    service.reset();
-                });
+            service.setOnSucceeded(e -> {
+                status.setVisible(false);
+                //reset service
+                service.reset();
+            });
         }
     }
 
@@ -252,15 +252,35 @@ public class MenuBarController  implements Initializable  {
 //            }
 //        }
 //    }   
+
     /*start Aml Functions */
-    
+    class FriendsThread extends Thread {
+
+        @Override
+        public void run() {
+            boolean connection = true;
+            while (true && connection) {
+//                    //  printStream.println(inputText.getText());
+//                    String replyMessage = dataInputStream.readLine();
+//                    //textArea.setText(replyMessage);
+//
+//                    textArea.appendText("\n" + replyMessage);
+
+      List<User> friendsOfUser2 = getInstance.sendFriendListToView();
+      if (friendsOfUser2.size() != friendsOfUser.size()){
+          friendsOfUser = friendsOfUser2;
+      }
+            }
+        }
+    }
+
     /*end Aml*/
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
         // get data of the instance created by login 
         //get name
-        ConnectWithLoginView_MenuBar getInstance = ConnectWithLoginView_MenuBar.getInastance();
+         getInstance = ConnectWithLoginView_MenuBar.getInastance();
         String name = getInstance.sendDataToView();
         userName.setText(name);
         userImage.setText(("" + name.charAt(0)).toUpperCase());
@@ -268,40 +288,33 @@ public class MenuBarController  implements Initializable  {
         userImageIns.setText(("" + name.charAt(0)).toUpperCase());
         //get lists notifications
         ObservableList<Notifications> notLists = FXCollections.observableArrayList();
-        List <Notifications> lists = getInstance.lists;
-        for(Notifications li : lists){
-           notLists.add(li);
+        List<Notifications> lists = getInstance.lists;
+        for (Notifications li : lists) {
+            notLists.add(li);
         }
         listsNotification.setItems(notLists);
         listsNotification.setCellFactory((list) -> new ListRequestCell());
-         ObservableList<Notifications> notTasks = FXCollections.observableArrayList();
-        List <Notifications> tasks = getInstance.tasks;
-        for(Notifications li : tasks){
-           notTasks.add(li);
+        ObservableList<Notifications> notTasks = FXCollections.observableArrayList();
+        List<Notifications> tasks = getInstance.tasks;
+        for (Notifications li : tasks) {
+            notTasks.add(li);
         }
         tasksNotification.setItems(notTasks);
         tasksNotification.setCellFactory((task) -> new TaskRequestCell());
         /*Aml Start*/
-        
-         ObservableList<Friend> items = FXCollections.observableArrayList();
-        
-   
-          items.addAll(
-                new Friend("John Doe", true),
-                new Friend("Jane Doe", false),
-                new Friend("Donte Dunigan", false),
-                new Friend("Gavin Genna", true),
-                new Friend("Darin Dear", true),
-                new Friend("Pura Petty", false),
-                new Friend("Herma Hines", false)
-        );
 
-          friendsLV.setItems(items);
-          friendsLV.setCellFactory((listView) -> new FriendListViewCell());
+        ObservableList<User> items = FXCollections.observableArrayList();
+        friendsOfUser = getInstance.sendFriendListToView();
+        for (int i = 0; i < friendsOfUser.size(); i++) {
+            items.add(friendsOfUser.get(i));
+        }
+
+        friendsLV.setItems(items);
+        friendsLV.setCellFactory((listView) -> new FriendListViewCell());
+        FriendsThread friendsThread = new FriendsThread();
+        friendsThread.start();
         /*Aml End */
-        
-        
-    }
 
+    }
 
 }
