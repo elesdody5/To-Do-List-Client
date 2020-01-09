@@ -37,7 +37,7 @@
                </tooltip></ToolBar>
          </graphic>
       </Menu>
-    <Menu mnemonicParsing="false" text="Tasks">
+    <Menu mnemonicParsing="false">
          <graphic>
             <ToolBar prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB;">
                <items>
@@ -146,6 +146,15 @@
                                  </children></AnchorPane>
                         </content>
                       </Tab>
+                        <Tab text="Friend Requests">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <ListView fx:id="tasksNotification1" prefHeight="200.0" prefWidth="200.0" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
                     </tabs>
                   </TabPane>
                </content>
