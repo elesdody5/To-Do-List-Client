@@ -112,6 +112,7 @@ public class ListAdapter extends ListCell<ToDoList> {
             try {
                 if (toDoForm.isEdited()) {
                     int response = updateInServer(createJson(todo));
+                    System.out.println(response);
                     if (response != -1) {
                         updateItem(todo, false);
                         showAleart(Alert.AlertType.INFORMATION, "Done ", "updated Succefully");

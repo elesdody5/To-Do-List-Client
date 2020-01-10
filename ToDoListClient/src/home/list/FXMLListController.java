@@ -7,9 +7,13 @@ package home.list;
 
 
 import Entity.User;
+import Enum.REQUEST;
 import authontication.LoginController;
 import home.to_do_list.ToDoList;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -32,6 +36,7 @@ import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import org.json.JSONException;
 import org.json.JSONObject;
+import server_connection.Connection;
 import server_request.Server;
 
 /**
@@ -64,7 +69,7 @@ public class FXMLListController implements Initializable {
                 -> {
             return new ListAdapter(param,friendsList);
         });
-
+    
     }
 
     @FXML
@@ -142,6 +147,6 @@ public class FXMLListController implements Initializable {
     }
 public ArrayList<User> getFriendsList()
 {
-    return friendsList;
-}
+        return friendsList;
+    }
 }
