@@ -27,8 +27,8 @@
             <Font size="16.0" />
          </font></JFXButton>
       <JFXButton fx:id="checkBoxButton" layoutX="349.0" layoutY="115.0" onAction="#addMember" prefHeight="35.0" prefWidth="117.0" style="-fx-border-color: #6f4cbb;" text="CheckBox" />
-      <JFXDatePicker fx:id="StartDatePicker" defaultColor="#6f4cbb" layoutX="349.0" layoutY="163.0" prefHeight="35.0" prefWidth="117.0" promptText="Start Date" />
-      <JFXDatePicker fx:id="endDatePicker" defaultColor="#6f4cbb" layoutX="350.0" layoutY="215.0" prefHeight="35.0" prefWidth="117.0" promptText="End Date" />
+      <JFXDatePicker fx:id="StartDatePicker" defaultColor="#6f4cbb" layoutX="349.0" layoutY="163.0" onHidden="#setStartDate" prefHeight="35.0" prefWidth="117.0" promptText="Start Date" />
+      <JFXDatePicker fx:id="endDatePicker" defaultColor="#6f4cbb" layoutX="350.0" layoutY="215.0" onHidden="#setEndate" prefHeight="35.0" prefWidth="117.0" promptText="End Date" />
       <JFXTextArea fx:id="description" focusColor="#6f4cbb" layoutX="14.0" layoutY="80.0" prefHeight="83.0" prefWidth="200.0" promptText="Description" unFocusColor="#6f4cbb" />
       <JFXTextArea fx:id="comment" focusColor="#6f4cbb" layoutX="14.0" layoutY="181.0" prefHeight="83.0" prefWidth="200.0" promptText="Comment" unFocusColor="#6f4cbb" />
    </children>

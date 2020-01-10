@@ -57,33 +57,31 @@ public class ToDoListController implements Initializable, Observer {
 
     JSONObject toDoTaskJsonObject;
     private ToDoList todolist;
+    ToDoList selectedTodo;
 
     @FXML
     private void addTaskToToDoList() throws IOException {
-    
+
         Stage appStage;
-                Parent root;
-                appStage = new Stage();
-                    root = FXMLLoader.load(getClass().getResource("taskInformationView.fxml"));
-                    Scene scene = new Scene(root);
-                    appStage.setScene(scene);
-                    appStage.initOwner(listOfTasks.getScene().getWindow());
-            appStage.initModality(Modality.WINDOW_MODAL);
-                    appStage.show();
-                        appStage.setOnHidden((WindowEvent event) -> {
-                if (TaskInformationViewController.getTaskInfo() != null) {
-                 
-                       TaskInfo addefTask = TaskInformationViewController.getTaskInfo();
-                            listOfTasks.getItems().add(addefTask.getTitle());
-                }
-                   
-            });
-                      
+        Parent root;
+        appStage = new Stage();
+        root = FXMLLoader.load(getClass().getResource("taskInformationView.fxml"));
+        Scene scene = new Scene(root);
+        appStage.setScene(scene);
+        appStage.initOwner(listOfTasks.getScene().getWindow());
+        appStage.initModality(Modality.WINDOW_MODAL);
+        appStage.show();
+        appStage.setOnHidden((WindowEvent event) -> {
+            if (TaskInformationViewController.getTaskInfo() != null) {
+
+                TaskInfo addefTask = TaskInformationViewController.getTaskInfo();
+                listOfTasks.getItems().add(addefTask.getTitle());
+            }
+
+        });
 
     }
-                                
-                                
-    
+
     private void sendTaskInfoToServer() throws IOException {
         String[] TypeOfRequest = new String[1];
         TypeOfRequest[0] = "Task";
@@ -93,10 +91,10 @@ public class ToDoListController implements Initializable, Observer {
 
     }
 
-    private ArrayList<TaskInfo> getFristTaskInfo() throws IOException, JSONException {
+    private ArrayList<TaskInfo> getToDoTaskInfo() throws IOException, JSONException {
         String[] params = new String[2];
         params[0] = "getTasksOflist";
-        params[1] =String.valueOf(todolist.getId());
+        params[1] = String.valueOf(todolist.getId());
         System.out.println(todolist.getId());
         Server server = new Server();
         JSONObject resultOfGetFisrtList = server.get(params);
@@ -105,13 +103,13 @@ public class ToDoListController implements Initializable, Observer {
         for (int i = 0; i < jsonArrayOftodotasks.length(); i++) {
             JSONObject task = jsonArrayOftodotasks.getJSONObject(i);
             String title = task.getString("title");
-          //  System.out.println(title);
+            //  System.out.println(title);
             int todoid = task.getInt("listId");
             TaskInfo taskinfo = new TaskInfo(title, todoid);
             tasksOfToDoList.add(taskinfo);
 
         }
-       // System.out.println(jsonArrayOftodotasks);
+        // System.out.println(jsonArrayOftodotasks);
         return tasksOfToDoList;
 
     }
@@ -120,50 +118,56 @@ public class ToDoListController implements Initializable, Observer {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         //  tasks=new ArrayList<TaskInfo>();
-       
-        data();
-       ////////////////////////////
+
+      
+        ////////////////////////////
         listOfTasks.setOnMouseClicked(new ListViewHandler() {
             @Override
             public void handle(javafx.scene.input.MouseEvent event) {
                 // System.out.print(listview.getSelectionModel().getSelectedIndex());
-             
 
             }
         });
     }
-    public void data()
-    {
-         todolist = new ToDoList();
-        ArrayList <TaskInfo> firstTask = null;
-       try {
-            firstTask = getFristTaskInfo();
+
+    public void displayTodoInListview(ToDoList todolist) {
+     //   todolist = new ToDoList();
+       // System.out.println(todolist.getId());
+        ArrayList<TaskInfo> tasks = null;
+        try {
+            tasks = getToDoTaskInfo();
         } catch (IOException ex) {
             Logger.getLogger(ToDoListController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (JSONException ex) {
             Logger.getLogger(ToDoListController.class.getName()).log(Level.SEVERE, null, ex);
         }
-       for(int i =0;i<firstTask.size();i++)
-       {  GridPane gridpane = new GridPane();
-        Text titleOfFirstTask = new Text(firstTask.get(i).getTitle());
-        gridpane.add(titleOfFirstTask, 0, 0);
-        listOfTasks.getItems().add(gridpane); }
+        for (int i = 0; i < tasks.size(); i++) {
+            GridPane gridpane = new GridPane();
+            Text titleOfTask = new Text(tasks.get(i).getTitle());
+            gridpane.add(titleOfTask, 0, 0);
+            listOfTasks.getItems().add(gridpane);
+        }
     }
-   static ToDoList to;
+    static ToDoList firstToDo;
+
     public void setTodoList(ToDoList toDoList) {
-       
+
         this.todolist = toDoList;
-        to=toDoList;
-        System.out.println(todolist.getTitle());   
+        firstToDo = toDoList;
+        displayTodoInListview(todolist);
+        System.out.println(todolist.getTitle());
     }
-     public static ToDoList getTodoList() {
-     //  System.out.println(to.getId());
-       return to;
+
+    public static ToDoList getTodoList() {
+        return firstToDo;
     }
-    
 
     @Override
     public void update(Observable o, Object o1) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    selectedTodo = (ToDoList) o;
+    System.out.print(selectedTodo.getTitle());
+    displayTodoInListview(selectedTodo);
+
+    
     }
 }

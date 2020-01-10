@@ -20,8 +20,10 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -62,7 +64,6 @@ public class TaskInformationViewController implements Initializable, Observer {
     private JFXTextArea description;
     @FXML
     private JFXTextArea comment;
-    ToDoList selectedTodo;
 
     /**
      * Initializes the controller class.
@@ -133,9 +134,9 @@ public class TaskInformationViewController implements Initializable, Observer {
 
     @FXML
     private void saveTaskData(ActionEvent event) {
-        if (titleOfTask.getText() != "") {
+        if (!titleOfTask.getText().toString().equals("")&&StartDatePicker.getValue()!=null&&endDatePicker.getValue()!=null) {
             try {
-                        todolist = ToDoListController.getTodoList();
+                todolist = ToDoListController.getTodoList();
                 TaskInfo taskInfo = new TaskInfo(titleOfTask.getText().toString(), todolist.getId());
                 taskInfo.setDescription(description.getText().toString());
                 taskInfo.setStartTime(StartDatePicker.getValue().toString());
@@ -174,7 +175,7 @@ public class TaskInformationViewController implements Initializable, Observer {
 
     @Override
     public void update(Observable o, Object o1) {
-        selectedTodo = (ToDoList) o;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 
     }
 
@@ -184,6 +185,42 @@ public class TaskInformationViewController implements Initializable, Observer {
         checkBoxButton.setVisible(true);
         StartDatePicker.setVisible(true);
         endDatePicker.setVisible(true);
+    }
+
+    @FXML
+    private void setStartDate(Event event) {
+        if (StartDatePicker.getValue() != null) {
+            if (endDatePicker.getValue() != null) {
+                if (endDatePicker.getValue().compareTo(StartDatePicker.getValue()) < 0) {
+
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setContentText("Sorry the End Date must be after the start Date");
+                    alert.showAndWait();
+                    return;
+                }
+            }
+
+        }
+    }
+
+    @FXML
+    private void setEndate(Event event) {
+        if (StartDatePicker.getValue() != null) {
+            if (endDatePicker.getValue() != null) {
+                if (endDatePicker.getValue().compareTo(StartDatePicker.getValue()) < 0) {
+                    endDatePicker.setValue(null);
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setContentText("Sorry the End Date must be after the start Date");
+                    alert.showAndWait();
+                }
+
+            }
+        } else {
+            endDatePicker.setValue(null);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Please, enter StartDate first");
+            alert.showAndWait();
+        }
     }
 
 }
