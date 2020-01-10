@@ -146,6 +146,7 @@ public class ToDoListController implements Initializable, Observer {
             Text titleOfTask = new Text(tasks.get(i).getTitle());
             gridpane.add(titleOfTask, 0, 0);
             listOfTasks.getItems().add(gridpane);
+            System.out.println(titleOfTask.getText());
         }
     }
     static ToDoList firstToDo;
@@ -170,4 +171,6 @@ public class ToDoListController implements Initializable, Observer {
 
     
     }
+
+
 }

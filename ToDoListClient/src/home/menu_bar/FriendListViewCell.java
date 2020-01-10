@@ -33,9 +33,9 @@ public class FriendListViewCell extends ListCell<Friend> {
             String imageURL = "";
             setText(friendItem.getName());            
             if (friendItem.isOnline())
-                imageURL = "online.png";
+                imageURL = "icons/online.png";
             else 
-               imageURL = "offline.png";
+               imageURL = "icons/offline.png";
             
             
             Image image = new Image(getClass().getResourceAsStream(imageURL));

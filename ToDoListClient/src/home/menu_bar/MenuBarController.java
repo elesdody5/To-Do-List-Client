@@ -5,16 +5,10 @@
  */
 package home.menu_bar;
 
-import Entity.User;
 import authontication.LoginController;
 import home.Notifications;
-import java.io.BufferedReader;
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.net.Socket;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -32,13 +26,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import todolistclient.ToDoListClient;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Menu;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 
@@ -268,19 +260,32 @@ public class MenuBarController  implements Initializable  {
         userImageIns.setText(("" + name.charAt(0)).toUpperCase());
         //get lists notifications
         ObservableList<Notifications> notLists = FXCollections.observableArrayList();
-        List <Notifications> lists = getInstance.lists;
+        //List <Notifications> lists = getInstance.lists;
+        List <Notifications> lists = new ArrayList<>();
+        Notifications n =  new Notifications();
+        n.setFromUserId("J");
+        n.setType("1");
+        n.setData("project c");
+        n.setStatus(null);
+        lists.add( n );
+          Notifications n2 =  new Notifications();
+          n2.setFromUserId("k");
+        n2.setType("1");
+        n2.setData("project c");
+        n2.setStatus("1");
+        lists.add( n2 );
         for(Notifications li : lists){
            notLists.add(li);
         }
         listsNotification.setItems(notLists);
         listsNotification.setCellFactory((list) -> new ListRequestCell());
-         ObservableList<Notifications> notTasks = FXCollections.observableArrayList();
-        List <Notifications> tasks = getInstance.tasks;
-        for(Notifications li : tasks){
-           notTasks.add(li);
-        }
-        tasksNotification.setItems(notTasks);
-        tasksNotification.setCellFactory((task) -> new TaskRequestCell());
+//        ObservableList<Notifications> notTasks = FXCollections.observableArrayList();
+//        List <Notifications> tasks = getInstance.tasks; 
+//        for(Notifications li : tasks){
+//           notTasks.add(li);
+//        }
+//        tasksNotification.setItems(notTasks);
+//        tasksNotification.setCellFactory((task) -> new TaskRequestCell());
         /*Aml Start*/
         
          ObservableList<Friend> items = FXCollections.observableArrayList();

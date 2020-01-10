@@ -8,13 +8,10 @@ package home.list;
 import Entity.User;
 import authontication.LoginController;
 import home.NotificationKeys;
-import home.to_do_list.ToDoList;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -22,10 +19,10 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import javax.management.Notification;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import server_connection.Connection;
 import server_request.Server;
 
 /**
