@@ -5,6 +5,7 @@
  */
 package home.menu_bar;
 
+import Utility.AlertDialog;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -66,7 +67,7 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
         try {
             s = new Server();
         } catch (IOException ex) {
-            AlertUser.show("Server Connection is out");
+            AlertDialog.showInfoDialog("server", "Error", "Server Connection is out!");
 
         }
         String id = ConnectWithLoginView_MenuBar.getInastance().sendIdToView();
