@@ -5,8 +5,7 @@
  */
 package Entity;
 
-import javax.json.Json;
-import javax.json.JsonObject;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,6 +15,12 @@ public class User{
     private String userName;
     private String password;
 
+    public User(int id, String userName) {
+        this.id = id;
+        this.userName = userName;
+    }
+
+    
     public User(int id ,String userName, String password) {
         this.id = id;
         this.userName = userName;

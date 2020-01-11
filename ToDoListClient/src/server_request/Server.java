@@ -16,29 +16,31 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.Alert;
 
-
 import org.json.JSONException;
 import org.json.JSONObject;
+import server_connection.Connection;
 
 /**
  *
  * @author Elesdody
  */
-public class Server extends Thread implements Request {
+public class Server implements Request {
 
     private static final String IP = "127.0.0.1";
     private static final int PORT = 5005;
     Socket socket;
     PrintStream ps;
     BufferedReader in;
-    
+    private static Listener listener;
+
     public Server() throws IOException {
-        socket = new Socket(IP, PORT);
+        socket = Connection.getSocketConnection();
         ps = new PrintStream(socket.getOutputStream());
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
+        if (listener == null) {
+            startnewThread();
+        }
     }
-    
 
     @Override
     public JSONObject post(String[] paramters, JSONObject body) {
@@ -54,18 +56,17 @@ public class Server extends Thread implements Request {
 
         ps.println(REQUEST.END);
 
-        /*waiting*/
         JSONObject json = null;
         try {
+            listener.readJson = true;
             // waiting for responde
-            json = readJson();
 
-        } catch (IOException | JSONException ex) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("no connection with the server");
-            alert.show();
+            listener.join();
+            json = listener.json;
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-
+            startnewThread();
             return json;
         }
 
@@ -80,16 +81,18 @@ public class Server extends Thread implements Request {
         }
         ps.println();
         // to notifay the client the response was ended 
-        ps.println(REQUEST.END);
+        //ps.println(REQUEST.END);
         JSONObject json = null;
         try {
             // waiting for responde
-            json = readJson();
+            listener.readJson = true;
+            listener.join();
+            json = listener.json;
 
-        } catch (IOException | JSONException ex) {
+        } catch (InterruptedException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-
+            startnewThread();
             return json;
         }
     }
@@ -108,19 +111,22 @@ public class Server extends Thread implements Request {
         ps.println(REQUEST.END);
 
         int response = 0;
+
+        listener.readJson = false;
         try {
-            
-            response = Integer.parseInt(in.readLine());
-        } catch (IOException ex) {
+            listener.join();
+        } catch (InterruptedException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
+        response = Integer.parseInt(listener.data);
+        startnewThread();
         return response;
     }
 
     // return the element id that deleted from database or -1 if error
     @Override
     public int delete(String[] paramters) {
-        ps.println(REQUEST.PUT);
+        ps.println(REQUEST.DELETE);
 
         for (String paramter : paramters) {
             ps.print("/");
@@ -128,29 +134,61 @@ public class Server extends Thread implements Request {
         }
         ps.println();
         // to notifay the client the response was ended 
-        ps.println(REQUEST.END);
+        // ps.println(REQUEST.END);
 
         int response = 0;
-        try {
 
-            response = in.read();
-        } catch (IOException ex) {
+        listener.readJson = false;
+        try {
+            listener.join();
+        } catch (InterruptedException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
+        response = Integer.parseInt(listener.data);
+        startnewThread();
         return response;
     }
 
-    JSONObject readJson() throws IOException, JSONException {
-        StringBuilder body = new StringBuilder();
-        String data = in.readLine();
-
-        while (!data.equals(REQUEST.END)) {
-
-            body.append(data);
-            data = in.readLine();
-
-        }
-        return new JSONObject(body.toString());
+    private void startnewThread() {
+        listener = new Listener();
+        listener.start();
     }
 
+    private class Listener extends Thread {
+
+        String data;
+        JSONObject json;
+        boolean readJson = false;
+
+        @Override
+        public void run() {
+            try {
+                data = in.readLine();
+                if (data.equals(REQUEST.NOTIFICATION)) {
+                    readJson = true;
+                    System.out.println(data);
+
+                }
+                if (readJson) {
+                    readJson();
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (JSONException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        void readJson() throws IOException, JSONException {
+            StringBuilder body = new StringBuilder();
+
+            while (!data.equals(REQUEST.END)) {
+
+                body.append(data);
+                data = in.readLine();
+
+            }
+            json = new JSONObject(body.toString());
+        }
+    }
 }

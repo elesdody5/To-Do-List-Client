@@ -6,23 +6,12 @@
 package authontication;
 
 import Entity.User;
+import Enum.RESPOND_CODE;
 import java.io.IOException;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.net.URL;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import server_connection.Connection;
 import server_request.Server;
 
 /**
@@ -37,25 +26,23 @@ public class Registeration {
      *
      * @param url
      */
-    
-    private User user ;
+    private User user;
     private String confirm;
-    
-    public Registeration(User user , String confirmPassword){
+
+    public Registeration(User user, String confirmPassword) {
         this.user = user;
         this.confirm = confirmPassword;
     }
 
-   
     public int registerUser() {
-        int result = 0 ;
+        int result = 0;
         String userName = user.getUserName();
-        String password =user.getPassword();
+        String password = user.getPassword();
         String confirmPassword = confirm;
-        validateUserName(userName);
-        int validatePassword =validatePassword(password,confirmPassword);
-            if (validateUserName(userName)&& validatePassword == 1 ){
-             try {
+
+        int validatePassword = validatePassword(password, confirmPassword);
+        if (validateUserName(userName) && validatePassword == RESPOND_CODE.CORRECT_INPUT) {
+            try {
                 JSONObject userJsonObject = new JSONObject();
                 userJsonObject.put("username", userName);
                 userJsonObject.put("password", password);
@@ -64,16 +51,18 @@ public class Registeration {
                 ex.printStackTrace();
             }
         } else {
-                result = -1;
-                if (!validateUserName(userName))
-                    System.out.println("Please enter  valid user name which length greather 6 ");
-                if (validatePassword == 3)
-                    System.out.println("confirm password not equal user password");
-                else if (validatePassword == 2)
-                    System.out.println("password length => 4");
-              
+            result = -1;
+            if (!validateUserName(userName)) {
+                System.out.println("Please enter  valid user name which length greather 6 ");
             }
-            return result;
+            if (validatePassword == 3) {
+                System.out.println("confirm password not equal user password");
+            } else if (validatePassword == 2) {
+                System.out.println("password length => 4");
+            }
+
+        }
+        return result;
     }
 
     public int sendRequest(JSONObject jSONObject) {
@@ -87,11 +76,11 @@ public class Registeration {
             String res = resultJsonObject.getString("result");
             if (res.equals("1")) {
                 return 1;
-               // closeregisterScreenAndOpenLoginScreen();
+                // closeregisterScreenAndOpenLoginScreen();
             } else {
                 System.out.println("You already exist in DB");
             }
-        
+
         } catch (JSONException ex) {
             Logger.getLogger(Registeration.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -112,22 +101,20 @@ public class Registeration {
             Logger.getLogger(Registeration.class.getName()).log(Level.SEVERE, null, ex);
         }
     }*/
-
     private boolean validateUserName(String userName) {
-        return userName.length()>=6 ;
-
+        return userName.length() >= 6;
     }
 
-    private int validatePassword(String password ,String confirmPassword) {
-        if (password.equals(confirmPassword))
-        {
-            if (password.length()>4)
-                return 1 ;
-            else 
-                return 2;
-        } else 
-            return 3;
-
+    private int validatePassword(String password, String confirmPassword) {
+        if (password.equals(confirmPassword) && password.length() > 6) {
+            return RESPOND_CODE.CORRECT_INPUT;
+        } else {
+            if(!password.equals(confirmPassword)){
+                return RESPOND_CODE.NOT_EQUAL_PASSWORD;
+            }else{
+                return RESPOND_CODE.SHORT_PASSWORD;
+            }
+        }
     }
 
 }

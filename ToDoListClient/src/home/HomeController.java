@@ -51,14 +51,19 @@ public class HomeController implements Initializable {
         try {
             Server server = new Server();
             JSONObject json = server.get(new String[]{"todo", LoginController.UserId + ""});
-            System.out.println(json);
             User user = new User(json.getInt("ID"), json.getString("user name"), json.getString("password"));
             Gson gson = new GsonBuilder().create();
+            // convert jsonArray to frindsList
+            Type frindsListType = new TypeToken<ArrayList<User>>() {
+            }.getType();
+            ArrayList<User> friendsList = gson.fromJson(json.getJSONArray("friends").toString(), frindsListType);
+
+            // convert jsonArray to todoList
             Type ListType = new TypeToken<ArrayList<ToDoList>>() {
             }.getType();
             ArrayList<ToDoList> todoList = gson.fromJson(json.getJSONArray("todo_list").toString(), ListType);
 // start home screen
-            start(user, todoList);
+            start(user, friendsList,todoList);
         } catch (IOException ex) {
             Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (JSONException ex) {
@@ -67,7 +72,7 @@ public class HomeController implements Initializable {
 
     }
 
-    public void start(User user, ArrayList<ToDoList> todoList) {
+    public void start(User user,ArrayList<User> friendsList, ArrayList<ToDoList> todoList) {
         try {
             // TODO
             // create user menu bar 
@@ -82,13 +87,14 @@ public class HomeController implements Initializable {
             VBox list = listloader.load();
             FXMLListController listController = listloader.getController();
             listController.getMyListView().getItems().addAll(todoList);
+            listController.getFriendsList().addAll(friendsList);
             // create todo loader and controller
             FXMLLoader todoLoader = new FXMLLoader(getClass().getResource("/home/to_do_list/ToDoList.fxml"));
             Parent todo = todoLoader.load();
             ToDoListController todoController = todoLoader.getController();
-            if (todoList.size() > 1) {
-                todoController.setTodoList(todoList.get(0));
-            }
+            if(todoList.size()>=1)
+            { todoController.setTodoList(todoList.get(0));}
+
             // add component to main pane
             borderPane.setLeft(list);
             borderPane.setCenter(todo);

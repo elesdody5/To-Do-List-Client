@@ -14,7 +14,7 @@
       <HBox prefHeight="31.0" prefWidth="222.0" spacing="30.0">
          <children>
             <TextField fx:id="searchField" alignment="CENTER" promptText="Search" style="-fx-background-radius: 50;" />
-            <ImageView fitHeight="25.0" fitWidth="44.0" onMouseClicked="#openForm" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="25.0" fitWidth="44.0" onMouseClicked="#AddToDo" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@plus.png" />
                </image>
