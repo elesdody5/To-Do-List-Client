@@ -14,6 +14,7 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.Alert;
 
 
 import org.json.JSONException;
@@ -60,7 +61,9 @@ public class Server extends Thread implements Request {
             json = readJson();
 
         } catch (IOException | JSONException ex) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("no connection with the server");
+            alert.show();
         } finally {
 
             return json;

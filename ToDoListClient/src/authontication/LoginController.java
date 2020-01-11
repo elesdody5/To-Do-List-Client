@@ -174,9 +174,10 @@ public class LoginController implements Initializable {
             try {
                 Server server = new Server();
                 JSONObject response = server.post(params, userJson);
-
+                int code = 0 ;
                 //get respond code (SUCCESS , FAILD)after server request
-                int code = response.getInt("Code");
+                if(response!=null)
+                     code = response.getInt("Code");
                 switch (code) {
                     case RESPOND_CODE.SUCCESS:
                         UserId = response.getInt("ID");
