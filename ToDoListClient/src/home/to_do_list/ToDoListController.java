@@ -14,6 +14,7 @@ import home.list.FXMLListController;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
@@ -26,8 +27,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -48,16 +54,21 @@ public class ToDoListController implements Initializable, Observer {
     /**
      * Initializes the controller class.
      */
+    TaskInformationViewController taskview;
     @FXML
     private JFXButton addTask;
     @FXML
-    private JFXTextArea titleOfTask;
-    @FXML
     private JFXListView listOfTasks;
-
     JSONObject toDoTaskJsonObject;
-    private ToDoList todolist;
     ToDoList selectedTodo;
+    ToDoList selectedTodo2;
+    @FXML
+    private GridPane tasksListView;
+    @FXML
+    private AnchorPane initialStatePane;
+    @FXML
+    private Label titleOfTodo;
+    static ToDoList todo;
 
     @FXML
     private void addTaskToToDoList() throws IOException {
@@ -75,101 +86,64 @@ public class ToDoListController implements Initializable, Observer {
             if (TaskInformationViewController.getTaskInfo() != null) {
 
                 TaskInfo addefTask = TaskInformationViewController.getTaskInfo();
-                listOfTasks.getItems().add(addefTask.getTitle());
+                 listOfTasks.getItems().add(addefTask);
             }
 
         });
+        
 
     }
 
-    private void sendTaskInfoToServer() throws IOException {
-        String[] TypeOfRequest = new String[1];
-        TypeOfRequest[0] = "Task";
-
-        Server server = new Server();
-        JSONObject resultJsonObject = server.post(TypeOfRequest, toDoTaskJsonObject);
-
-    }
-
-    private ArrayList<TaskInfo> getToDoTaskInfo() throws IOException, JSONException {
-        String[] params = new String[2];
-        params[0] = "getTasksOflist";
-        params[1] = String.valueOf(todolist.getId());
-        System.out.println(todolist.getId());
-        Server server = new Server();
-        JSONObject resultOfGetFisrtList = server.get(params);
-        JSONArray jsonArrayOftodotasks = resultOfGetFisrtList.getJSONArray("listOfTasks");
-        ArrayList<TaskInfo> tasksOfToDoList = new ArrayList<TaskInfo>();
-        for (int i = 0; i < jsonArrayOftodotasks.length(); i++) {
-            JSONObject task = jsonArrayOftodotasks.getJSONObject(i);
-            String title = task.getString("title");
-            //  System.out.println(title);
-            int todoid = task.getInt("listId");
-            TaskInfo taskinfo = new TaskInfo(title, todoid);
-            tasksOfToDoList.add(taskinfo);
-
-        }
-        // System.out.println(jsonArrayOftodotasks);
-        return tasksOfToDoList;
-
-    }
-
+   
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        //  tasks=new ArrayList<TaskInfo>();
-
-      
-        ////////////////////////////
-        listOfTasks.setOnMouseClicked(new ListViewHandler() {
-            @Override
-            public void handle(javafx.scene.input.MouseEvent event) {
-                // System.out.print(listview.getSelectionModel().getSelectedIndex());
-
-            }
+      //  Object ol = null;
+      // update(selectedTodo2, ol);
+        listOfTasks.setCellFactory((param)
+                -> {
+            return new ListAdapterOfTasksList((ListView<TaskInfo>) param);
         });
+      taskview=new TaskInformationViewController();
+     
     }
 
-    public void displayTodoInListview(ToDoList todolist) {
-     //   todolist = new ToDoList();
-       // System.out.println(todolist.getId());
-        ArrayList<TaskInfo> tasks = null;
-        try {
-            tasks = getToDoTaskInfo();
-        } catch (IOException ex) {
-            Logger.getLogger(ToDoListController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JSONException ex) {
-            Logger.getLogger(ToDoListController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        for (int i = 0; i < tasks.size(); i++) {
-            GridPane gridpane = new GridPane();
-            Text titleOfTask = new Text(tasks.get(i).getTitle());
-            gridpane.add(titleOfTask, 0, 0);
-            listOfTasks.getItems().add(gridpane);
-        }
-    }
-    static ToDoList firstToDo;
 
     public void setTodoList(ToDoList toDoList) {
+          selectedTodo=toDoList;
+          todo=selectedTodo;
+          titleOfTodo.setText(selectedTodo.getTitle());
+          titleOfTodo.setTextFill(Color.web(selectedTodo.getColor()));
+          System.out.println(toDoList.getTasksInTODOList().size());
+          tasksListView.setVisible(true);
+          List<TaskInfo> tasks = selectedTodo.getTasksInTODOList();
 
-        this.todolist = toDoList;
-        firstToDo = toDoList;
-        displayTodoInListview(todolist);
-        System.out.println(todolist.getTitle());
+            for (int i = 0; i < tasks.size(); i++) {
+                  listOfTasks.getItems().add(tasks.get(i));
+              
     }
-
+}
     public static ToDoList getTodoList() {
-        return firstToDo;
+        return todo;
     }
 
     @Override
     public void update(Observable o, Object o1) {
-    selectedTodo = (ToDoList) o;
-    System.out.print(selectedTodo.getTitle());
-    displayTodoInListview(selectedTodo);
 
-    
+        selectedTodo = (ToDoList) o;
+        todo=selectedTodo;
+        if (selectedTodo == null) {
+            tasksListView.setVisible(false);
+            initialStatePane.setVisible(true);
+        } else {
+            tasksListView.setVisible(true);
+            initialStatePane.setVisible(false);
+            List<TaskInfo> tasks = selectedTodo.getTasksInTODOList();
+            for (int i = 0; i < tasks.size(); i++) {
+                 listOfTasks.getItems().add(tasks.get(i));
+               
+            }
+        }
+
     }
-
 
 }

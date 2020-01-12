@@ -23,7 +23,7 @@ public class ToDoList extends Observable {
     private String startTime;
     private String color;
     private String description;
-    private ArrayList<TaskInfo> tasksInTODOList;
+    private ArrayList<TaskInfo> taskes;
     private ArrayList<User> teamMateInToDoList;
 
     public ArrayList<User> getTeamMateInToDoList() {
@@ -35,19 +35,19 @@ public class ToDoList extends Observable {
     }
 
     public void setTasksInTODOList(ArrayList<TaskInfo> tasksInTODOList) {
-        this.tasksInTODOList = tasksInTODOList;
+        this.taskes = tasksInTODOList;
     }
 
     public ArrayList<TaskInfo> getTasksInTODOList() {
-        return tasksInTODOList;
+        return taskes;
     }
       public void addTaskToDoList(TaskInfo task)
     {
-        tasksInTODOList.add(task);
+        taskes.add(task);
     }
 
     public ToDoList() {
-        tasksInTODOList = new ArrayList<>();
+        taskes = new ArrayList<>();
         
     }
 

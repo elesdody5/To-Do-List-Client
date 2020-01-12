@@ -42,7 +42,7 @@ public class TaskInfo {
     }
 
     TaskInfo() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
     }
 
     public int getId() {
@@ -110,6 +110,8 @@ public class TaskInfo {
             toDoTaskJsonObject.put("deadLine", deadLine);
             toDoTaskJsonObject.put("startTime", startTime);
             toDoTaskJsonObject.put("comment", comment);
+            toDoTaskJsonObject.put("id", id);
+
 
             
         } catch (JSONException ex) {
