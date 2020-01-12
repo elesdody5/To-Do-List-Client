@@ -33,7 +33,7 @@ public class Server implements Request {
     PrintStream ps;
     BufferedReader in;
     private static Listener listener;
-
+    
     public Server() throws IOException {
         socket = Connection.getSocketConnection();
         ps = new PrintStream(socket.getOutputStream());
@@ -61,6 +61,7 @@ public class Server implements Request {
         try {
             listener.readJson = true;
             // waiting for responde
+
             listener.join();
             json = listener.json;
         } catch (InterruptedException ex) {

@@ -110,6 +110,8 @@ public class TaskInfo {
             toDoTaskJsonObject.put("deadLine", deadLine);
             toDoTaskJsonObject.put("startTime", startTime);
             toDoTaskJsonObject.put("comment", comment);
+            toDoTaskJsonObject.put("id", id);
+
 
             
         } catch (JSONException ex) {

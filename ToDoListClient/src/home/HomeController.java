@@ -50,41 +50,41 @@ public class HomeController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-       // Platform.runLater(() -> {
-            try {
-                Server server = new Server();
-                JSONObject json = server.get(new String[]{"todo", LoginController.UserId + ""});
-                User user = new User(json.getInt("ID"), json.getString("user name"), json.getString("password"));
-                Gson gson = new GsonBuilder().create();
-                // convert jsonArray to frindsList
-                Type frindsListType = new TypeToken<ArrayList<User>>() {
-                }.getType();
-                ArrayList<User> friendsList = gson.fromJson(json.getJSONArray("friends").toString(), frindsListType);
+        // Platform.runLater(() -> {
+        try {
+            Server server = new Server();
+            JSONObject json = server.get(new String[]{"todo", LoginController.UserId + ""});
+            User user = new User(json.getInt("ID"), json.getString("user name"), json.getString("password"));
+            Gson gson = new GsonBuilder().create();
+            // convert jsonArray to frindsList
+            Type frindsListType = new TypeToken<ArrayList<User>>() {
+            }.getType();
+            ArrayList<User> friendsList = gson.fromJson(json.getJSONArray("friends").toString(), frindsListType);
 
-                // convert jsonArray to todoList
-                Type ListType = new TypeToken<ArrayList<ToDoList>>() {
-                }.getType();
-                ArrayList<ToDoList> todoList = gson.fromJson(json.getJSONArray("todo_list").toString(), ListType);
-                // convert shared todo
-                
-                ArrayList<ToDoList> sharedList = gson.fromJson(json.getJSONArray("shared_list").toString(), ListType);
-               // convert notification
-                Type notificationListType = new TypeToken<ArrayList<Notifications>>() {
-                }.getType();
-                ArrayList<Notifications> notifications = gson.fromJson(json.getJSONArray("notification").toString(), notificationListType);
-                // start home screen
-                System.out.println(json);
-                start(user, friendsList, todoList,sharedList,notifications);
-            } catch (IOException ex) {
-                Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (JSONException ex) {
-                System.out.println(ex);
-            }
-       // });
+            // convert jsonArray to todoList
+            Type ListType = new TypeToken<ArrayList<ToDoList>>() {
+            }.getType();
+            ArrayList<ToDoList> todoList = gson.fromJson(json.getJSONArray("todo_list").toString(), ListType);
+            // convert shared todo
+
+            ArrayList<ToDoList> sharedList = gson.fromJson(json.getJSONArray("shared_list").toString(), ListType);
+            // convert notification
+            Type notificationListType = new TypeToken<ArrayList<Notifications>>() {
+            }.getType();
+            ArrayList<Notifications> notifications = gson.fromJson(json.getJSONArray("notification").toString(), notificationListType);
+            // start home screen
+            System.out.println(json);
+            start(user, friendsList, todoList, sharedList, notifications);
+        } catch (IOException ex) {
+            Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JSONException ex) {
+            System.out.println(ex);
+        }
+        // });
 
     }
 
-    public void start(User user, ArrayList<User> friendsList, ArrayList<ToDoList> todoList,ArrayList<ToDoList> sharedList,ArrayList<Notifications> notifications) {
+    public void start(User user, ArrayList<User> friendsList, ArrayList<ToDoList> todoList, ArrayList<ToDoList> sharedList, ArrayList<Notifications> notifications) {
         try {
             // TODO
             // create user menu bar 
@@ -106,12 +106,16 @@ public class HomeController implements Initializable {
             FXMLLoader todoLoader = new FXMLLoader(getClass().getResource("/home/to_do_list/ToDoList.fxml"));
             Parent todo = todoLoader.load();
             ToDoListController todoController = todoLoader.getController();
+            ToDoList currentTodo;
             if (todoList.size() >= 1) {
-                ToDoList currentTodo = todoList.get(0);
-                currentTodo.addObserver(todoController);
-                todoController.setTodoList(currentTodo);
-                listController.setCurrentToDo(currentTodo);
+                currentTodo = todoList.get(0);
+
+            } else {
+                currentTodo = new ToDoList();
             }
+            currentTodo.addObserver(todoController);
+            todoController.update(currentTodo,null);
+            listController.setCurrentToDo(currentTodo);
 
             // add component to main pane
             borderPane.setLeft(list);
