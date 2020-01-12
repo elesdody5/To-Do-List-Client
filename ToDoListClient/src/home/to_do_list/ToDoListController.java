@@ -37,6 +37,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -99,14 +100,13 @@ public class ToDoListController implements Initializable, Observer {
     public void initialize(URL url, ResourceBundle rb) {
       //  Object ol = null;
       // update(selectedTodo2, ol);
-        listOfTasks.setCellFactory((param)
+     listOfTasks.setCellFactory((param)
                 -> {
             return new ListAdapterOfTasksList((ListView<TaskInfo>) param);
         });
       taskview=new TaskInformationViewController();
-     
     }
-
+    
 
     public void setTodoList(ToDoList toDoList) {
           selectedTodo=toDoList;

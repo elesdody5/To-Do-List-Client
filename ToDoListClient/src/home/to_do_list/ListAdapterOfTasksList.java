@@ -8,6 +8,7 @@ package home.to_do_list;
 import Entity.User;
 import authontication.LoginController;
 import com.jfoenix.controls.JFXCheckBox;
+import home.HomeController;
 import home.list.FXMLListController;
 import home.list.ToDoForm;
 import java.io.IOException;
@@ -104,7 +105,7 @@ static TaskInfo getCurrntTask()
         }
 
         stage.setOnHidden((WindowEvent event) -> {
-            
+
         });
     }
 
@@ -134,7 +135,7 @@ static TaskInfo getCurrntTask()
             int response = server.delete(new String[]{"task",String.valueOf(task.getId())});
             if (response != -1) {
                 listviewOfTasks.getItems().remove(task);
-
+              
                 showAleart(Alert.AlertType.INFORMATION, "Done ", "deleted Succefully");
             } else {
                 showAleart(Alert.AlertType.ERROR, "Error ", "cann't delete todo");
