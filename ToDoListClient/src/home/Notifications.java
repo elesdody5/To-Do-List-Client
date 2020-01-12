@@ -10,32 +10,45 @@ package home;
  * @author ghadeerelmahdy
  */
 public class Notifications {
-    private int id ;
-    private String fromUserId;
-    private String toUserId;
+
+    private int id;
+    private int fromUserId;
+    private int toUserId;
+    private int dataId ;
     //type -> list or task
-    private String type;
-    //status -> accept or reject
-    private String status;
+    private int type;
+
+   
+    //status -> accept 1 or reject 0 or noResponse -1
+    private int status;
     private String data;
-     
+    private String fromUserName;
+
+    public void setFromUserName(String fromUserName) {
+        this.fromUserName = fromUserName;
+    }
+
+    public String getFromUserName() {
+        return fromUserName;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
 
-    public void setFromUserId(String fromUserId) {
+    public void setFromUserId(int fromUserId) {
         this.fromUserId = fromUserId;
     }
 
-    public void setToUserId(String toUserId) {
+    public void setToUserId(int toUserId) {
         this.toUserId = toUserId;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
@@ -47,25 +60,31 @@ public class Notifications {
         return id;
     }
 
-    public String getFromUserId() {
+    public int getFromUserId() {
         return fromUserId;
     }
 
-    public String getToUserId() {
+    public int getToUserId() {
         return toUserId;
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
     public String getData() {
         return data;
     }
-   
-    
+     public void setTodoId(int todoId) {
+        this.dataId = todoId;
+    }
+
+    public int getTodoId() {
+        return dataId;
+    }
+
 }

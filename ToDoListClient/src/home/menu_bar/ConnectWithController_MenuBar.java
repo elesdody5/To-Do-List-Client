@@ -14,18 +14,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import server_connection.Connection;
 import home.NotificationKeys;
+import home.Notifications;
 
 /**
  *
  * @author ghadeerelmahdy
  */
 public class ConnectWithController_MenuBar implements MenuBarModelInterface {
-    private boolean isName , isList , isFriend , isPassword;
-    private int status = -1, requestListKey = -1 , requestFriendKey = -1;
+
+    private boolean isName, isList, isTask, isFriend, isPassword;
+    private int status = -1;
     private String name;
     private String password;
     static Server s;
     private static ConnectWithController_MenuBar instance;
+    Notifications request = new Notifications();
 
     private ConnectWithController_MenuBar() {
 
@@ -40,6 +43,7 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
         return instance;
     }
 
+    //setter to controller
     public void setNewName(String name) {
         this.name = name;
         isName = true;
@@ -51,16 +55,16 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
         isPassword = true;
         sendDataToController();
     }
-    
-    public void sendRequestFriendKey(int key) {
-        requestFriendKey= key;
-        isFriend = true;
-        sendDataToController();
-    }
-    public void sendRequestListKey(int key) {
-        requestListKey = key;
-        isList = true;
-        sendDataToController();
+
+    public void sendRequestList(Notifications req) {
+        if (req.getStatus() == NotificationKeys.ACCEPET_COLLABORATOR_REQUEST) {
+            //update notif id with status equal 1
+            //insert into coll table
+            isList = true;
+            request = req;
+            sendDataToController();
+        }
+
     }
 
     private void sendDataToController() {
@@ -100,25 +104,24 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
 
         }
 
-//        if (isList) {
-//            if (requestListKey == NotificationKeys.ACCEPET_COLLABORATOR_REQUEST) {
-//                String[] key = {"setRequestList"};
-//                JSONObject obj = new JSONObject();
-//                try {
-//                    obj.put("id", id);
-//                    obj.put("TODOId", "");
-//                    s.post(key, obj);
-//                } catch (JSONException ex) {
-//                    System.out.println("file:ConnectWithController_MenuBar 108 cannot append new collaborator");
-//                }
-//
-//            }
-//        }
-       
-        if(isFriend){
-             /*Aml Start*/
-             /*Aml End*/
-        
+        if (isList) {
+
+            String[] key = {"updateRequestList"};
+            JSONObject objNot = new JSONObject();
+            try {
+                //update notification table with this id
+                objNot.put("notId", request.getId());
+                objNot.put("status", request.getStatus());
+                status = s.put(key, objNot);
+                System.out.println("list status "+status);
+                //add new collaborator
+                JSONObject objColl = new JSONObject();
+                objColl.put("userID", request.getToUserId());
+                objColl.put("todoId", request.getTodoId());
+                s.post(key, objColl);
+            } catch (JSONException ex) {
+                System.out.println("file:ConnectWithController_MenuBar 108 cannot append new collaborator");
+            }
         }
 
     }
