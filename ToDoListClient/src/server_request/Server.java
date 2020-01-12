@@ -14,7 +14,7 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.control.Alert;
+import javafx.stage.Stage;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,8 +31,17 @@ public class Server implements Request {
     Socket socket;
     PrintStream ps;
     BufferedReader in;
+    private Stage stage;
     private static Listener listener;
-
+    public Server(Stage stage) throws IOException{
+        this.stage = stage;
+        socket = Connection.getSocketConnection();
+        ps = new PrintStream(socket.getOutputStream());
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        if (listener == null) {
+            startnewThread();
+        }
+    }
     public Server() throws IOException {
         socket = Connection.getSocketConnection();
         ps = new PrintStream(socket.getOutputStream());
