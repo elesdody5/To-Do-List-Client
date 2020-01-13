@@ -8,13 +8,9 @@ package home.menu_bar;
 import Entity.User;
 import authontication.LoginController;
 import home.Notifications;
-import java.io.BufferedReader;
-import java.io.EOFException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.net.Socket;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -32,15 +28,16 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import todolistclient.ToDoListClient;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Menu;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import org.json.JSONException;
+import org.json.JSONObject;
+import server_request.Server;
 
 /**
  * FXML Controller class
@@ -99,8 +96,10 @@ public class MenuBarController implements Initializable {
     private Button searchButton;
     @FXML
     private Label resultLabel;
+    @FXML
+    private TextField friendRequestTextField;
     List<User> friendsOfUser;
-    ConnectWithLoginView_MenuBar getInstance  ;
+    ConnectWithLoginView_MenuBar getInstanceFromLogin;
     /* end Aml*/
 
     boolean serverout;
@@ -266,10 +265,10 @@ public class MenuBarController implements Initializable {
 //
 //                    textArea.appendText("\n" + replyMessage);
 
-      List<User> friendsOfUser2 = getInstance.sendFriendListToView();
-      if (friendsOfUser2.size() != friendsOfUser.size()){
-          friendsOfUser = friendsOfUser2;
-      }
+                List<User> friendsOfUser2 = getInstanceFromLogin.sendFriendListToView();
+                if (friendsOfUser2.size() != friendsOfUser.size()) {
+                    friendsOfUser = friendsOfUser2;
+                }
             }
         }
     }
@@ -280,41 +279,77 @@ public class MenuBarController implements Initializable {
 
         // get data of the instance created by login 
         //get name
-         getInstance = ConnectWithLoginView_MenuBar.getInastance();
-        String name = getInstance.sendDataToView();
+        getInstanceFromLogin = ConnectWithLoginView_MenuBar.getInastance();
+        String name = getInstanceFromLogin.sendDataToView();
         userName.setText(name);
         userImage.setText(("" + name.charAt(0)).toUpperCase());
         userNameIns.setText(name);
         userImageIns.setText(("" + name.charAt(0)).toUpperCase());
         //get lists notifications
         ObservableList<Notifications> notLists = FXCollections.observableArrayList();
-        List<Notifications> lists = getInstance.lists;
+        //List <Notifications> lists = getInstance.lists;
+        List<Notifications> lists = new ArrayList<>();
+        Notifications n = new Notifications();
+        n.setFromUserId("J");
+        n.setType("1");
+        n.setData("project c");
+        n.setStatus(null);
+        lists.add(n);
+        Notifications n2 = new Notifications();
+        n2.setFromUserId("k");
+        n2.setType("1");
+        n2.setData("project c");
+        n2.setStatus("1");
+        lists.add(n2);
         for (Notifications li : lists) {
             notLists.add(li);
         }
         listsNotification.setItems(notLists);
         listsNotification.setCellFactory((list) -> new ListRequestCell());
-        ObservableList<Notifications> notTasks = FXCollections.observableArrayList();
-        List<Notifications> tasks = getInstance.tasks;
-        for (Notifications li : tasks) {
-            notTasks.add(li);
-        }
-        tasksNotification.setItems(notTasks);
-        tasksNotification.setCellFactory((task) -> new TaskRequestCell());
+//        ObservableList<Notifications> notTasks = FXCollections.observableArrayList();
+//        List <Notifications> tasks = getInstance.tasks; 
+//        for(Notifications li : tasks){
+//           notTasks.add(li);
+//        }
+//        tasksNotification.setItems(notTasks);
+//        tasksNotification.setCellFactory((task) -> new TaskRequestCell());
+
         /*Aml Start*/
-
-        ObservableList<User> items = FXCollections.observableArrayList();
-        friendsOfUser = getInstance.sendFriendListToView();
-        for (int i = 0; i < friendsOfUser.size(); i++) {
-            items.add(friendsOfUser.get(i));
-        }
-
-        friendsLV.setItems(items);
-        friendsLV.setCellFactory((listView) -> new FriendListViewCell());
-        FriendsThread friendsThread = new FriendsThread();
-        friendsThread.start();
+//        ObservableList<User> items = FXCollections.observableArrayList();
+//        friendsOfUser = getInstanceFromLogin.sendFriendListToView();
+//        for (int i = 0; i < friendsOfUser.size(); i++) {
+//            items.add(friendsOfUser.get(i));
+//        }
+//
+//        friendsLV.setItems(items);
+//        friendsLV.setCellFactory((listView) -> new FriendListViewCell());
+//        FriendsThread friendsThread = new FriendsThread();
+//        friendsThread.start();
         /*Aml End */
 
     }
 
+    @FXML
+    public void sendFriendRequest(ActionEvent event) {
+        try {
+            String friendRequestName = friendRequestTextField.getText().trim();
+            System.out.println("friendRequestName :"+friendRequestName);
+            Server server = new Server();
+            String[] requestType = new String[1];
+            requestType[0] = "sendFriendRequest";
+            String id = getInstanceFromLogin.sendIdToView();
+            String name = getInstanceFromLogin.sendDataToView();
+            JSONObject friendJsonObject = new JSONObject();
+            friendJsonObject.put("currentUserID", id);
+            friendJsonObject.put("currentUserName", name);
+            friendJsonObject.put("friendName", friendRequestName);
+           JSONObject resultJSONObject = server.post(requestType, friendJsonObject);
+           String resultString = resultJSONObject.getString("result");
+           resultLabel.setText(resultString);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (JSONException ex) {
+            Logger.getLogger(MenuBarController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }
