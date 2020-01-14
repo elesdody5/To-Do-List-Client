@@ -38,7 +38,7 @@ import server_request.Server;
  *
  * @author Elesdody
  */
-public class FXMLListController implements Initializable {
+public class FXMLListController implements Initializable  {
 
     /**
      * Initializes the controller class.
@@ -46,27 +46,37 @@ public class FXMLListController implements Initializable {
     @FXML
     ListView<ToDoList> myListView;
     @FXML
-    ListView<String> sharedListView;
+    ListView<ToDoList> saredListView;
     @FXML
     TextField searchField;
     @FXML
     VBox vBox;
-    ArrayList<String> sharedList;
     private ToDoList currentToDo;
     private ArrayList<Entity.User> friendsList;
-
+    public interface ShareToDo
+    {
+        void addShareTodo(ToDoList todo);
+    }
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-        friendsList =new ArrayList<>();
+        friendsList = new ArrayList<>();
         myListView.setCellFactory((param)
                 -> {
-            return new ListAdapter(param,friendsList);
+            return new ListAdapter(param, friendsList);
         });
-
+        saredListView.setCellFactory((param)
+                -> {
+            return new ListAdapter(param, friendsList);
+        });
+        myListView.getSelectionModel().selectedItemProperty().addListener((observable) -> {
+          upadteCurrentTdo(myListView.getSelectionModel().getSelectedItem());
+        });
+       
     }
 
     @FXML
+
     private void AddToDo(MouseEvent e) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/home/list/ListForm.fxml"));
@@ -128,8 +138,11 @@ public class FXMLListController implements Initializable {
     public ListView<ToDoList> getMyListView() {
         return myListView;
     }
-
-    private void setCurrentToDo(ToDoList currentToDo) {
+    public ListView<ToDoList> getSharedListView()
+    {
+        return saredListView;
+    }
+    public void setCurrentToDo(ToDoList currentToDo) {
         this.currentToDo = currentToDo;
     }
 
@@ -139,8 +152,19 @@ public class FXMLListController implements Initializable {
         alert.setContentText(content);
         alert.showAndWait();
     }
-public ArrayList<User> getFriendsList()
-{
-    return friendsList;
-}
+
+    public ArrayList<User> getFriendsList() {
+        return friendsList;
+    }
+
+    private void upadteCurrentTdo(ToDoList selectedItem) {
+        currentToDo.setId(selectedItem.getId());
+        currentToDo.setOwnerId(selectedItem.getOwnerId());
+        currentToDo.setTitle(selectedItem.getTitle());
+        currentToDo.setColor(selectedItem.getColor());
+        currentToDo.setDescription(selectedItem.getDescription());
+        currentToDo.setStartTime(selectedItem.getStartTime());
+        currentToDo.setTasksInTODOList(selectedItem.getTasksInTODOList());
+        currentToDo.notifyList();
+        }
 }

@@ -5,13 +5,17 @@
  */
 package home.to_do_list;
 
+import Entity.User;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Observable;
+
 
 /**
  *
  * @author Elesdody
  */
-public class ToDoList {
+public class ToDoList extends Observable {
     private int id ;
     private String title;
     private int ownerId;
@@ -19,30 +23,41 @@ public class ToDoList {
     private String startTime;
     private String color;
     private String description;
-    private ArrayList<TaskInfo> tasksInTODOList;
+    private ArrayList<TaskInfo> taskes;
+    private ArrayList<User> teamMateInToDoList;
+
+    public ArrayList<User> getTeamMateInToDoList() {
+        return teamMateInToDoList;
+    }
+
+    public void setTeamMateInToDoList(ArrayList<User> teamMateInToDoList) {
+        this.teamMateInToDoList = teamMateInToDoList;
+    }
 
     public void setTasksInTODOList(ArrayList<TaskInfo> tasksInTODOList) {
-        this.tasksInTODOList = tasksInTODOList;
+        this.taskes = tasksInTODOList;
     }
 
     public ArrayList<TaskInfo> getTasksInTODOList() {
-        return tasksInTODOList;
+        return taskes;
     }
       public void addTaskToDoList(TaskInfo task)
     {
-        tasksInTODOList.add(task);
+        taskes.add(task);
     }
 
     public ToDoList() {
-        tasksInTODOList = new ArrayList<>();
+        taskes = new ArrayList<>();
+        
     }
 
-    public ToDoList(String title, int ownerId,String startTime, String deadLine,  String color) {
+    public ToDoList(String title, int ownerId,String startTime, String deadLine,  String color,ArrayList<TaskInfo> tasks) {
         this.title = title;
         this.ownerId = ownerId;
         this.deadLine = deadLine;
         this.startTime = startTime;
         this.color = color;
+        this.taskes = tasks;
     }
 
     public String getColor() {
@@ -105,6 +120,10 @@ public class ToDoList {
     public String getStartTime() {
         return startTime;
     }
-    
+    public void notifyList()
+    {
+        setChanged();
+        notifyObservers();
+    }
     
 }

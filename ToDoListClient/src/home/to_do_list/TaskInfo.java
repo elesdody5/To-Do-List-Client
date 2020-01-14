@@ -5,10 +5,6 @@
  */
 package home.to_do_list;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -18,7 +14,7 @@ import org.json.JSONObject;
 
 /**
  *
- * @author Elesdody
+ * @author sara
  */
 public class TaskInfo {
 
@@ -26,11 +22,11 @@ public class TaskInfo {
     private int listId;
     private String title;
     private String description;
-    private Date deadLine;
-    private Date startTime;
-    private List<String> comment;
+    private String deadLine;
+    private String startTime;
+    private String comment;
 
-    public TaskInfo(int id, int listId, String title, String description, Date deadLine, Date startTime, List<String> comment) {
+    public TaskInfo(int id, int listId, String title, String description, String deadLine, String startTime,String comment) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -40,8 +36,13 @@ public class TaskInfo {
 
     }
 
-    public TaskInfo(String title) {
+    public TaskInfo(String title,int listId) {
+        this.listId=listId;
         this.title = title;
+    }
+
+    TaskInfo() {
+
     }
 
     public int getId() {
@@ -60,19 +61,19 @@ public class TaskInfo {
         return description;
     }
 
-    public Date getDeadLine() {
+    public String getDeadLine() {
         return deadLine;
     }
 
-    public Date getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public List<String> getComment() {
+    public String getComment() {
         return comment;
     }
 
-    public void setComment(List<String> comment) {
+    public void setComment(String comment) {
         this.comment = comment;
     }
 
@@ -92,11 +93,11 @@ public class TaskInfo {
         this.description = description;
     }
 
-    public void setDeadLine(Date deadLine) {
+    public void setDeadLine(String deadLine) {
         this.deadLine = deadLine;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
@@ -104,6 +105,15 @@ public class TaskInfo {
         JSONObject toDoTaskJsonObject = new JSONObject();
         try {
             toDoTaskJsonObject.put("title", this.getTitle());
+            toDoTaskJsonObject.put("listId", this.listId);
+            toDoTaskJsonObject.put("description", description);
+            toDoTaskJsonObject.put("deadLine", deadLine);
+            toDoTaskJsonObject.put("startTime", startTime);
+            toDoTaskJsonObject.put("comment", comment);
+            toDoTaskJsonObject.put("id", id);
+
+
+            
         } catch (JSONException ex) {
             Logger.getLogger(TaskInfo.class.getName()).log(Level.SEVERE, null, ex);
         }

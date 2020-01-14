@@ -105,6 +105,9 @@ public class MenuBarController implements Initializable {
     boolean serverout;
     List<String> lists;
     List<String> tasks;
+    
+    
+    
 
     class ProcessService extends Service<Void> {
 
@@ -123,51 +126,15 @@ public class MenuBarController implements Initializable {
     }
     Service service = new ProcessService();
 
-    @FXML
-    private void handleChangeNameAction(ActionEvent event) {
-        ConnectWithController_MenuBar.getInastance().setNewName(newName.getText());
-        if (ConnectWithController_MenuBar.getInastance().sendDataToView().equals("true")) {
-            userName.setText(newName.getText());
-            userImage.setText(("" + newName.getText().charAt(0)).toUpperCase());
-            userNameIns.setText(newName.getText());
-            userImageIns.setText(("" + newName.getText().charAt(0)).toUpperCase());
-            newName.setText("");
-        } else if (ConnectWithController_MenuBar.getInastance().sendDataToView().equals("nameFound")) {
-            if (!service.isRunning()) {
-                service.start();
-            }
-            newName.setText("");
-            status.setVisible(true);
-            status.setText("This UserName is already in use , please Choose another one! ");
-            service.setOnSucceeded(e -> {
-                status.setVisible(false);
-                //reset service
-                service.reset();
-            });
-        } else {
-            if (!service.isRunning()) {
-                service.start();
-            }
-            newName.setText("");
-            status.setVisible(true);
-            status.setText("your UserName cannot be changed");
-            service.setOnSucceeded(e -> {
-                status.setVisible(false);
-                //reset service
-                service.reset();
-            });
-        }
-
-    }
-
+  
     @FXML
     private void handleChangePasswordAction(ActionEvent event) {
         if (newPassword.getText().equals(verfiyNewPassword.getText())) {
             ConnectWithController_MenuBar.getInastance().setNewPassword(newPassword.getText());
             if (ConnectWithController_MenuBar.getInastance().sendDataToView().equals("true")) {
-                if (!service.isRunning()) {
-                    service.start();
-                }
+                 if (!service.isRunning()) {
+                service.start();
+                 }
                 status.setVisible(true);
                 status.setText("your password is changed");
                 newPassword.setText("");
@@ -178,30 +145,30 @@ public class MenuBarController implements Initializable {
                     service.reset();
                 });
             } else {
-                if (!service.isRunning()) {
-                    service.start();
-                }
+                 if (!service.isRunning()) {
+                service.start();
+            }
                 newPassword.setText("");
                 verfiyNewPassword.setText("");
                 status.setVisible(true);
                 status.setText("your Password cannot be changed");
-                service.setOnSucceeded(e -> {
+                      service.setOnSucceeded(e -> {
                     status.setVisible(false);
                     //reset service
                     service.reset();
                 });
             }
         } else {
-            if (!service.isRunning()) {
+             if (!service.isRunning()) {
                 service.start();
             }
             status.setVisible(true);
             status.setText("your Password verfication is not identical");
-            service.setOnSucceeded(e -> {
-                status.setVisible(false);
-                //reset service
-                service.reset();
-            });
+                  service.setOnSucceeded(e -> {
+                    status.setVisible(false);
+                    //reset service
+                    service.reset();
+                });
         }
     }
 
@@ -228,52 +195,9 @@ public class MenuBarController implements Initializable {
             Logger.getLogger(MenuBarController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-    }
-//        class RealTimeThread extends Thread {
-//        public void run() {
-//            while (serverout == false) {
-//                try {
-//                    String replyMsg = dis.readUTF();
-//                    ta.appendText(replyMsg);
-//                } catch (EOFException e) {
-//                    try {
-//                        mySocket.close();
-//                        dis.close();
-//                        ps.close();
-//                        serverout=true;
-//                        tf.setEditable(false);  
-//                    } catch (IOException ex) {
-//                        Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
-//                    } 
-//            }catch (IOException ex) {
-//                    ex.printStackTrace();
-//                }
-//            }
-//        }
-//    }   
+    } 
 
-    /*start Aml Functions */
-    class FriendsThread extends Thread {
-
-        @Override
-        public void run() {
-            boolean connection = true;
-            while (true && connection) {
-//                    //  printStream.println(inputText.getText());
-//                    String replyMessage = dataInputStream.readLine();
-//                    //textArea.setText(replyMessage);
-//
-//                    textArea.appendText("\n" + replyMessage);
-
-                List<User> friendsOfUser2 = getInstanceFromLogin.sendFriendListToView();
-                if (friendsOfUser2.size() != friendsOfUser.size()) {
-                    friendsOfUser = friendsOfUser2;
-                }
-            }
-        }
-    }
-
-    /*end Aml*/
+ 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -329,6 +253,10 @@ public class MenuBarController implements Initializable {
 
     }
 
+       /*start Aml Functions */
+  
+
+   
     @FXML
     public void sendFriendRequest(ActionEvent event) {
         try {
@@ -352,4 +280,79 @@ public class MenuBarController implements Initializable {
             Logger.getLogger(MenuBarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+     /*end Aml*/
+
+
+
+  
+
+  
+
+
+    @FXML
+    private void handleChangeNameAction(ActionEvent event) {
+        ConnectWithController_MenuBar.getInastance().setNewName(newName.getText());
+        if (ConnectWithController_MenuBar.getInastance().sendDataToView().equals("true")) {
+            userName.setText(newName.getText());
+            userImage.setText(("" + newName.getText().charAt(0)).toUpperCase());
+            userNameIns.setText(newName.getText());
+            userImageIns.setText(("" + newName.getText().charAt(0)).toUpperCase());
+            newName.setText("");
+        } else if (ConnectWithController_MenuBar.getInastance().sendDataToView().equals("nameFound")) {
+            if (!service.isRunning()) {
+                service.start();
+            }
+            newName.setText("");
+            status.setVisible(true);
+            status.setText("This UserName is already in use , please Choose another one! ");
+            service.setOnSucceeded(e -> {
+                status.setVisible(false);
+                //reset service
+                service.reset();
+            });
+        } else {
+            if (!service.isRunning()) {
+                service.start();
+            }
+            newName.setText("");
+            status.setVisible(true);
+            status.setText("your UserName cannot be changed");
+            service.setOnSucceeded(e -> {
+                status.setVisible(false);
+                //reset service
+                service.reset();
+            });
+        }
+
+    }
+
+//        class RealTimeThread extends Thread {
+//        public void run() {
+//            while (serverout == false) {
+//                try {
+//                    String replyMsg = dis.readUTF();
+//                    ta.appendText(replyMsg);
+//                } catch (EOFException e) {
+//                    try {
+//                        mySocket.close();
+//                        dis.close();
+//                        ps.close();
+//                        serverout=true;
+//                        tf.setEditable(false);  
+//                    } catch (IOException ex) {
+//                        Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+//                    } 
+//            }catch (IOException ex) {
+//                    ex.printStackTrace();
+//                }
+//            }
+//        }
+//    }   
+    /*start Aml Functions */
+    
+
+
+
 }
+

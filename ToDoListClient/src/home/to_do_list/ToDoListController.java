@@ -5,78 +5,132 @@
  */
 package home.to_do_list;
 
-
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
-import com.jfoenix.controls.JFXTextArea;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.text.Text;
+import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.json.JSONObject;
-import server_connection.Connection;
-import server_request.Server;
 
 /**
  * FXML Controller class
  *
  * @author sara
  */
-public class ToDoListController implements Initializable {
+public class ToDoListController implements Initializable, Observer {
 
     /**
      * Initializes the controller class.
      */
+    TaskInformationViewController taskview;
     @FXML
     private JFXButton addTask;
     @FXML
-    private JFXTextArea titleOfTask;
-    @FXML
     private JFXListView listOfTasks;
-    
     JSONObject toDoTaskJsonObject;
-    private ToDoList todolist;
+    ToDoList selectedTodo;
+    ToDoList selectedTodo2;
+    @FXML
+    private GridPane tasksListView;
+    @FXML
+    private AnchorPane initialStatePane;
+    @FXML
+    private Label titleOfTodo;
+    static ToDoList todo;
 
     @FXML
     private void addTaskToToDoList() throws IOException {
-        GridPane gridPane = new GridPane();
-        //  gridPane.setStyle("-fx-padding: 5;-fx-border-color:#babac9;-fx-border-radius: 5;-fx-background-radius: 20;-fx-background-color: white;");
-        Text title = new Text(titleOfTask.getText());
-        gridPane.add(title, 0, 0);
-        if (title.getText() != "") {
-            listOfTasks.getItems().add(gridPane);
-            TaskInfo taskInfo = new TaskInfo(title.getText().toString());
-            todolist.addTaskToDoList(taskInfo);
-            toDoTaskJsonObject = taskInfo.writeTaskInfoObjectAsJson();
-            sendTaskInfoToServer();
-            titleOfTask.setText("");
-            //print list of tasks 
-            for (int i = 0; i < todolist.getTasksInTODOList().size(); i++) {
-                System.out.println(todolist.getTasksInTODOList().get(i).getTitle());
+
+        Stage appStage;
+        Parent root;
+        appStage = new Stage();
+        root = FXMLLoader.load(getClass().getResource("taskInformationView.fxml"));
+        Scene scene = new Scene(root);
+        appStage.setScene(scene);
+        appStage.initOwner(listOfTasks.getScene().getWindow());
+        appStage.initModality(Modality.WINDOW_MODAL);
+        appStage.show();
+        appStage.setOnHidden((WindowEvent event) -> {
+            if (TaskInformationViewController.getTaskInfo() != null) {
+
+                TaskInfo addefTask = TaskInformationViewController.getTaskInfo();
+                 listOfTasks.getItems().add(addefTask);
             }
-        }
+
+        });
+        
+
     }
 
-    private void sendTaskInfoToServer() throws IOException {
-        String[] TypeOfRequest = new String[1];
-        TypeOfRequest[0] = "Task";
-        Server server = new Server();
-        JSONObject resultJsonObject = server.post(TypeOfRequest, toDoTaskJsonObject);
+   
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+      //  Object ol = null;
+      // update(selectedTodo2, ol);
+        listOfTasks.setCellFactory((param)
+                -> {
+            return new ListAdapterOfTasksList((ListView<TaskInfo>) param);
+        });
+      taskview=new TaskInformationViewController();
+     
+    }
 
+    
+    static ToDoList firstToDo;
+
+
+    public void setTodoList(ToDoList toDoList) {
+          selectedTodo=toDoList;
+          todo=selectedTodo;
+          titleOfTodo.setText(selectedTodo.getTitle());
+          titleOfTodo.setTextFill(Color.web(selectedTodo.getColor()));
+          System.out.println(toDoList.getTasksInTODOList().size());
+          tasksListView.setVisible(true);
+          List<TaskInfo> tasks = selectedTodo.getTasksInTODOList();
+
+            for (int i = 0; i < tasks.size(); i++) {
+                  listOfTasks.getItems().add(tasks.get(i));
+              
+    }
+}
+    public static ToDoList getTodoList() {
+        return todo;
     }
 
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        //  tasks=new ArrayList<TaskInfo>();
-        todolist = new ToDoList();
+    public void update(Observable o, Object o1) {
+
+        selectedTodo = (ToDoList) o;
+        todo=selectedTodo;
+        if (selectedTodo == null) {
+            tasksListView.setVisible(false);
+            initialStatePane.setVisible(true);
+        } else {
+            tasksListView.setVisible(true);
+            initialStatePane.setVisible(false);
+            List<TaskInfo> tasks = selectedTodo.getTasksInTODOList();
+            for (int i = 0; i < tasks.size(); i++) {
+                 listOfTasks.getItems().add(tasks.get(i));
+               
+            }
+        }
+
     }
-public void setTodoList(ToDoList toDoList)
-{
-    this.todolist = toDoList;
-    System.out.println(toDoList.getTitle());
-}
+    
 }

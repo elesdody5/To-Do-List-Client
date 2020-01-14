@@ -5,8 +5,7 @@
  */
 package Entity;
 
-import javax.json.Json;
-import javax.json.JsonObject;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
