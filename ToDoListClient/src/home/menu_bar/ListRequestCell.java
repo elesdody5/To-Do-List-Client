@@ -35,7 +35,7 @@ import javafx.scene.text.TextAlignment;
 
 /**
  *
- * @author Aml Sakr
+ * @author ghadeerelmahdy
  */
 public class ListRequestCell extends ListCell<Notifications> {
 
@@ -63,7 +63,7 @@ public class ListRequestCell extends ListCell<Notifications> {
             public void handle(ActionEvent event) {
                 not.setStatus(1);
                 ConnectWithController_MenuBar instance = ConnectWithController_MenuBar.getInastance();
-                instance.sendRequestList(not);
+                instance.sendRequestResponse(not);
                 // make sure that Notification table is updated
                 if (instance.sendDataToView() == "true") {
                     updateItem(not, true);
@@ -75,7 +75,7 @@ public class ListRequestCell extends ListCell<Notifications> {
             public void handle(ActionEvent event) {
                 not.setStatus(0);
                 ConnectWithController_MenuBar instance = ConnectWithController_MenuBar.getInastance();
-                instance.sendRequestList(not);
+                instance.sendRequestResponse(not);
                 // make sure that Notification table is updated
                 if (instance.sendDataToView() == "true") {
                     updateItem(not, true);
@@ -99,18 +99,18 @@ public class ListRequestCell extends ListCell<Notifications> {
         reject.setVisible(false);
         if (not != null) {
             System.out.println(not.getStatus());
-            if (not.getStatus() == NotificationKeys.ACCEPET_COLLABORATOR_REQUEST) {
+            if (not.getStatus() == NotificationKeys.ACCEPET_NOTIFICATION_REQUEST) {
                 setBackground(new Background(new BackgroundFill(Paint.valueOf("white"), new CornerRadii(5), Insets.EMPTY)));
                 accept.setVisible(false);
                 reject.setVisible(false);
                 txt.setText("you accepted a Collaboration with " + not.getFromUserName() + " in List : " + not.getData());
 
-            } else if (not.getStatus() == NotificationKeys.REJECT_COLLABORATOR_REQUEST) {
+            } else if (not.getStatus() == NotificationKeys.REJECT_NOTIFICATION_REQUEST) {
                 setBackground(new Background(new BackgroundFill(Paint.valueOf("white"), new CornerRadii(5), Insets.EMPTY)));
                 accept.setVisible(false);
                 reject.setVisible(false);
                 txt.setText("you rejected a Collaboration with " + not.getFromUserName() + " in List : " + not.getData());
-            } else if (not.getStatus() == NotificationKeys.NoResponse_COLLABORATOR_REQUEST){
+            } else if (not.getStatus() == NotificationKeys.NORESPONSE_NOTIFICATION_REQUEST){
                 setBackground(new Background(new BackgroundFill(Paint.valueOf("C2B5DE"), new CornerRadii(5), Insets.EMPTY)));
                 txt.setText(not.getFromUserName() + " sends you a request to Collaborate in List : " + not.getData());
                 accept.setText("Accept");

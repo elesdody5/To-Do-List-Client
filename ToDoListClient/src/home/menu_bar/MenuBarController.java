@@ -279,14 +279,13 @@ public class MenuBarController implements Initializable {
         tasksNotification.setItems(notTasks);
         tasksNotification.setCellFactory((task) -> new TaskRequestCell());
         //get friend requests notifications
-//        notFriendRequests = FXCollections.observableArrayList();
-//        List<Notifications> friendRequests = getInstance.sendFriendRequestToView();
-//        for (Notifications li : friendRequests) {
-//            notFriendRequests.add(li);
-//        }
-//        friendRequestsNotification.setItems(notFriendRequests);
-        //todo friend request cell
-        //friendRequestsNotification.setCellFactory((friendRequest) -> new TaskRequestCell());
+        notFriendRequests = FXCollections.observableArrayList();
+        List<Notifications> friendRequests = getInstance.sendFriendRequestToView();
+        for (Notifications li : friendRequests) {
+            notFriendRequests.add(li);
+        }
+        friendRequestsNotification.setItems(notFriendRequests);
+        friendRequestsNotification.setCellFactory((friendRequest) -> new friendRequestCell());
         /*Aml Start*/
         //get friend list 
         ObservableList<User> items = FXCollections.observableArrayList();
@@ -303,7 +302,13 @@ public class MenuBarController implements Initializable {
     @FXML
     public void sendFriendRequest(ActionEvent event) {
             String friendRequestName = friendRequestTextField.getText().trim();
-             String result = ConnectWithController_MenuBar.getInastance().sendFriendRequest(friendRequestName);
+             ConnectWithLoginView_MenuBar getInstance = ConnectWithLoginView_MenuBar.getInastance();
+             String name = getInstance.sendDataToView();
+             String result = "";
+            if(name.equals(friendRequestName))
+                result = "You can not send request to yourself";
+            else
+                result = ConnectWithController_MenuBar.getInastance().sendFriendRequest(friendRequestName);
             resultLabel.setText(result);    
     }   /*end Aml*/
 }
