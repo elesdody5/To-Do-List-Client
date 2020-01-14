@@ -6,13 +6,9 @@
 package home.menu_bar;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import server_request.Server;
 import org.json.JSONException;
 import org.json.JSONObject;
-import server_connection.Connection;
-import home.NotificationKeys;
 
 /**
  *
