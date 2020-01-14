@@ -6,6 +6,7 @@
 package home.menu_bar;
 
 import Entity.User;
+import home.NotificationKeys;
 import home.Notifications;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -49,7 +50,7 @@ public class TaskRequestCell extends ListCell<Notifications> {
         txt.setAlignment(Pos.CENTER);
         txt.setTextAlignment(TextAlignment.JUSTIFY);
         if (not != null) {
-            if (not.getStatus() == null) {
+            if (not.getStatus() == NotificationKeys.NoResponse_COLLABORATOR_REQUEST) {
                 setBackground(new Background(new BackgroundFill(Paint.valueOf("C2B5DE"), new CornerRadii(5), Insets.EMPTY)));
                 txt.setText(not.getFromUserId() + " Assigns you to Task : " + not.getData());
                 accept.setText("Accept");
@@ -60,10 +61,10 @@ public class TaskRequestCell extends ListCell<Notifications> {
                 setBackground(new Background(new BackgroundFill(Paint.valueOf("white"), new CornerRadii(5), Insets.EMPTY)));
                 accept.setVisible(false);
                 reject.setVisible(false);
-                if (not.getStatus() == "1") {
+                if (not.getStatus() == NotificationKeys.ACCEPET_COLLABORATOR_REQUEST) {
                     txt.setText("you accepted to work with " + not.getFromUserId() + " in Task : " + not.getData());
                 }
-                if (not.getStatus() == "0") {
+                if (not.getStatus() == NotificationKeys.REJECT_COLLABORATOR_REQUEST) {
                     txt.setText("you rejected to work with " + not.getFromUserId() + " in Task : " + not.getData());
                 }
             }

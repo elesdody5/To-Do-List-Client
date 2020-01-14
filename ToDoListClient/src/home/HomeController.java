@@ -73,7 +73,7 @@ public class HomeController implements Initializable {
             }.getType();
             ArrayList<Notifications> notifications = gson.fromJson(json.getJSONArray("notification").toString(), notificationListType);
             // start home screen
-            System.out.println(json);
+            //System.out.println(json);
             start(user, friendsList, todoList, sharedList, notifications);
         } catch (IOException ex) {
             Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
@@ -91,10 +91,10 @@ public class HomeController implements Initializable {
             ConnectWithLoginView_MenuBar connect = ConnectWithLoginView_MenuBar.getInastance();
             connect.setUserName(user.getUserName());
             connect.setId(user.getId() + "");
-            //System.out.println(notifications.get(0).getfromUserName());
+            connect.loadAllLists(friendsList, notifications);
             FXMLLoader menuloader = new FXMLLoader(getClass().getResource("/home/menu_bar/MenuBar.fxml"));
             Parent menuBar = menuloader.load();
-
+            
             // create left list 
             FXMLLoader listloader = View.getListLoader();
             VBox list = listloader.load();
