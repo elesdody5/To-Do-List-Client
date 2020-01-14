@@ -51,12 +51,13 @@ public class ToDoList extends Observable {
         
     }
 
-    public ToDoList(String title, int ownerId,String startTime, String deadLine,  String color) {
+    public ToDoList(String title, int ownerId,String startTime, String deadLine,  String color,ArrayList<TaskInfo> tasks) {
         this.title = title;
         this.ownerId = ownerId;
         this.deadLine = deadLine;
         this.startTime = startTime;
         this.color = color;
+        this.taskes = tasks;
     }
 
     public String getColor() {
@@ -119,6 +120,10 @@ public class ToDoList extends Observable {
     public String getStartTime() {
         return startTime;
     }
-    
+    public void notifyList()
+    {
+        setChanged();
+        notifyObservers();
+    }
     
 }

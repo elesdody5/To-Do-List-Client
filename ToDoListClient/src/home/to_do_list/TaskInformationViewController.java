@@ -79,7 +79,7 @@ public class TaskInformationViewController implements Initializable, Observer {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-    /*    // TODO
+        // TODO
         memberList.setVisible(false);
         User user = new User();
         ToDoList todolist = new ToDoList();
@@ -96,7 +96,7 @@ public class TaskInformationViewController implements Initializable, Observer {
             }}
         } catch (JSONException ex) {
             Logger.getLogger(TaskInformationViewController.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+        }
 
     }
 
@@ -115,7 +115,7 @@ public class TaskInformationViewController implements Initializable, Observer {
 
     }
 
-   /* private ArrayList<User> getTeamMemberInToDo() throws JSONException  {
+    private ArrayList<User> getTeamMemberInToDo() throws JSONException  {
         String[] typrOfRequest = new String[1];
         typrOfRequest[0] = "getTeamMemberInToDo";
         Server server = null;
@@ -143,7 +143,7 @@ public class TaskInformationViewController implements Initializable, Observer {
         return teamMemberInfoList;
        
 
-    }*/
+    }
 
     @FXML
     private void saveTaskData(ActionEvent event) throws IOException {

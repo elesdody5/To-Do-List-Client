@@ -6,44 +6,28 @@
 package home.to_do_list;
 
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDialog;
-import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXListView;
-import com.jfoenix.controls.JFXTextArea;
-import home.list.FXMLListController;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-import server_connection.Connection;
-import server_request.Server;
 
 /**
  * FXML Controller class
@@ -106,30 +90,19 @@ public class ToDoListController implements Initializable, Observer {
         });
       taskview=new TaskInformationViewController();
     }
+
+
     
-
-    public void setTodoList(ToDoList toDoList) {
-          selectedTodo=toDoList;
-          todo=selectedTodo;
-          titleOfTodo.setText(selectedTodo.getTitle());
-          titleOfTodo.setTextFill(Color.web(selectedTodo.getColor()));
-          System.out.println(toDoList.getTasksInTODOList().size());
-          tasksListView.setVisible(true);
-          List<TaskInfo> tasks = selectedTodo.getTasksInTODOList();
-
-            for (int i = 0; i < tasks.size(); i++) {
-                  listOfTasks.getItems().add(tasks.get(i));
-              
-    }
-}
     public static ToDoList getTodoList() {
         return todo;
     }
 
     @Override
     public void update(Observable o, Object o1) {
-
+        listOfTasks.getItems().clear();
         selectedTodo = (ToDoList) o;
+         titleOfTodo.setText(selectedTodo.getTitle());
+          titleOfTodo.setTextFill(Color.web(selectedTodo.getColor()));
         todo=selectedTodo;
         if (selectedTodo == null) {
             tasksListView.setVisible(false);
@@ -145,5 +118,5 @@ public class ToDoListController implements Initializable, Observer {
         }
 
     }
-
+    
 }
