@@ -30,13 +30,7 @@ public class ToDoList extends Observable {
         return teamMateInToDoList;
     }
 
-    public void setTeamMateInToDoList(ArrayList<User> teamMateInToDoList) {
-        this.teamMateInToDoList = teamMateInToDoList;
-    }
-
-    public void setTasksInTODOList(ArrayList<TaskInfo> tasksInTODOList) {
-        this.taskes = tasksInTODOList;
-    }
+   
 
     public ArrayList<TaskInfo> getTasksInTODOList() {
         return taskes;
@@ -120,10 +114,10 @@ public class ToDoList extends Observable {
     public String getStartTime() {
         return startTime;
     }
-    public void notifyList()
+    public void notifyList(boolean deleteAll)
     {
         setChanged();
-        notifyObservers();
+        notifyObservers(deleteAll);
     }
     
 }

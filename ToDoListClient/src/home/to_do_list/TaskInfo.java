@@ -7,6 +7,7 @@ package home.to_do_list;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Observable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONException;
@@ -16,7 +17,7 @@ import org.json.JSONObject;
  *
  * @author sara
  */
-public class TaskInfo {
+public class TaskInfo extends Observable{
 
     private int id;
     private int listId;
