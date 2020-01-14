@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -5,6 +6,7 @@
  */
 package home.menu_bar;
 
+import Entity.User;
 import authontication.LoginController;
 import home.Notifications;
 import java.net.URL;
@@ -80,22 +82,28 @@ public class MenuBarController implements Initializable {
     private ListView<Notifications> listsNotification;
     @FXML
     private ListView<Notifications> tasksNotification;
+    @FXML
+    private ListView<Notifications> friendRequestsNotification;
     /* start Aml Variables*/
     @FXML
     private Label label;
-
     @FXML
     private TabPane tabPane;
     @FXML
-    private ListView<Friend> friendsLV;
+    private ListView<User> friendsLV;
     @FXML
     private Button searchButton;
     @FXML
     private Label resultLabel;
+    @FXML
+    private TextField friendRequestTextField;
+    List<User> friendsOfUser;
     /* end Aml*/
 
     boolean serverout;
     ObservableList<Notifications> notLists;
+    ObservableList<Notifications> notTasks;
+    ObservableList<Notifications> notFriendRequests;
     List<Notifications> lists;
 
     class ProcessService extends Service<Void> {
@@ -228,7 +236,7 @@ public class MenuBarController implements Initializable {
         listsNotification.setCellFactory((li) -> new ListRequestCell());
     }
     void setTaskRequest(Notifications task) {
-        ObservableList<Notifications> oLists = FXCollections.observableArrayList() ;
+        ObservableList<Notifications> oLists = FXCollections.observableArrayList();
         oLists.add(task);
         listsNotification.setItems(oLists);
         listsNotification.setCellFactory((ta) -> new TaskRequestCell());
@@ -242,7 +250,6 @@ public class MenuBarController implements Initializable {
     }
 
     /*start Aml Functions */
-    
     /*end Aml*/
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -256,38 +263,47 @@ public class MenuBarController implements Initializable {
         userNameIns.setText(name);
         userImageIns.setText(("" + name.charAt(0)).toUpperCase());
         //get lists notifications
-         notLists = FXCollections.observableArrayList();
-        List <Notifications> lists = getInstance.sendListsToView();
+        notLists = FXCollections.observableArrayList();
+        List<Notifications> lists = getInstance.sendListsToView();
         for (Notifications li : lists) {
             notLists.add(li);
-        } 
+        }
         listsNotification.setItems(notLists);
         listsNotification.setCellFactory((list) -> new ListRequestCell());
-//        ObservableList<Notifications> notTasks = FXCollections.observableArrayList();
-//        List <Notifications> tasks = getInstance.tasks; 
-//        for(Notifications li : tasks){
-//           notTasks.add(li);
-//        }
-//        tasksNotification.setItems(notTasks);
-//        tasksNotification.setCellFactory((task) -> new TaskRequestCell());
+        //get tasks notifications
+        notTasks = FXCollections.observableArrayList();
+        List<Notifications> tasks = getInstance.sendTasksToView();
+        for (Notifications li : tasks) {
+            notTasks.add(li);
+        }
+        tasksNotification.setItems(notTasks);
+        tasksNotification.setCellFactory((task) -> new TaskRequestCell());
+        //get friend requests notifications
+        notFriendRequests = FXCollections.observableArrayList();
+        List<Notifications> friendRequests = getInstance.sendFriendRequestToView();
+        for (Notifications li : friendRequests) {
+            notFriendRequests.add(li);
+        }
+        friendRequestsNotification.setItems(notFriendRequests);
+        //todo friend request cell
+        //friendRequestsNotification.setCellFactory((friendRequest) -> new TaskRequestCell());
         /*Aml Start*/
-
-        ObservableList<Friend> items = FXCollections.observableArrayList();
-
-        items.addAll(
-                new Friend("John Doe", true),
-                new Friend("Jane Doe", false),
-                new Friend("Donte Dunigan", false),
-                new Friend("Gavin Genna", true),
-                new Friend("Darin Dear", true),
-                new Friend("Pura Petty", false),
-                new Friend("Herma Hines", false)
-        );
-
+        //get friend list 
+        ObservableList<User> items = FXCollections.observableArrayList();
+        List<User> friends = getInstance.sendFriendListToView();
+        for (User user : friends) {
+            items.add(user);
+        }
         friendsLV.setItems(items);
         friendsLV.setCellFactory((listView) -> new FriendListViewCell());
         /*Aml End */
 
     }
-
+    /*start Aml Functions */
+    @FXML
+    public void sendFriendRequest(ActionEvent event) {
+            String friendRequestName = friendRequestTextField.getText().trim();
+             String result = ConnectWithController_MenuBar.getInastance().sendFriendRequest(friendRequestName);
+            resultLabel.setText(result);    
+    }   /*end Aml*/
 }

@@ -7,8 +7,6 @@ package home.menu_bar;
 
 import Utility.AlertDialog;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import server_request.Server;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,13 +14,14 @@ import server_connection.Connection;
 import home.NotificationKeys;
 import home.Notifications;
 
+
 /**
  *
  * @author ghadeerelmahdy
  */
 public class ConnectWithController_MenuBar implements MenuBarModelInterface {
 
-    private boolean isName, isList, isTask, isFriend, isPassword,  isListReject;
+    private boolean isName, isList, isTask, isFriendRequest, isPassword,  isListReject;
     private int status = -1;
     private String name;
     private String password;
@@ -72,6 +71,29 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
         }
         
 
+    }
+    public String sendFriendRequest (String friendRequestName){
+             try {
+            ConnectWithLoginView_MenuBar getInstance = ConnectWithLoginView_MenuBar.getInastance();
+            System.out.println("friendRequestName :" + friendRequestName);
+            Server server = new Server();
+            String[] requestType = new String[1];
+            requestType[0] = "sendFriendRequest";
+            String id = getInstance.sendIdToView();
+            String name = getInstance.sendDataToView();
+            JSONObject friendJsonObject = new JSONObject();
+            friendJsonObject.put("currentUserID", id);
+            friendJsonObject.put("currentUserName", name);
+            friendJsonObject.put("friendName", friendRequestName);
+            JSONObject resultJSONObject = server.post(requestType, friendJsonObject);
+            String resultString = resultJSONObject.getString("result");
+            return resultString ;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (JSONException ex) {
+            System.out.println("file:ConnectWithController_MenuBar 94 cannot send firend request");
+        }
+    return "";
     }
 
     private void sendDataToController() {
@@ -143,6 +165,10 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
                 System.out.println("file:ConnectWithController_MenuBar 108 cannot append new collaborator");
             }
         }
+        if(isFriendRequest){
+        
+        
+        } 
 
     }
 
