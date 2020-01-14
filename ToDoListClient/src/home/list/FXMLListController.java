@@ -7,13 +7,19 @@ package home.list;
 
 import Entity.User;
 import authontication.LoginController;
+import home.View;
 import home.to_do_list.ToDoList;
+import home.to_do_list.ToDoListController;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.value.ChangeListener;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -46,27 +52,47 @@ public class FXMLListController implements Initializable {
     @FXML
     ListView<ToDoList> myListView;
     @FXML
-    ListView<String> sharedListView;
+    ListView<ToDoList> saredListView;
     @FXML
     TextField searchField;
     @FXML
     VBox vBox;
-    ArrayList<String> sharedList;
     private ToDoList currentToDo;
     private ArrayList<Entity.User> friendsList;
+    // refrence to todo view to send current todo
+    private ToDoListController toDoListController;
+    private ArrayList<ToDoList> myTodos;
+    private ArrayList<ToDoList> sharedTodos;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-        friendsList =new ArrayList<>();
+        friendsList = new ArrayList<>();
+        myTodos = new ArrayList<>();
+        sharedTodos = new ArrayList<>();
+        searchField.textProperty().addListener((observable, oldVal, newVal) -> {
+            search();
+        });
         myListView.setCellFactory((param)
                 -> {
-            return new ListAdapter(param,friendsList);
+            return new MyListAdapter(param, friendsList);
+        });
+        saredListView.setCellFactory((param)
+                -> {
+            return new ShareListAdapter(param, friendsList);
+        });
+        myListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            upadteCurrentTdo(myListView.getSelectionModel().getSelectedItem());
+
+        });
+        saredListView.getSelectionModel().selectedItemProperty().addListener((observable) -> {
+            upadteCurrentTdo(saredListView.getSelectionModel().getSelectedItem());
         });
 
     }
 
     @FXML
+
     private void AddToDo(MouseEvent e) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/home/list/ListForm.fxml"));
@@ -86,7 +112,7 @@ public class FXMLListController implements Initializable {
                         currentToDo = toDoForm.getToDo();
                         boolean result = addToServer(createJson(currentToDo));
                         if (result) {
-                            myListView.getItems().add(currentToDo);
+                            myListView.getItems().add(toDoForm.getToDo());
                         }
                     } catch (JSONException ex) {
                         Logger.getLogger(FXMLListController.class.getName()).log(Level.SEVERE, null, ex);
@@ -96,6 +122,34 @@ public class FXMLListController implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(FXMLListController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void search() {
+        String text = searchField.getText();
+
+        if (text != null && !text.isEmpty()) {
+
+            myListView.getItems().clear();
+            saredListView.getItems().clear();
+            for (ToDoList todo : myTodos) {
+                if (todo.getTitle().contains(text)) {
+                    myListView.getItems().add(todo);
+                }
+            }
+            for (ToDoList todo : sharedTodos) {
+                if (todo.getTitle().contains(text)) {
+                    saredListView.getItems().add(todo);
+                }
+            }
+
+        } else {
+            System.out.println(myTodos.size());
+            myListView.getItems().clear();
+            myListView.getItems().addAll(myTodos);
+            saredListView.getItems().clear();
+            saredListView.getItems().addAll(sharedTodos);
+        }
+
     }
 
     private boolean addToServer(JSONObject json) throws JSONException {
@@ -125,11 +179,18 @@ public class FXMLListController implements Initializable {
         return json;
     }
 
-    public ListView<ToDoList> getMyListView() {
-        return myListView;
+    public void setToDoList(ArrayList<ToDoList> todo) {
+        myTodos.addAll(todo);
+        myListView.getItems().addAll(todo);
+
     }
 
-    private void setCurrentToDo(ToDoList currentToDo) {
+    public void setShareList(ArrayList<ToDoList> todo) {
+        sharedTodos.addAll(todo);
+        saredListView.getItems().addAll(todo);
+    }
+
+    public void setCurrentToDo(ToDoList currentToDo) {
         this.currentToDo = currentToDo;
     }
 
@@ -139,8 +200,17 @@ public class FXMLListController implements Initializable {
         alert.setContentText(content);
         alert.showAndWait();
     }
-public ArrayList<User> getFriendsList()
-{
-    return friendsList;
-}
+
+    public ArrayList<User> getFriendsList() {
+        return friendsList;
+    }
+
+    public void setToDoController(ToDoListController controller) {
+        this.toDoListController = controller;
+    }
+
+    private void upadteCurrentTdo(ToDoList selectedItem) {
+
+        toDoListController.updateCurrentTodo(selectedItem);
+    }
 }

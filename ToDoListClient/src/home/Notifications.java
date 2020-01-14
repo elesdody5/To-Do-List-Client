@@ -10,15 +10,19 @@ package home;
  * @author ghadeerelmahdy
  */
 public class Notifications {
-    private int id ;
+
+    private int id;
     private String fromUserId;
     private String toUserId;
+    private String fromUsername;
+
     //type -> list or task
     private String type;
     //status -> accept or reject
     private String status;
     private String data;
-     
+    private String dataName;
+
     public void setId(int id) {
         this.id = id;
     }
@@ -66,6 +70,20 @@ public class Notifications {
     public String getData() {
         return data;
     }
-   
-    
+public String getfromUserName() {
+        return fromUsername;
+    }
+
+    public void setfromUserName(String fromUsername) {
+        this.fromUsername = fromUsername;
+    }
+
+    public String getDataName() {
+        return dataName;
+    }
+
+    public void setDataName(String dataName) {
+        this.dataName = dataName;
+    }
+
 }

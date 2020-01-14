@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -22,10 +20,10 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import javax.management.Notification;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import server_connection.Connection;
 import server_request.Server;
 
 /**
@@ -40,7 +38,7 @@ public class FriendsListController implements Initializable {
      */
     @FXML
     private ListView<CheckBox> friendsListView;
-    private int listId;
+    private ToDoList todo;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -87,8 +85,8 @@ public class FriendsListController implements Initializable {
         }
     }
 
-    void setToDoid(int listId) {
-        this.listId = listId;
+    void setToDo(ToDoList toDo) {
+        this.todo=toDo;
     }
 
     private JSONObject createJson(int friendId) throws JSONException {
@@ -96,7 +94,7 @@ public class FriendsListController implements Initializable {
         json.put("fromUserId", LoginController.UserId);
         json.put("toUserId", friendId);
         json.put("type", NotificationKeys.ADD_COLLABORATOR);
-        json.put("listId", listId);
+        json.put("listId", todo.getId());
         return json;
     }
 }

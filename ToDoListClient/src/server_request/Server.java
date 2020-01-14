@@ -6,14 +6,20 @@
 package server_request;
 
 import Enum.REQUEST;
+import home.menu_bar.ConnectWithController_MenuBar;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,17 +31,22 @@ import server_connection.Connection;
  */
 public class Server implements Request {
 
+    private static final String IP = "127.0.0.1";
+    private static final int PORT = 5005;
     Socket socket;
     PrintStream ps;
     BufferedReader in;
+    private static Listener listener;
 
     public Server() throws IOException {
-                socket = Connection.getSocketConnection();
-                ps = new PrintStream(socket.getOutputStream());
-                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        socket = Connection.getSocketConnection();
+        ps = new PrintStream(socket.getOutputStream());
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        if (listener == null || !listener.isAlive()) {
+            startnewThread();
+        }
+    }
 
-            }
-    
     @Override
     public JSONObject post(String[] paramters, JSONObject body) {
         ps.println(REQUEST.POST);
@@ -52,12 +63,16 @@ public class Server implements Request {
 
         JSONObject json = null;
         try {
+            listener.readJson = true;
+            listener.serverResoponse = true;
+
             // waiting for responde
-            json = readJson();
-        } catch (IOException | JSONException ex) {
+            listener.join();
+            json = listener.json;
+        } catch (InterruptedException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-           
+            startnewThread();
             return json;
         }
 
@@ -76,12 +91,16 @@ public class Server implements Request {
         JSONObject json = null;
         try {
             // waiting for responde
-            json = readJson();
+            listener.readJson = true;
+            listener.serverResoponse = true;
 
-        } catch (IOException | JSONException ex) {
+            listener.join();
+            json = listener.json;
+
+        } catch (InterruptedException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-
+            startnewThread();
             return json;
         }
     }
@@ -100,12 +119,16 @@ public class Server implements Request {
         ps.println(REQUEST.END);
 
         int response = 0;
-        try {
 
-            response = Integer.parseInt(in.readLine());
-        } catch (IOException ex) {
+        listener.readJson = false;
+        listener.serverResoponse = true;
+        try {
+            listener.join();
+        } catch (InterruptedException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
+        response = Integer.parseInt(listener.data);
+        startnewThread();
         return response;
     }
 
@@ -120,29 +143,109 @@ public class Server implements Request {
         }
         ps.println();
         // to notifay the client the response was ended 
-        ps.println(REQUEST.END);
+        // ps.println(REQUEST.END);
 
         int response = 0;
-        try {
 
-            response = Integer.parseInt(in.readLine());
-        } catch (IOException ex) {
+        listener.readJson = false;
+        listener.serverResoponse = true;
+
+        try {
+            listener.join();
+        } catch (InterruptedException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
+        response = Integer.parseInt(listener.data);
+        startnewThread();
         return response;
     }
 
-    JSONObject readJson() throws IOException, JSONException {
-        StringBuilder body = new StringBuilder();
-        String data = in.readLine();
+    public void logOut(String userId) {
+        ps.println(REQUEST.LOGOUT);
 
-        while (!data.equals(REQUEST.END)) {
+        ps.print("/");
+        ps.print(userId);
 
-            body.append(data);
-            data = in.readLine();
-
-        }
-        return new JSONObject(body.toString());
+        ps.println();
+        System.out.println("logut");
+        System.exit(0);
+        //listener.stop();
     }
 
+    private void startnewThread() {
+        listener = new Listener();
+        listener.start();
+    }
+
+    private class Listener extends Thread {
+
+        String data;
+        JSONObject json;
+        boolean readJson = false;
+        boolean serverResoponse = false;
+
+        @Override
+        public void run() {
+            try {
+                data = in.readLine();
+                // read if notification at real time not server response
+                if (!serverResoponse) {
+                    String type = data;
+                    readJson();
+                    Object object = NotificationFactory.getNotificationObject(type, json);
+                    // method send object to view that responsable for deal with it
+                    sendOjbectToView(type,object);
+                    
+                }
+                if (readJson) {
+                    readJson();
+                }
+            } catch (IOException ex) {
+                Platform.runLater(() -> {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setContentText("Connection Lost ");
+                    alert.showAndWait();
+                    try {
+                        close();
+                    } catch (IOException ex1) {
+                        System.out.println(ex1.getMessage());
+                    }
+                });
+            } catch (JSONException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        void readJson() throws IOException, JSONException {
+            StringBuilder body = new StringBuilder();
+
+            while (!data.equals(REQUEST.END)) {
+
+                body.append(data);
+                data = in.readLine();
+
+            }
+            json = new JSONObject(body.toString());
+        }
+
+        private void close() throws IOException {
+            socket.close();
+            in.close();
+            ps.close();
+        }
+
+        private void sendOjbectToView(String type, Object object) {
+            FXMLLoader loader ;
+            switch (type) {
+            case REQUEST.NOTIFICATION:
+//                ConnectWithController_MenuBar controller_MenuBar = ConnectWithController_MenuBar.getInastance();
+//                controller_MenuBar.
+            case REQUEST.TASK:
+                //return createTask(json);
+            case REQUEST.TODO:
+               // return createToDo(json);
+
+        }
+        }
+    }
 }

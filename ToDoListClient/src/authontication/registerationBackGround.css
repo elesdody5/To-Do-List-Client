@@ -12,3 +12,6 @@ linearGradient
 {
     -fx-background-color: linear-gradient(to bottom left,#431FA0,#6f4cBB )
 }
+.progress-indicator .percentage {
+    -fx-fill:null;
+}

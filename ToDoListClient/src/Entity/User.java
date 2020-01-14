@@ -5,13 +5,13 @@
  */
 package Entity;
 
-import javax.json.Json;
-import javax.json.JsonObject;
+
+import java.util.Observable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class User{
+public class User extends Observable{
     private int id;
     private String userName;
     private String password;

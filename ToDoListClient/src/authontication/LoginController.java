@@ -20,12 +20,14 @@ import Utility.*;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -33,6 +35,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.json.JSONException;
 import org.json.JSONObject;
 import server_request.Server;
@@ -83,7 +86,7 @@ public class LoginController implements Initializable {
     private BorderPane borderPane_id;
     @FXML
     private Label password_message_id;
-
+    private Server server;
     private String[] params = {REQUEST.LOGIN};
 
     @Override
@@ -154,8 +157,8 @@ public class LoginController implements Initializable {
         String password = sign_up_password_id.getText().trim();
         String confirm = sign_up_confirm_id.getText().trim();
         boolean isConfirmed = Validator.checkPasswordEquality(password, confirm);
-        if (isConfirmed) {
-            //TODO: go to home after register user
+        if (isConfirmed&&!password.isEmpty()) {
+            goToRegistrationScreen();
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.initOwner(stage);
@@ -185,12 +188,14 @@ public class LoginController implements Initializable {
                 even if user input (userName , password) are correct
              */
             try {
-                Server server = new Server();
+                server = new Server();
 
                 JSONObject response = server.post(params, userJson);
-
+                int code = 0;
                 //get respond code (SUCCESS , FAILD)after server request
-                int code = response.getInt("Code");
+                if (response != null) {
+                    code = response.getInt("Code");
+                }
                 switch (code) {
                     case RESPOND_CODE.SUCCESS:
                         UserId = response.getInt("ID");
@@ -201,7 +206,7 @@ public class LoginController implements Initializable {
                         break;
                 }
             } catch (IOException ex) {
-                Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+                AlertDialog.showInfoDialog("Connection Down", "Connection Issue", "Please try again");
             }
         } else {
             //show alert if userName or password is empty
@@ -232,7 +237,10 @@ public class LoginController implements Initializable {
             Scene scene = new Scene(root);
             //
             Stage stage = new Stage();
-            
+            stage.getIcons().add(new Image(getClass().getResourceAsStream("/authontication/Icons/logo.png")));
+            stage.setOnCloseRequest((WindowEvent event) -> {
+                server.logOut(UserId + "");
+            });
             stage.setScene(scene);
             stage.show();
             this.stage.close();
@@ -245,5 +253,18 @@ public class LoginController implements Initializable {
     private void showFaildAccessMessage() {
         // show wrong access message when wrong password or username got entered from user
         password_message_id.setText(MESSAGES.WRONG_ACCESS);
+    }
+
+    private void goToRegistrationScreen() {
+        String userName = sign_up_email_id.getText().trim();
+        String password = sign_up_password_id.getText().trim();
+        String confirm = sign_up_confirm_id.getText().trim();
+        User user = new User(userName, password);
+
+        Registeration registration = new Registeration(user, confirm);
+        int result = registration.registerUser();
+        if (result == 1) {
+            sign_in_pane_id.toFront();
+        }
     }
 }
