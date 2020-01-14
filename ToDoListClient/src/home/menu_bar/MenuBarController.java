@@ -279,12 +279,12 @@ public class MenuBarController implements Initializable {
         tasksNotification.setItems(notTasks);
         tasksNotification.setCellFactory((task) -> new TaskRequestCell());
         //get friend requests notifications
-        notFriendRequests = FXCollections.observableArrayList();
-        List<Notifications> friendRequests = getInstance.sendFriendRequestToView();
-        for (Notifications li : friendRequests) {
-            notFriendRequests.add(li);
-        }
-        friendRequestsNotification.setItems(notFriendRequests);
+//        notFriendRequests = FXCollections.observableArrayList();
+//        List<Notifications> friendRequests = getInstance.sendFriendRequestToView();
+//        for (Notifications li : friendRequests) {
+//            notFriendRequests.add(li);
+//        }
+//        friendRequestsNotification.setItems(notFriendRequests);
         //todo friend request cell
         //friendRequestsNotification.setCellFactory((friendRequest) -> new TaskRequestCell());
         /*Aml Start*/
