@@ -21,15 +21,15 @@ public class Notifications {
    
     //status -> accept 1 or reject 0 or noResponse -1
     private int status;
-    private String data;
-    private String fromUserName;
+    private String dataName;
+    private String fromUsername;
 
     public void setFromUserName(String fromUserName) {
-        this.fromUserName = fromUserName;
+        this.fromUsername = fromUserName;
     }
 
     public String getFromUserName() {
-        return fromUserName;
+        return fromUsername;
     }
 
     public void setId(int id) {
@@ -53,7 +53,7 @@ public class Notifications {
     }
 
     public void setData(String data) {
-        this.data = data;
+        this.dataName = data;
     }
 
     public int getId() {
@@ -77,13 +77,13 @@ public class Notifications {
     }
 
     public String getData() {
-        return data;
+        return dataName;
     }
-     public void setTodoId(int todoId) {
-        this.dataId = todoId;
+     public void setDataId(int dataId) {
+        this.dataId = dataId;
     }
 
-    public int getTodoId() {
+    public int getDataId() {
         return dataId;
     }
 

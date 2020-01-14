@@ -22,7 +22,7 @@ import home.Notifications;
  */
 public class ConnectWithController_MenuBar implements MenuBarModelInterface {
 
-    private boolean isName, isList, isTask, isFriend, isPassword;
+    private boolean isName, isList, isTask, isFriend, isPassword,  isListReject;
     private int status = -1;
     private String name;
     private String password;
@@ -64,6 +64,13 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
             request = req;
             sendDataToController();
         }
+          if (req.getStatus() == NotificationKeys.REJECT_COLLABORATOR_REQUEST) {
+            //update notif id with status equal 0
+            isListReject = true;
+            request = req;
+            sendDataToController();
+        }
+        
 
     }
 
@@ -113,12 +120,25 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
                 objNot.put("notId", request.getId());
                 objNot.put("status", request.getStatus());
                 status = s.put(key, objNot);
-                System.out.println("list status "+status);
                 //add new collaborator
                 JSONObject objColl = new JSONObject();
+               String[] keyColl = {"collAcceptListRequest"};
                 objColl.put("userID", request.getToUserId());
-                objColl.put("todoId", request.getTodoId());
+                objColl.put("todoId", request.getDataId());
                 s.post(key, objColl);
+            } catch (JSONException ex) {
+                System.out.println("file:ConnectWithController_MenuBar 108 cannot append new collaborator");
+            }
+        }
+         if (isListReject) {
+
+            String[] key = {"updateRequestList"};
+            JSONObject objNot = new JSONObject();
+            try {
+                //update notification table with this id
+                objNot.put("notId", request.getId());
+                objNot.put("status", request.getStatus());
+                status = s.put(key, objNot);
             } catch (JSONException ex) {
                 System.out.println("file:ConnectWithController_MenuBar 108 cannot append new collaborator");
             }

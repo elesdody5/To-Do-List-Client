@@ -256,24 +256,11 @@ public class MenuBarController implements Initializable {
         userNameIns.setText(name);
         userImageIns.setText(("" + name.charAt(0)).toUpperCase());
         //get lists notifications
-        notLists = FXCollections.observableArrayList();
-        //List <Notifications> lists = getInstance.lists;
-        lists = new ArrayList<>();
-        Notifications n = new Notifications();
-        n.setFromUserName("j");
-        n.setType(1);
-        n.setData("project c");
-        n.setStatus(-1);
-        lists.add(n);
-        Notifications n2 = new Notifications();
-        n2.setFromUserName("k");
-        n2.setType(2);
-        n2.setData("project c");
-        n2.setStatus(0);
-        lists.add(n2);
+         notLists = FXCollections.observableArrayList();
+        List <Notifications> lists = getInstance.sendListsToView();
         for (Notifications li : lists) {
             notLists.add(li);
-        }
+        } 
         listsNotification.setItems(notLists);
         listsNotification.setCellFactory((list) -> new ListRequestCell());
 //        ObservableList<Notifications> notTasks = FXCollections.observableArrayList();

@@ -9,6 +9,7 @@ import Entity.User;
 import home.Notifications;
 import java.util.List;
 import home.NotificationKeys;
+import java.util.ArrayList;
 
 /**
  *
@@ -16,14 +17,14 @@ import home.NotificationKeys;
  */
 public class ConnectWithLoginView_MenuBar implements MenuBarModelInterface {
 
-    private String name = "aseel";
-    private String id = "1";
+    private String name ;
+    private String id ;
     private boolean isName;
-    List<Notifications> notifications;
-    List<User> friends;
-    List<Notifications> lists;
-    List<Notifications> tasks;
-    List<Notifications> friendRequests;
+    private List<Notifications> notifications;
+    private List<User> friends;
+    private List<Notifications> lists ;
+     private List<Notifications> tasks;
+     private List<Notifications> friendRequests;
     int[] listRequest = new int[2];
     int[] taskRequest = new int[2];
     private static ConnectWithLoginView_MenuBar instance;
@@ -79,9 +80,9 @@ public class ConnectWithLoginView_MenuBar implements MenuBarModelInterface {
 
     //load old lists
 
-    protected void loadAllLists(List<User> friends, List<Notifications> notification) {
+    public void loadAllLists(List<User> friends, List<Notifications> notification) {
         this.friends = friends;
-        this.notifications = notification;
+        notifications = notification;
     }
 
     //show all old lists to view
@@ -91,6 +92,7 @@ public class ConnectWithLoginView_MenuBar implements MenuBarModelInterface {
     }
 
     List<Notifications> sendListsToView() {
+        lists = new ArrayList<>();
         for (int i = 0; i < notifications.size(); i++) {
             if (notifications.get(i).getType() == NotificationKeys.ADD_COLLABORATOR) {
                 lists.add(notifications.get(i));
@@ -101,6 +103,7 @@ public class ConnectWithLoginView_MenuBar implements MenuBarModelInterface {
     }
 
     List<Notifications> sendTasksToView() {
+         tasks = new ArrayList<>();
         for (int i = 0; i < notifications.size(); i++) {
             if (notifications.get(i).getType() == NotificationKeys.ASSIGIN_TASK_MEMBER) {
                 tasks.add(notifications.get(i));
@@ -110,6 +113,7 @@ public class ConnectWithLoginView_MenuBar implements MenuBarModelInterface {
     }
 
     List<Notifications> sendFriendRequestToView() {
+         friendRequests = new ArrayList<>();
         for (int i = 0; i < notifications.size(); i++) {
             if (notifications.get(i).getType() == NotificationKeys.REQUEST_FRIEND) {
                 friendRequests.add(notifications.get(i));

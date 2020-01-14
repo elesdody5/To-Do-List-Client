@@ -13,7 +13,10 @@ import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
@@ -54,7 +57,6 @@ public class TaskInformationViewController implements Initializable, Observer {
     static TaskInfo taskInfostatic;
     @FXML
     private AnchorPane taskData;
-    @FXML
     private JFXButton checkBoxButton;
     @FXML
     private JFXDatePicker StartDatePicker;
@@ -64,6 +66,7 @@ public class TaskInformationViewController implements Initializable, Observer {
     private JFXTextArea description;
     @FXML
     private JFXTextArea comment;
+    private boolean edit = false;
 
     /**
      * Initializes the controller class.
@@ -71,25 +74,24 @@ public class TaskInformationViewController implements Initializable, Observer {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        // TODO
+    /*    // TODO
         memberList.setVisible(false);
         User user = new User();
         ToDoList todolist = new ToDoList();
         ArrayList<User> teamMateInToDo = null;
         try {
             teamMateInToDo = getTeamMemberInToDo();
+            if(teamMateInToDo!=null){
             for (int i = 0; i < teamMateInToDo.size(); i++) {
                 ListViewOfMember.getItems().add(teamMateInToDo.get(i));
                 ListViewOfMember.setCellFactory((param)
                         -> {
                     return new ListAdapter();
                 });
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(TaskInformationViewController.class.getName()).log(Level.SEVERE, null, ex);
+            }}
         } catch (JSONException ex) {
             Logger.getLogger(TaskInformationViewController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
 
     }
 
@@ -97,26 +99,31 @@ public class TaskInformationViewController implements Initializable, Observer {
     private void addMember(ActionEvent event) {
         if (memberList.isVisible()) {
             memberList.setVisible(false);
-            checkBoxButton.setVisible(true);
             StartDatePicker.setVisible(true);
             endDatePicker.setVisible(true);
 
         } else {
             memberList.setVisible(true);
-            checkBoxButton.setVisible(false);
             StartDatePicker.setVisible(false);
             endDatePicker.setVisible(false);
         }
 
     }
 
-    private ArrayList<User> getTeamMemberInToDo() throws IOException, JSONException {
+   /* private ArrayList<User> getTeamMemberInToDo() throws JSONException  {
         String[] typrOfRequest = new String[1];
         typrOfRequest[0] = "getTeamMemberInToDo";
-        Server server = new Server();
+        Server server = null;
+        try {
+            server = new Server();
+        } catch (IOException ex) {
+            showAleart(Alert.AlertType.ERROR, "Connection lost", "Error update  List");
+        }
         JSONObject resultOfGetTeamMember = server.get(typrOfRequest);
-        JSONArray jsonArrayOfTeamMeber = resultOfGetTeamMember.getJSONArray("listOfTeamMember");
-        ArrayList<User> teamMemberInfoList = new ArrayList<User>();
+        ArrayList<User> teamMemberInfoList = null;
+        if(resultOfGetTeamMember!=null)
+        {  JSONArray jsonArrayOfTeamMeber = resultOfGetTeamMember.getJSONArray("listOfTeamMember");
+         teamMemberInfoList = new ArrayList<User>();
         for (int i = 0; i < jsonArrayOfTeamMeber.length(); i++) {
             JSONObject teammember = jsonArrayOfTeamMeber.getJSONObject(i);
             String username = teammember.getString("userName");
@@ -126,32 +133,60 @@ public class TaskInformationViewController implements Initializable, Observer {
             TeamMember.setUserName(username);
             teamMemberInfoList.add(TeamMember);
 
-        }
+        }}
         // System.out.println(jsonArrayOftodotasks);
         return teamMemberInfoList;
+       
 
-    }
+    }*/
 
     @FXML
     private void saveTaskData(ActionEvent event) {
-        if (!titleOfTask.getText().toString().equals("")&&StartDatePicker.getValue()!=null&&endDatePicker.getValue()!=null) {
+            TaskInfo addedTask =new TaskInfo();
+                if (!titleOfTask.getText().toString().equals("")&&StartDatePicker.getValue()!=null&&endDatePicker.getValue()!=null) {
+        todolist = ToDoListController.getTodoList();
+               addedTask.setTitle(titleOfTask.getText().toString());
+                addedTask.setListId(todolist.getId());
+                addedTask.setDescription(description.getText().toString());
+                addedTask.setStartTime(StartDatePicker.getValue().toString());
+                addedTask.setDeadLine(endDatePicker.getValue().toString());
+                addedTask.setComment(comment.getText().toString());
+                toDoTaskJsonObject = addedTask.writeTaskInfoObjectAsJson();
+                }
+        if(!ListAdapterOfTasksList.isEdited())
+        {     
             try {
-                todolist = ToDoListController.getTodoList();
-                TaskInfo taskInfo = new TaskInfo(titleOfTask.getText().toString(), todolist.getId());
-                taskInfo.setDescription(description.getText().toString());
-                taskInfo.setStartTime(StartDatePicker.getValue().toString());
-                taskInfo.setDeadLine(endDatePicker.getValue().toString());
-                taskInfo.setComment(comment.getText().toString());
-                taskInfostatic = taskInfo;
-                todolist.addTaskToDoList(taskInfo);
-                toDoTaskJsonObject = taskInfo.writeTaskInfoObjectAsJson();
+
+                taskInfostatic = addedTask;
+                todolist.addTaskToDoList(addedTask);
+                edit=true;
                 sendTaskInfoToServer();
                 titleOfTask.setText("");
                 ((Stage) taskData.getScene().getWindow()).close();
 
             } catch (IOException ex) {
-                System.out.println("server Connection loss");
+            showAleart(Alert.AlertType.ERROR, "Connection lost", "Error update  List");
             }
+        
+    }
+        else{
+          //  System.out.println(toDoTaskJsonObject);
+                      TaskInfo CurrentTask=ListAdapterOfTasksList.getCurrntTask();
+     CurrentTask.setTitle(titleOfTask.getText().toString());
+                CurrentTask.setListId(todolist.getId());
+                CurrentTask.setDescription(description.getText().toString());
+                CurrentTask.setStartTime(StartDatePicker.getValue().toString());
+                CurrentTask.setDeadLine(endDatePicker.getValue().toString());
+                CurrentTask.setComment(comment.getText().toString());
+                CurrentTask.setId(CurrentTask.getId());
+             //   System.out.println(CurrentTask.getId());
+                toDoTaskJsonObject = CurrentTask.writeTaskInfoObjectAsJson();
+            updateInServer(toDoTaskJsonObject);
+             edit=false;
+             ((Stage) taskData.getScene().getWindow()).close();
+
+
+            
         }
     }
 
@@ -178,11 +213,15 @@ public class TaskInformationViewController implements Initializable, Observer {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 
     }
-
+ private void showAleart(Alert.AlertType type, String title, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
     @FXML
     private void getIntialState(MouseEvent event) {
         memberList.setVisible(false);
-        checkBoxButton.setVisible(true);
         StartDatePicker.setVisible(true);
         endDatePicker.setVisible(true);
     }
@@ -222,5 +261,34 @@ public class TaskInformationViewController implements Initializable, Observer {
             alert.showAndWait();
         }
     }
+    public void setTaskView(TaskInfo task)
+    {
+          titleOfTask.setText(task.getTitle());
+                  final DateTimeFormatter datetimeformater = DateTimeFormatter.ofPattern("yyyy-M-d");
+
+     StartDatePicker.setValue(LocalDate.parse(task.getStartTime(),datetimeformater));
+     endDatePicker.setValue(LocalDate.parse(task.getDeadLine(),datetimeformater));
+   
+     description.setText(task.getDescription());
+   comment.setText(task.getComment());
+    }
+      boolean isEdited() {
+        return edit;
+    }
+          private int updateInServer(JSONObject json) {
+
+        try {
+            Server server = new Server();
+            int response = server.put(new String[]{"task"}, json);
+            System.out.println(response);
+            return response;
+           
+        } catch (IOException ex) {
+            showAleart(Alert.AlertType.ERROR, "Connection lost", "Error update  List");
+            return -1;
+        }
+
+    }
+          
 
 }

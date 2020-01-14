@@ -155,7 +155,7 @@ public class LoginController implements Initializable {
         String confirm = sign_up_confirm_id.getText().trim();
         boolean isConfirmed = Validator.checkPasswordEquality(password, confirm);
         if (isConfirmed) {
-            //TODO: go to home after register user
+            goToRegistrationScreen();
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.initOwner(stage);
@@ -188,9 +188,11 @@ public class LoginController implements Initializable {
                 Server server = new Server();
 
                 JSONObject response = server.post(params, userJson);
-
+                int code = 0;
                 //get respond code (SUCCESS , FAILD)after server request
-                int code = response.getInt("Code");
+                if (response != null) {
+                    code = response.getInt("Code");
+                }
                 switch (code) {
                     case RESPOND_CODE.SUCCESS:
                         UserId = response.getInt("ID");
@@ -201,7 +203,7 @@ public class LoginController implements Initializable {
                         break;
                 }
             } catch (IOException ex) {
-                Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+                AlertDialog.showInfoDialog("Connection Down", "Connection Issue", "Please try again");
             }
         } else {
             //show alert if userName or password is empty
@@ -232,7 +234,7 @@ public class LoginController implements Initializable {
             Scene scene = new Scene(root);
             //
             Stage stage = new Stage();
-            
+
             stage.setScene(scene);
             stage.show();
             this.stage.close();
@@ -245,5 +247,18 @@ public class LoginController implements Initializable {
     private void showFaildAccessMessage() {
         // show wrong access message when wrong password or username got entered from user
         password_message_id.setText(MESSAGES.WRONG_ACCESS);
+    }
+
+    private void goToRegistrationScreen() {
+        String userName = sign_up_email_id.getText().trim();
+        String password = sign_up_password_id.getText().trim();
+        String confirm = sign_up_confirm_id.getText().trim();
+        User user = new User(userName, password);
+
+        Registeration registration = new Registeration(user, confirm);
+        int result = registration.registerUser();
+        if (result == 1) {
+            sign_in_pane_id.toFront();
+        }
     }
 }

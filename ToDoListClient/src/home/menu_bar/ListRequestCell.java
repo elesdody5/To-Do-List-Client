@@ -62,7 +62,6 @@ public class ListRequestCell extends ListCell<Notifications> {
             @Override
             public void handle(ActionEvent event) {
                 not.setStatus(1);
-
                 ConnectWithController_MenuBar instance = ConnectWithController_MenuBar.getInastance();
                 instance.sendRequestList(not);
                 // make sure that Notification table is updated
@@ -99,25 +98,29 @@ public class ListRequestCell extends ListCell<Notifications> {
         accept.setVisible(false);
         reject.setVisible(false);
         if (not != null) {
-            if (not.getStatus() == NotificationKeys.NoResponse_COLLABORATOR_REQUEST) {
+            System.out.println(not.getStatus());
+            if (not.getStatus() == NotificationKeys.ACCEPET_COLLABORATOR_REQUEST) {
+                setBackground(new Background(new BackgroundFill(Paint.valueOf("white"), new CornerRadii(5), Insets.EMPTY)));
+                accept.setVisible(false);
+                reject.setVisible(false);
+                txt.setText("you accepted a Collaboration with " + not.getFromUserName() + " in List : " + not.getData());
+
+            } else if (not.getStatus() == NotificationKeys.REJECT_COLLABORATOR_REQUEST) {
+                setBackground(new Background(new BackgroundFill(Paint.valueOf("white"), new CornerRadii(5), Insets.EMPTY)));
+                accept.setVisible(false);
+                reject.setVisible(false);
+                txt.setText("you rejected a Collaboration with " + not.getFromUserName() + " in List : " + not.getData());
+            } else if (not.getStatus() == NotificationKeys.NoResponse_COLLABORATOR_REQUEST){
                 setBackground(new Background(new BackgroundFill(Paint.valueOf("C2B5DE"), new CornerRadii(5), Insets.EMPTY)));
                 txt.setText(not.getFromUserName() + " sends you a request to Collaborate in List : " + not.getData());
                 accept.setText("Accept");
                 reject.setText("Reject");
                 accept.setVisible(true);
                 reject.setVisible(true);
-            } else {
-                setBackground(new Background(new BackgroundFill(Paint.valueOf("white"), new CornerRadii(5), Insets.EMPTY)));
-                accept.setVisible(false);
-                reject.setVisible(false);
-                if (not.getStatus() == NotificationKeys.ACCEPET_COLLABORATOR_REQUEST) {
-                    txt.setText("you accepted a Collaboration with " + not.getFromUserName() + " in List : " + not.getData());
-                }
-                if (not.getStatus() == NotificationKeys.REJECT_COLLABORATOR_REQUEST) {
-                    txt.setText("you rejected a Collaboration with " + not.getFromUserName() + " in List : " + not.getData());
-                }
+
             }
         }
+
         HBox buttonBox = new HBox(10, accept, reject);
         VBox box = new VBox(5, txt, buttonBox);
         setGraphic(box);

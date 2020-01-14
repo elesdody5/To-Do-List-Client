@@ -30,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import server_request.Server;
 import java.lang.reflect.Type;
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import server_connection.Connection;
 
@@ -48,6 +49,8 @@ public class HomeController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+        // Platform.runLater(() -> {
         try {
             Server server = new Server();
             JSONObject json = server.get(new String[]{"todo", LoginController.UserId + ""});
@@ -62,38 +65,57 @@ public class HomeController implements Initializable {
             Type ListType = new TypeToken<ArrayList<ToDoList>>() {
             }.getType();
             ArrayList<ToDoList> todoList = gson.fromJson(json.getJSONArray("todo_list").toString(), ListType);
-// start home screen
-            start(user, friendsList,todoList);
+            // convert shared todo
+
+            ArrayList<ToDoList> sharedList = gson.fromJson(json.getJSONArray("shared_list").toString(), ListType);
+            // convert notification
+            Type notificationListType = new TypeToken<ArrayList<Notifications>>() {
+            }.getType();
+            ArrayList<Notifications> notifications = gson.fromJson(json.getJSONArray("notification").toString(), notificationListType);
+            // start home screen
+            //System.out.println(json);
+            start(user, friendsList, todoList, sharedList, notifications);
         } catch (IOException ex) {
             Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (JSONException ex) {
             System.out.println(ex);
         }
+        // });
 
     }
 
-    public void start(User user,ArrayList<User> friendsList, ArrayList<ToDoList> todoList) {
+    public void start(User user, ArrayList<User> friendsList, ArrayList<ToDoList> todoList, ArrayList<ToDoList> sharedList, ArrayList<Notifications> notifications) {
         try {
             // TODO
             // create user menu bar 
             ConnectWithLoginView_MenuBar connect = ConnectWithLoginView_MenuBar.getInastance();
             connect.setUserName(user.getUserName());
             connect.setId(user.getId() + "");
+            connect.loadAllLists(friendsList, notifications);
             FXMLLoader menuloader = new FXMLLoader(getClass().getResource("/home/menu_bar/MenuBar.fxml"));
             Parent menuBar = menuloader.load();
-
+            
             // create left list 
             FXMLLoader listloader = new FXMLLoader(getClass().getResource("/home/list/FXMLList.fxml"));
             VBox list = listloader.load();
             FXMLListController listController = listloader.getController();
             listController.getMyListView().getItems().addAll(todoList);
             listController.getFriendsList().addAll(friendsList);
+            listController.getSharedListView().getItems().addAll(sharedList);
             // create todo loader and controller
             FXMLLoader todoLoader = new FXMLLoader(getClass().getResource("/home/to_do_list/ToDoList.fxml"));
             Parent todo = todoLoader.load();
             ToDoListController todoController = todoLoader.getController();
-            if(todoList.size()>=1)
-            { todoController.setTodoList(todoList.get(0));}
+            ToDoList currentTodo;
+            if (todoList.size() >= 1) {
+                currentTodo = todoList.get(0);
+
+            } else {
+                currentTodo = new ToDoList();
+            }
+            currentTodo.addObserver(todoController);
+            todoController.update(currentTodo,null);
+            listController.setCurrentToDo(currentTodo);
 
             // add component to main pane
             borderPane.setLeft(list);

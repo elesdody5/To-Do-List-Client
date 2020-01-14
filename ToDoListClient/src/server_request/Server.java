@@ -14,6 +14,8 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,7 +33,7 @@ public class Server implements Request {
     PrintStream ps;
     BufferedReader in;
     private static Listener listener;
-
+    
     public Server() throws IOException {
         socket = Connection.getSocketConnection();
         ps = new PrintStream(socket.getOutputStream());
@@ -59,6 +61,7 @@ public class Server implements Request {
         try {
             listener.readJson = true;
             // waiting for responde
+
             listener.join();
             json = listener.json;
         } catch (InterruptedException ex) {
@@ -171,7 +174,11 @@ public class Server implements Request {
                     readJson();
                 }
             } catch (IOException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                Platform.runLater(()->{
+                    Alert alert  = new Alert(Alert.AlertType.ERROR);
+                    alert.setContentText("Connection Lost");
+                    alert.showAndWait();
+                });
             } catch (JSONException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
