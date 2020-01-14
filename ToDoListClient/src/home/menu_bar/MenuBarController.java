@@ -239,16 +239,14 @@ public class MenuBarController implements Initializable {
 //        tasksNotification.setCellFactory((task) -> new TaskRequestCell());
 
         /*Aml Start*/
-//        ObservableList<User> items = FXCollections.observableArrayList();
-//        friendsOfUser = getInstanceFromLogin.sendFriendListToView();
-//        for (int i = 0; i < friendsOfUser.size(); i++) {
-//            items.add(friendsOfUser.get(i));
-//        }
-//
-//        friendsLV.setItems(items);
-//        friendsLV.setCellFactory((listView) -> new FriendListViewCell());
-//        FriendsThread friendsThread = new FriendsThread();
-//        friendsThread.start();
+        ObservableList<User> items = FXCollections.observableArrayList();
+        friendsOfUser = getInstanceFromLogin.sendFriendListToView();
+        for (int i = 0; i < friendsOfUser.size(); i++) {
+            items.add(friendsOfUser.get(i));
+        }
+
+        friendsLV.setItems(items);
+        friendsLV.setCellFactory((listView) -> new FriendListViewCell());
         /*Aml End */
 
     }
