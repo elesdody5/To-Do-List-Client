@@ -96,26 +96,28 @@ public class HomeController implements Initializable {
             Parent menuBar = menuloader.load();
             
             // create left list 
-            FXMLLoader listloader = new FXMLLoader(getClass().getResource("/home/list/FXMLList.fxml"));
+            FXMLLoader listloader = View.getListLoader();
             VBox list = listloader.load();
             FXMLListController listController = listloader.getController();
-            listController.getMyListView().getItems().addAll(todoList);
+            listController.setToDoList(todoList);
             listController.getFriendsList().addAll(friendsList);
-            listController.getSharedListView().getItems().addAll(sharedList);
+            listController.setShareList(sharedList);
             // create todo loader and controller
-            FXMLLoader todoLoader = new FXMLLoader(getClass().getResource("/home/to_do_list/ToDoList.fxml"));
+            FXMLLoader todoLoader = View.getTodoLoader();
             Parent todo = todoLoader.load();
             ToDoListController todoController = todoLoader.getController();
-            ToDoList currentTodo;
+            listController.setToDoController(todoController);
+
             if (todoList.size() >= 1) {
-                currentTodo = todoList.get(0);
+                ToDoList currentTodo = todoList.get(0);
+
+                todoController.updateCurrentTodo(currentTodo);
+                listController.setCurrentToDo(currentTodo);
 
             } else {
-                currentTodo = new ToDoList();
+
+                todoController.updateCurrentTodo(null);
             }
-            currentTodo.addObserver(todoController);
-            todoController.update(currentTodo,null);
-            listController.setCurrentToDo(currentTodo);
 
             // add component to main pane
             borderPane.setLeft(list);

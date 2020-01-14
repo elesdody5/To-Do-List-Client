@@ -20,12 +20,14 @@ import Utility.*;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -33,6 +35,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.json.JSONException;
 import org.json.JSONObject;
 import server_request.Server;
@@ -83,7 +86,7 @@ public class LoginController implements Initializable {
     private BorderPane borderPane_id;
     @FXML
     private Label password_message_id;
-
+    private Server server;
     private String[] params = {REQUEST.LOGIN};
 
     @Override
@@ -154,7 +157,7 @@ public class LoginController implements Initializable {
         String password = sign_up_password_id.getText().trim();
         String confirm = sign_up_confirm_id.getText().trim();
         boolean isConfirmed = Validator.checkPasswordEquality(password, confirm);
-        if (isConfirmed) {
+        if (isConfirmed&&!password.isEmpty()) {
             goToRegistrationScreen();
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -185,7 +188,7 @@ public class LoginController implements Initializable {
                 even if user input (userName , password) are correct
              */
             try {
-                Server server = new Server();
+                server = new Server();
 
                 JSONObject response = server.post(params, userJson);
                 int code = 0;
@@ -234,7 +237,10 @@ public class LoginController implements Initializable {
             Scene scene = new Scene(root);
             //
             Stage stage = new Stage();
-
+            stage.getIcons().add(new Image(getClass().getResourceAsStream("/authontication/Icons/logo.png")));
+            stage.setOnCloseRequest((WindowEvent event) -> {
+                server.logOut(UserId + "");
+            });
             stage.setScene(scene);
             stage.show();
             this.stage.close();

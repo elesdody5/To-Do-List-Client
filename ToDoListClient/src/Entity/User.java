@@ -6,11 +6,12 @@
 package Entity;
 
 
+import java.util.Observable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class User{
+public class User extends Observable{
     private int id;
     private String userName;
     private String password;

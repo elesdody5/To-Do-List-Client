@@ -33,7 +33,7 @@ import org.json.JSONObject;
  *
  * @author sara
  */
-public class ToDoListController implements Initializable, Observer {
+public class ToDoListController implements Initializable {
 
     /**
      * Initializes the controller class.
@@ -42,10 +42,8 @@ public class ToDoListController implements Initializable, Observer {
     @FXML
     private JFXButton addTask;
     @FXML
-    private JFXListView listOfTasks;
+    private JFXListView<TaskInfo> listOfTasks;
     JSONObject toDoTaskJsonObject;
-    ToDoList selectedTodo;
-    ToDoList selectedTodo2;
     @FXML
     private GridPane tasksListView;
     @FXML
@@ -70,67 +68,54 @@ public class ToDoListController implements Initializable, Observer {
             if (TaskInformationViewController.getTaskInfo() != null) {
 
                 TaskInfo addefTask = TaskInformationViewController.getTaskInfo();
-                 listOfTasks.getItems().add(addefTask);
+                listOfTasks.getItems().add(addefTask);
             }
 
         });
-        
 
     }
 
-   
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-      //  Object ol = null;
-      // update(selectedTodo2, ol);
+        //  Object ol = null;
+        // update(selectedTodo2, ol);
         listOfTasks.setCellFactory((param)
                 -> {
-            return new ListAdapterOfTasksList((ListView<TaskInfo>) param);
+            return new ListAdapterOfTasksList( param);
         });
-      taskview=new TaskInformationViewController();
-     
+        taskview = new TaskInformationViewController();
+
     }
 
-    
-    static ToDoList firstToDo;
+    private  void setTodoList(ToDoList toDoList) {
 
-
-    public void setTodoList(ToDoList toDoList) {
-          selectedTodo=toDoList;
-          todo=selectedTodo;
-          titleOfTodo.setText(selectedTodo.getTitle());
-          titleOfTodo.setTextFill(Color.web(selectedTodo.getColor()));
-          System.out.println(toDoList.getTasksInTODOList().size());
-          tasksListView.setVisible(true);
-          List<TaskInfo> tasks = selectedTodo.getTasksInTODOList();
-
-            for (int i = 0; i < tasks.size(); i++) {
-                  listOfTasks.getItems().add(tasks.get(i));
-              
+        todo = toDoList;
+        titleOfTodo.setText(todo.getTitle());
+        Color color =Color.valueOf(toDoList.getColor());
+        titleOfTodo.setTextFill(color);
+        listOfTasks.setStyle("-fx-control-inner-background: "+color.toString().substring(0, 2));
+        tasksListView.setVisible(true);
+        List<TaskInfo> tasks = toDoList.getTasksInTODOList();
+        listOfTasks.getItems().clear();
+        listOfTasks.getItems().addAll(tasks);
+       
     }
-}
+
     public static ToDoList getTodoList() {
         return todo;
     }
 
-    @Override
-    public void update(Observable o, Object o1) {
+    public void updateCurrentTodo(ToDoList toDoList) {
 
-        selectedTodo = (ToDoList) o;
-        todo=selectedTodo;
-        if (selectedTodo == null) {
+        if (toDoList==null) {
             tasksListView.setVisible(false);
             initialStatePane.setVisible(true);
         } else {
             tasksListView.setVisible(true);
             initialStatePane.setVisible(false);
-            List<TaskInfo> tasks = selectedTodo.getTasksInTODOList();
-            for (int i = 0; i < tasks.size(); i++) {
-                 listOfTasks.getItems().add(tasks.get(i));
-               
-            }
+            setTodoList(toDoList);
         }
 
     }
-    
+
 }

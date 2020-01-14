@@ -10,6 +10,7 @@ import Enum.RESPOND_CODE;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.Alert;
 import org.json.JSONException;
 import org.json.JSONObject;
 import server_request.Server;
@@ -41,6 +42,7 @@ public class Registeration {
         String confirmPassword = confirm;
 
         int validatePassword = validatePassword(password, confirmPassword);
+        System.out.println(validatePassword);
         if (validateUserName(userName) && validatePassword == RESPOND_CODE.CORRECT_INPUT) {
             try {
                 JSONObject userJsonObject = new JSONObject();
@@ -53,12 +55,18 @@ public class Registeration {
         } else {
             result = -1;
             if (!validateUserName(userName)) {
-                System.out.println("Please enter  valid user name which length greather 6 ");
+                Alert alert  = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Please enter  valid user name which length greather 6 ");
+                alert.showAndWait();
             }
-            if (validatePassword == 3) {
-                System.out.println("confirm password not equal user password");
-            } else if (validatePassword == 2) {
-                System.out.println("password length => 4");
+            if (validatePassword == RESPOND_CODE.NOT_EQUAL_PASSWORD) {
+                Alert alert  = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("confirm password not equal user password");
+                alert.showAndWait();
+            } else if (validatePassword == RESPOND_CODE.SHORT_PASSWORD) {
+                Alert alert  = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("password length => 6");
+                alert.showAndWait();
             }
 
         }
@@ -75,16 +83,24 @@ public class Registeration {
             JSONObject resultJsonObject = server.post(paramters, jSONObject);
             String res = resultJsonObject.getString("result");
             if (res.equals("1")) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setContentText("Sign Up successfully :D");
+                alert.showAndWait();
                 return 1;
                 // closeregisterScreenAndOpenLoginScreen();
             } else {
-                System.out.println("You already exist in DB");
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("You already exist ");
+                alert.showAndWait();
+                
             }
 
         } catch (JSONException ex) {
             Logger.getLogger(Registeration.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(Registeration.class.getName()).log(Level.SEVERE, null, ex);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Connection lost");
+            alert.showAndWait();
         }
         return -1;
     }
