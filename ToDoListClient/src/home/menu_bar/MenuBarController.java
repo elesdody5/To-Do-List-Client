@@ -101,8 +101,8 @@ public class MenuBarController implements Initializable {
     /* end Aml*/
 
     boolean serverout;
-    ObservableList<Notifications> notLists;
-    ObservableList<Notifications> notTasks;
+    ObservableList<Notifications> notLists = FXCollections.observableArrayList();
+    ObservableList<Notifications> notTasks= FXCollections.observableArrayList();
     ObservableList<Notifications> notFriendRequests;
     List<Notifications> lists;
 
@@ -232,6 +232,7 @@ public class MenuBarController implements Initializable {
 
     void setListRequest(Notifications list) {
         notLists.add(list);
+        System.out.println(list.getId());
         listsNotification.setItems(notLists);
         listsNotification.setCellFactory((li) -> new ListRequestCell());
     }

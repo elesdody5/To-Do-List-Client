@@ -5,9 +5,10 @@
  */
 package home.list;
 
+import home.list.Adapter.ShareListAdapter;
+import home.list.Adapter.MyListAdapter;
 import Entity.User;
 import authontication.LoginController;
-import home.View;
 import home.to_do_list.ToDoList;
 import home.to_do_list.ToDoListController;
 import java.io.IOException;
@@ -16,10 +17,6 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.value.ChangeListener;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -28,6 +25,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
@@ -70,23 +68,30 @@ public class FXMLListController implements Initializable {
         friendsList = new ArrayList<>();
         myTodos = new ArrayList<>();
         sharedTodos = new ArrayList<>();
+        myListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        saredListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         searchField.textProperty().addListener((observable, oldVal, newVal) -> {
             search();
         });
         myListView.setCellFactory((param)
                 -> {
-            return new MyListAdapter(param, friendsList);
+            return new MyListAdapter(param, friendsList,myTodos);
         });
         saredListView.setCellFactory((param)
                 -> {
-            return new ShareListAdapter(param, friendsList);
+            return new ShareListAdapter(param, friendsList,sharedTodos);
         });
         myListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            upadteCurrentTdo(myListView.getSelectionModel().getSelectedItem());
+            if (!myListView.getItems().isEmpty()) {
+                upadteCurrentTdo(myListView.getSelectionModel().getSelectedItem());
+            }
 
         });
+
         saredListView.getSelectionModel().selectedItemProperty().addListener((observable) -> {
-            upadteCurrentTdo(saredListView.getSelectionModel().getSelectedItem());
+            if (!saredListView.getItems().isEmpty()) {
+                upadteCurrentTdo(saredListView.getSelectionModel().getSelectedItem());
+            }
         });
 
     }
@@ -105,14 +110,14 @@ public class FXMLListController implements Initializable {
             stage.initOwner(myListView.getScene().getWindow());
             stage.initModality(Modality.WINDOW_MODAL);
             stage.show();
-
             stage.setOnHidden((WindowEvent event) -> {
-                if (toDoForm.getToDo() != null) {
+                if (toDoForm.getToDo().getTitle()!=null) {
                     try {
-                        currentToDo = toDoForm.getToDo();
-                        boolean result = addToServer(createJson(currentToDo));
+                        boolean result = addToServer(createJson(toDoForm.getToDo()));
                         if (result) {
+                            myTodos.add(toDoForm.getToDo());
                             myListView.getItems().add(toDoForm.getToDo());
+                            setCurrentToDo(toDoForm.getToDo());
                         }
                     } catch (JSONException ex) {
                         Logger.getLogger(FXMLListController.class.getName()).log(Level.SEVERE, null, ex);
@@ -191,9 +196,16 @@ public class FXMLListController implements Initializable {
     }
 
     public void setCurrentToDo(ToDoList currentToDo) {
-        this.currentToDo = currentToDo;
-    }
 
+        this.currentToDo = currentToDo;
+
+    }
+    // add share todo to list at real time
+    public void addSharedList(ToDoList todo)
+    {
+        sharedTodos.add(todo);
+        saredListView.getItems().add(todo);
+    }
     private void showAleart(Alert.AlertType type, String title, String content) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
