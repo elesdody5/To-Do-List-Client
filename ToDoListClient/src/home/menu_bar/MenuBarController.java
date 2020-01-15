@@ -235,18 +235,17 @@ public class MenuBarController implements Initializable {
         listsNotification.setItems(notLists);
         listsNotification.setCellFactory((li) -> new ListRequestCell());
     }
+
     void setTaskRequest(Notifications task) {
-        ObservableList<Notifications> oLists = FXCollections.observableArrayList();
-        oLists.add(task);
-        listsNotification.setItems(oLists);
+        notTasks.add(task);
+        listsNotification.setItems(notTasks);
         listsNotification.setCellFactory((ta) -> new TaskRequestCell());
     }
 
     void setFriendRequest(Notifications friend) {
-//        ObservableList<Notifications> oLists = FXCollections.observableArrayList() ;
-//        oLists.add(friend);
-//        listsNotification.setItems(oLists);
-//        listsNotification.setCellFactory((li) -> new ListRequestCell());
+        notFriendRequests.add(friend);
+        listsNotification.setItems(notFriendRequests);
+        listsNotification.setCellFactory((ta) -> new friendRequestCell());
     }
 
     /*start Aml Functions */
@@ -299,16 +298,19 @@ public class MenuBarController implements Initializable {
 
     }
     /*start Aml Functions */
+
     @FXML
     public void sendFriendRequest(ActionEvent event) {
-            String friendRequestName = friendRequestTextField.getText().trim();
-             ConnectWithLoginView_MenuBar getInstance = ConnectWithLoginView_MenuBar.getInastance();
-             String name = getInstance.sendDataToView();
-             String result = "";
-            if(name.equals(friendRequestName))
-                result = "You can not send request to yourself";
-            else
-                result = ConnectWithController_MenuBar.getInastance().sendFriendRequest(friendRequestName);
-            resultLabel.setText(result);    
+        String friendRequestName = friendRequestTextField.getText().trim();
+        ConnectWithLoginView_MenuBar getInstance = ConnectWithLoginView_MenuBar.getInastance();
+        String name = getInstance.sendDataToView();
+        String result = "";
+        if (name.equals(friendRequestName)) {
+            result = "You can not send request to yourself";
+        } else {
+            result = ConnectWithController_MenuBar.getInastance().sendFriendRequest(friendRequestName);
+        }
+        resultLabel.setText(result);
     }   /*end Aml*/
+
 }

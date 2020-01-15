@@ -8,4 +8,6 @@ public class NotificationKeys {
     public static int ACCEPET_NOTIFICATION_REQUEST = 1;
     public static int REJECT_NOTIFICATION_REQUEST = 0;
     public static int NORESPONSE_NOTIFICATION_REQUEST = 2;
+    public static int SEND_RESPONSE_BACK_TO_SENDER_ACCEPT = 3;
+    public static int SEND_RESPONSE_BACK_TO_SENDER_REJECT = 4;
 }
