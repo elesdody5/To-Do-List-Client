@@ -6,14 +6,12 @@
 package home.list;
 
 import home.to_do_list.ToDoList;
-import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -25,9 +23,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import org.json.JSONException;
-import org.json.JSONObject;
-import server_request.Server;
+import javafx.stage.WindowEvent;
 
 /**
  * FXML Controller class
@@ -53,12 +49,13 @@ public class ToDoForm implements Initializable {
     @FXML
     TextArea description;
     private boolean edit = false;
+    private boolean save =false;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         todo = new ToDoList();
-        
+
     }
     
     @FXML
@@ -70,6 +67,7 @@ public class ToDoForm implements Initializable {
                     Alert alert = new Alert(Alert.AlertType.WARNING);
                     alert.setContentText("Sorry the DeadLine must be after the start Date");
                     alert.showAndWait();
+                    startDate.setValue(null);
                     return;
                 }
             }
@@ -113,6 +111,7 @@ public class ToDoForm implements Initializable {
             todo.setColor(color.getValue().toString());
             todo.setDescription(description.getText());
             edit = true;
+            save=true;
             ((Stage) pane.getScene().getWindow()).close();
             
         } else {
@@ -126,7 +125,7 @@ public class ToDoForm implements Initializable {
         return todo;
     }
     
-    void setToDo(ToDoList todo) {
+    public void setToDo(ToDoList todo) {
         this.todo = todo;
         title.setText(todo.getTitle());
         final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-M-d");
@@ -137,7 +136,11 @@ public class ToDoForm implements Initializable {
         
     }
     
-    boolean isEdited() {
+   public boolean isEdited() {
         return edit;
+    }
+    public   boolean save()
+    {
+        return save;
     }
 }

@@ -24,6 +24,5 @@ public class REQUEST {
     public static final String NOTIFICATION = "notification";
     public static final String TASK = "task";
     public static final String TODO = "todo";
-
     public static final String END = "-1";
 }
