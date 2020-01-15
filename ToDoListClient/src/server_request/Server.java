@@ -6,6 +6,7 @@
 package server_request;
 
 import Enum.REQUEST;
+import authontication.LoginController;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,6 +33,7 @@ public class Server implements Request {
     Socket socket;
     PrintStream ps;
     BufferedReader in;
+    LoginController loginController;
     private static Listener listener;
     
     public Server() throws IOException {
@@ -42,7 +44,7 @@ public class Server implements Request {
             startnewThread();
         }
     }
-
+    
     @Override
     public JSONObject post(String[] paramters, JSONObject body) {
         ps.println(REQUEST.POST);
