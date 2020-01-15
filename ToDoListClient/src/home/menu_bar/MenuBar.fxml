@@ -80,9 +80,9 @@
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <TextField layoutX="17.0" layoutY="10.0" promptText="Enter Friend Name" />
-                                    <Button fx:id="searchButton" layoutX="40.0" layoutY="60.0" mnemonicParsing="false" text="Search" textFill="#eb56c8" />
-                                    <Label fx:id="resultLabel" layoutX="55.0" layoutY="90.0" prefHeight="17.0" prefWidth="178.0" text="Result" textAlignment="CENTER" textFill="#dd2ec0" />
+                                    <TextField fx:id="friendRequestTextField" layoutX="17.0" layoutY="10.0" promptText="Enter Friend Name" />
+                                    <Button fx:id="searchButton" layoutX="40.0" layoutY="60.0" mnemonicParsing="false" onAction="#sendFriendRequest" style="-fx-background-color: #6F4CBB;" text="Send Request" textFill="WHITE" />
+                                    <Label fx:id="resultLabel" layoutX="40.0" layoutY="100.0" prefHeight="17.0" prefWidth="178.0" text="Result" textAlignment="CENTER" textFill="#6f4cbb" />
                                  </children>
                               </AnchorPane>
                            </content>
@@ -150,7 +150,7 @@
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <ListView fx:id="tasksNotification1" prefHeight="200.0" prefWidth="200.0" />
+                                    <ListView fx:id="friendRequestsNotification" prefHeight="200.0" prefWidth="200.0" />
                                  </children>
                               </AnchorPane>
                            </content>

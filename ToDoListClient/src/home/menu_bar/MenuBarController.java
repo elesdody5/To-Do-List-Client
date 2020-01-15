@@ -5,6 +5,7 @@
  */
 package home.menu_bar;
 
+import Entity.User;
 import authontication.LoginController;
 import home.Notifications;
 import java.net.URL;
@@ -33,7 +34,6 @@ import javafx.concurrent.Task;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import server_request.Server;
 
 /**
  * FXML Controller class
@@ -89,7 +89,7 @@ public class MenuBarController  implements Initializable  {
     @FXML
     private TabPane tabPane;
     @FXML
-    private ListView<Friend> friendsLV;
+    private ListView<User> friendsLV;
     @FXML
     private Button searchButton;
     @FXML
@@ -263,21 +263,21 @@ public class MenuBarController  implements Initializable  {
         ObservableList<Notifications> notLists = FXCollections.observableArrayList();
         //List <Notifications> lists = getInstance.lists;
         List <Notifications> lists = new ArrayList<>();
-        Notifications n =  new Notifications();
-        n.setFromUserId("J");
-        n.setType("1");
-        n.setData("project c");
-        n.setStatus(null);
-        lists.add( n );
-          Notifications n2 =  new Notifications();
-          n2.setFromUserId("k");
-        n2.setType("1");
-        n2.setData("project c");
-        n2.setStatus("1");
-        lists.add( n2 );
-        for(Notifications li : lists){
-           notLists.add(li);
-        }
+//        Notifications n =  new Notifications();
+//        n.setFromUserId("J");
+//        n.setType("1");
+//        n.setData("project c");
+//        n.setStatus(null);
+//        lists.add( n );
+//          Notifications n2 =  new Notifications();
+//          n2.setFromUserId("k");
+//        n2.setType("1");
+//        n2.setData("project c");
+//        n2.setStatus("1");
+//        lists.add( n2 );
+//        for(Notifications li : lists){
+//           notLists.add(li);
+//        }
         listsNotification.setItems(notLists);
         listsNotification.setCellFactory((list) -> new ListRequestCell());
 //        ObservableList<Notifications> notTasks = FXCollections.observableArrayList();
@@ -302,7 +302,7 @@ public class MenuBarController  implements Initializable  {
                 new Friend("Herma Hines", false)
         );
 
-          friendsLV.setItems(items);
+         // friendsLV.setItems(items);
           friendsLV.setCellFactory((listView) -> new FriendListViewCell());
         /*Aml End */
         

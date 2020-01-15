@@ -39,8 +39,8 @@ import server_request.Server;
  */
 public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
 
-   static ListView<TaskInfo> listviewOfTasks;
-   static TaskInfo task;
+   private ListView<TaskInfo> listviewOfTasks;
+   private TaskInfo task;
    static boolean isEdit;
     public ListAdapterOfTasksList(ListView<TaskInfo> listviewOfTasks) {
         this.listviewOfTasks = listviewOfTasks;
@@ -57,9 +57,13 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
             setContextMenu(createContextMenu(task));
 
         }
+        else
+        { setText("");
+        setGraphic(null);
+        }
 
     }
-static TaskInfo getCurrntTask()
+private   TaskInfo getCurrntTask()
 {
      task = listviewOfTasks.getSelectionModel().getSelectedItem();
     return task;
@@ -89,6 +93,7 @@ static TaskInfo getCurrntTask()
         FXMLLoader loader = new FXMLLoader(getClass().getResource("taskInformationView.fxml"));
         Parent form = loader.load();
         TaskInformationViewController taskInformationViewController = loader.getController();
+        taskInformationViewController.setTask(task);
         Scene scene = new Scene(form);
         Stage stage = new Stage();
         stage.setScene(scene);

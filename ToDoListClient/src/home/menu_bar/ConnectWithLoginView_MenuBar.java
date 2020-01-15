@@ -9,20 +9,22 @@ import Entity.User;
 import home.Notifications;
 import java.util.List;
 import home.NotificationKeys;
+import java.util.ArrayList;
+
 /**
  *
  * @author ghadeerelmahdy
  */
 public class ConnectWithLoginView_MenuBar implements MenuBarModelInterface {
 
-    private String name="aseel";
-    private String id="1";
+    private String name ;
+    private String id ;
     private boolean isName;
-    List<Notifications> notifications;
-    List<User> friends;
-    List<Notifications> lists ;  
-    List<Notifications> tasks ;
-    List<Notifications> friendRequests ;
+    private List<Notifications> notifications;
+    private List<User> friends;
+    private List<Notifications> lists ;
+     private List<Notifications> tasks;
+     private List<Notifications> friendRequests;
     int[] listRequest = new int[2];
     int[] taskRequest = new int[2];
     private static ConnectWithLoginView_MenuBar instance;
@@ -38,7 +40,7 @@ public class ConnectWithLoginView_MenuBar implements MenuBarModelInterface {
         return instance;
     }
 
-    // setters from home
+    // setters from home of name and id
     public void setUserName(String name) {
         isName = true;
         this.name = name;
@@ -47,59 +49,77 @@ public class ConnectWithLoginView_MenuBar implements MenuBarModelInterface {
     public void setId(String id) {
         this.id = id;
     }
+//set new requests
 
-    protected void sendRequestList(int senderId, int listId) {
-        listRequest[0] = senderId;
-        listRequest[1] = listId;
+    public void setNotificationRequest(Notifications obj) {
+        if (obj.getType() == NotificationKeys.ADD_COLLABORATOR) {
+            showListRequest(obj);
+        } else if (obj.getType() == NotificationKeys.ASSIGIN_TASK_MEMBER) {
+            showTaskRequest(obj);
+        } else if (obj.getType() == NotificationKeys.REQUEST_FRIEND) {
+            showFriendRequest(obj);
+        }
     }
 
-    protected void sendRequestTask(int senderId, int taskId) {
-        taskRequest[0] = senderId;
-        taskRequest[1] = taskId;
+    private void showListRequest(Notifications obj) {  
+        MenuBarController con = new MenuBarController();
+       // con.setListRequest(obj);
+    }
+
+    private void showTaskRequest(Notifications obj) {
+        MenuBarController con = new MenuBarController();
+       // con.setTaskRequest(obj);
 
     }
 
-    protected void loadAllLists(List<User> friends, List<Notifications> notification) {
+    private void showFriendRequest(Notifications obj) {
+        MenuBarController con = new MenuBarController();
+        //con.setFriendRequest(obj);
+
+    }
+
+    //load old lists
+
+    public void loadAllLists(List<User> friends, List<Notifications> notification) {
         this.friends = friends;
-        this.notifications = notification;
+        notifications = notification;
     }
 
-    //getters to view
-    int[] getListRequest() {
-        return listRequest;
-    }
+    //show all old lists to view
 
-    int[] getTaskRequest() {
-        return taskRequest;
-    }
-    //Aml
     List<User> sendFriendListToView() {
         return friends;
     }
-    List<Notifications> sendListsToView (){   
-       for(int i=0;i< notifications.size() ; i++){
-          if(notifications.get(i).getType() == NotificationKeys.ADD_COLLABORATOR){
-             lists.add(notifications.get(i));
-          }
-        
-       }    
-       return lists ;
+
+    List<Notifications> sendListsToView() {
+        lists = new ArrayList<>();
+        for (int i = 0; i < notifications.size(); i++) {
+            if (notifications.get(i).getType() == NotificationKeys.ADD_COLLABORATOR) {
+                lists.add(notifications.get(i));
+            }
+
+        }
+        return lists;
     }
-    List<Notifications> sendTasksToView (){
-         for(int i=0;i< notifications.size() ; i++){
-          if(notifications.get(i).getType() == NotificationKeys.ASSIGIN_TASK_MEMBER){
-             tasks.add(notifications.get(i));
-          }       
-       }
-       return tasks;
+
+    List<Notifications> sendTasksToView() {
+         tasks = new ArrayList<>();
+        for (int i = 0; i < notifications.size(); i++) {
+            if (notifications.get(i).getType() == NotificationKeys.ASSIGIN_TASK_MEMBER) {
+                tasks.add(notifications.get(i));
+            }
+        }
+        return tasks;
     }
-      List<Notifications> sendFriendRequestToView (){
-         for(int i=0;i< notifications.size() ; i++){
-          if(notifications.get(i).getType() == NotificationKeys.REQUEST_FRIEND){
-             friendRequests.add(notifications.get(i));
-          }       
-       }
-       return friendRequests;
+
+    List<Notifications> sendFriendRequestToView() {
+         friendRequests = new ArrayList<>();
+        for (int i = 0; i < notifications.size(); i++) {
+            if (notifications.get(i).getType() == NotificationKeys.REQUEST_FRIEND) {
+                friendRequests.add(notifications.get(i));
+            }
+        }
+        return friendRequests;
     }
 
     @Override
