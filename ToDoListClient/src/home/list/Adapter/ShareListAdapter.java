@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package home.list;
+package home.list.Adapter;
 
+import home.list.Adapter.MyListAdapter;
+import home.list.Adapter.Adapter;
 import Entity.User;
 import home.to_do_list.ToDoList;
 import java.io.IOException;
@@ -26,8 +28,8 @@ import javafx.scene.image.ImageView;
 public class ShareListAdapter extends Adapter {
 
 
-    public ShareListAdapter(ListView<ToDoList> itemListView,ArrayList<User> friends) {
-        super(itemListView,friends);
+    public ShareListAdapter(ListView<ToDoList> itemListView,ArrayList<User> friends,ArrayList<ToDoList>toDoList) {
+        super(itemListView,friends,toDoList);
         
     }
      @Override

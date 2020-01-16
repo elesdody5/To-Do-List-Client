@@ -24,10 +24,10 @@ public class ToDoList extends Observable {
     private String color;
     private String description;
     private ArrayList<TaskInfo> taskes;
-    private ArrayList<User> teamMateInToDoList;
+    private ArrayList<User> collaborator;
 
-    public ArrayList<User> getTeamMateInToDoList() {
-        return teamMateInToDoList;
+    public ArrayList<User> getCollaborator() {
+        return collaborator;
     }
 
    

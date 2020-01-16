@@ -96,7 +96,21 @@ public class friendRequestCell  extends ListCell<Notifications>{
                 reject.setText("Reject");
                 accept.setVisible(true);
                 reject.setVisible(true);
-            } else {
+            } else if (not.getStatus() == NotificationKeys.SEND_RESPONSE_BACK_TO_SENDER_ACCEPT) {
+                setBackground(new Background(new BackgroundFill(Paint.valueOf("C2B5DE"), new CornerRadii(5), Insets.EMPTY)));
+                accept.setVisible(false);
+                reject.setVisible(false);
+                //TODO : mention name of this list
+                txt.setText(not.getFromUserName() + " accepted your friend request ") ;
+                setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+                    @Override
+                    public void handle(MouseEvent event) {
+                        txt.setTextFill(Paint.valueOf("black"));
+                        setBackground(new Background(new BackgroundFill(Paint.valueOf("white"), new CornerRadii(5), Insets.EMPTY)));
+                    }
+                }); 
+             } else {
                 setBackground(new Background(new BackgroundFill(Paint.valueOf("white"), new CornerRadii(5), Insets.EMPTY)));
                 accept.setVisible(false);
                 reject.setVisible(false);
