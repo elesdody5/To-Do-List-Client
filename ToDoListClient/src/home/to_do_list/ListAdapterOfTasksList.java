@@ -41,8 +41,9 @@ import server_request.Server;
 public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
 
    private ListView<TaskInfo> listviewOfTasks;
-   private TaskInfo task;
+   private static TaskInfo task;
    static boolean isEdit;
+   static TaskInfo currentTask=null;
     public ListAdapterOfTasksList(ListView<TaskInfo> listviewOfTasks) {
         this.listviewOfTasks = listviewOfTasks;
     }
@@ -54,6 +55,7 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
             JFXCheckBox checkbox = new JFXCheckBox();
             setGraphic(checkbox);
             setText(task.getTitle());
+            currentTask=task;
           //  this.task=task;
             setContextMenu(createContextMenu(task));
 
@@ -64,16 +66,18 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
         }
 
     }
-private   TaskInfo getCurrntTask()
+public static  TaskInfo getCurrntTask()
 {
-     task = listviewOfTasks.getSelectionModel().getSelectedItem();
-    return task;
+     
+    return currentTask;
 }
     private ContextMenu createContextMenu(TaskInfo task) {
         ContextMenu contextMenu = new ContextMenu();
         MenuItem edit = new MenuItem("Edit");
+         MenuItem share = new MenuItem("Assign ti teamMember");
         MenuItem delete = new MenuItem("Delete");
-        contextMenu.getItems().addAll(edit, delete);
+        
+        contextMenu.getItems().addAll(edit,share, delete);
         edit.setOnAction((ActionEvent event) -> {
 
             try {
@@ -86,7 +90,25 @@ private   TaskInfo getCurrntTask()
         delete.setOnAction((ActionEvent event) -> {
             delete(task);
         });
-
+ share.setOnAction((ActionEvent event) -> {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("TeamMember.fxml"));
+        Parent form = null;
+            try {
+                form = loader.load();
+            } catch (IOException ex) {
+                Logger.getLogger(ListAdapterOfTasksList.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        TeamMemberController teamMemberController = loader.getController();
+      
+        Scene scene = new Scene(form);
+        Stage stage = new Stage();
+        stage.setScene(scene);
+       
+        stage.initStyle(StageStyle.UTILITY);
+        stage.initOwner(getScene().getWindow());
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.show();
+        });
         return contextMenu;
     }
 

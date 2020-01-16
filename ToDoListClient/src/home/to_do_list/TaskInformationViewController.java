@@ -62,7 +62,6 @@ public class TaskInformationViewController implements Initializable, Observer {
     static TaskInfo taskInfostatic;
     @FXML
     private AnchorPane taskData;
-    private JFXButton checkBoxButton;
     @FXML
     private JFXDatePicker StartDatePicker;
     @FXML
@@ -73,6 +72,8 @@ public class TaskInformationViewController implements Initializable, Observer {
     private JFXTextArea comment;
     private boolean edit = false;
     private TaskInfo CurrentTask;
+    @FXML
+    private JFXButton memberInToDoList;
 
     /**
      * Initializes the controller class.
@@ -80,28 +81,28 @@ public class TaskInformationViewController implements Initializable, Observer {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        
+        todolist = ToDoListController.getTodoList();
         memberList.setVisible(false);
         User user = new User();
         ToDoList todolist = new ToDoList();
         ArrayList<User> teamMateInToDo = null;
         try {
             teamMateInToDo = getTeamMemberInToDo();
-            if(teamMateInToDo!=null){
-            for (int i = 0; i < teamMateInToDo.size(); i++) {
-                ListViewOfMember.getItems().add(teamMateInToDo.get(i));
-                ListViewOfMember.setCellFactory((param)
-                        -> {
-                    return new ListAdapter();
-                });
-            }}
+            if (teamMateInToDo != null) {
+                for (int i = 0; i < teamMateInToDo.size(); i++) {
+                    ListViewOfMember.getItems().add(teamMateInToDo.get(i));
+                    ListViewOfMember.setCellFactory((param)
+                            -> {
+                        return new ListAdapter();
+                    });
+                }
+            }
         } catch (JSONException ex) {
             Logger.getLogger(TaskInformationViewController.class.getName()).log(Level.SEVERE, null, ex);
 
         }
 
-        }
-    
+    }
 
     @FXML
     private void addMember(ActionEvent event) {
@@ -118,10 +119,10 @@ public class TaskInformationViewController implements Initializable, Observer {
 
     }
 
-
-     private ArrayList<User> getTeamMemberInToDo() throws JSONException  {
-        String[] typrOfRequest = new String[1];
+    private ArrayList<User> getTeamMemberInToDo() throws JSONException {
+        String[] typrOfRequest = new String[2];
         typrOfRequest[0] = "getTeamMemberInToDo";
+        typrOfRequest[1] = String.valueOf(todolist.getId());
         Server server = null;
         try {
             server = new Server();
@@ -130,31 +131,35 @@ public class TaskInformationViewController implements Initializable, Observer {
         }
         JSONObject resultOfGetTeamMember = server.get(typrOfRequest);
         ArrayList<User> teamMemberInfoList = null;
-        if(resultOfGetTeamMember!=null)
-        {  JSONArray jsonArrayOfTeamMeber = resultOfGetTeamMember.getJSONArray("listOfTeamMember");
-         teamMemberInfoList = new ArrayList<User>();
-        for (int i = 0; i < jsonArrayOfTeamMeber.length(); i++) {
-            JSONObject teammember = jsonArrayOfTeamMeber.getJSONObject(i);
-            String username = teammember.getString("userName");
-            //  System.out.println(username);
+        if (resultOfGetTeamMember != null) {
+            JSONArray jsonArrayOfTeamMeber = resultOfGetTeamMember.getJSONArray("listOfTeamMember");
+            teamMemberInfoList = new ArrayList<User>();
+            for (int i = 0; i < jsonArrayOfTeamMeber.length(); i++) {
+                JSONObject teammember = jsonArrayOfTeamMeber.getJSONObject(i);
+                System.out.println(teammember.toString());
+                String username = teammember.getString("userName");
+                int userId = (int) teammember.get("id");
 
-            User TeamMember = new User();
-            TeamMember.setUserName(username);
-            teamMemberInfoList.add(TeamMember);
+                User TeamMember = new User();
+                TeamMember.setUserName(username);
+                TeamMember.setId(userId);
+                teamMemberInfoList.add(TeamMember);
 
-        }}
+            }
+        }
         // System.out.println(jsonArrayOftodotasks);
         return teamMemberInfoList;
-       
 
     }
 
+    static boolean isClicked = false;
 
     @FXML
     private void saveTaskData(ActionEvent event) {
-        TaskInfo addedTask = new TaskInfo();
+        isClicked = true;
+        TaskInfo addedTask = null;
         if (!titleOfTask.getText().toString().equals("") && StartDatePicker.getValue() != null && endDatePicker.getValue() != null) {
-            todolist = ToDoListController.getTodoList();
+            addedTask = new TaskInfo();
             addedTask.setTitle(titleOfTask.getText().toString());
             addedTask.setListId(todolist.getId());
             addedTask.setDescription(description.getText().toString());
@@ -163,21 +168,27 @@ public class TaskInformationViewController implements Initializable, Observer {
             addedTask.setComment(comment.getText().toString());
             toDoTaskJsonObject = addedTask.writeTaskInfoObjectAsJson();
         }
-        if (!ListAdapterOfTasksList.isEdited()) {
-            try {
 
-                taskInfostatic = addedTask;
-                todolist.addTaskToDoList(addedTask);
-                edit = true;
-                sendTaskInfoToServer();
-                titleOfTask.setText("");
-                ((Stage) taskData.getScene().getWindow()).close();
+        if (!ListAdapterOfTasksList.isEdited()) {
+
+            try {
+                if (addedTask != null) {
+                    taskInfostatic = addedTask;
+                    todolist.addTaskToDoList(addedTask);
+                    edit = true;
+                    sendTaskInfoToServer();
+                    titleOfTask.setText("");
+                 //  JSONObject notificationDataJsonObject= ListAdapter.getNotificationObjectAsJson();
+                  // sendNotificationToDataBase(notificationDataJsonObject);
+                    ((Stage) taskData.getScene().getWindow()).close();
+                }
 
             } catch (IOException ex) {
                 showAleart(Alert.AlertType.ERROR, "Connection lost", "Error update  List");
             }
 
         } else {
+
             CurrentTask.setTitle(titleOfTask.getText().toString());
             CurrentTask.setListId(todolist.getId());
             CurrentTask.setDescription(description.getText().toString());
@@ -189,7 +200,7 @@ public class TaskInformationViewController implements Initializable, Observer {
             toDoTaskJsonObject = CurrentTask.writeTaskInfoObjectAsJson();
             updateInServer(toDoTaskJsonObject);
             edit = false;
-            
+
             ((Stage) taskData.getScene().getWindow()).close();
 
         }
@@ -198,7 +209,18 @@ public class TaskInformationViewController implements Initializable, Observer {
     public static TaskInfo getTaskInfo() {
         return taskInfostatic;
     }
-
+ public void sendNotificationToDataBase(JSONObject notificationDataJsonObject) 
+   {
+       Server server;
+        try {
+            server = new Server();
+             server.post(new String[]{"Assignnotification"}, notificationDataJsonObject);
+            
+        } catch (IOException ex) {
+ showAleart(Alert.AlertType.ERROR, "Connection lost", "Error update  List");
+               }
+         
+   }
     private void sendTaskInfoToServer() throws IOException {
         String[] TypeOfRequest = new String[1];
         TypeOfRequest[0] = "Task";
@@ -274,7 +296,7 @@ public class TaskInformationViewController implements Initializable, Observer {
     }
 
     public void setTaskView(TaskInfo task) {
-        
+
         titleOfTask.setText(task.getTitle());
         final DateTimeFormatter datetimeformater = DateTimeFormatter.ofPattern("yyyy-M-d");
 

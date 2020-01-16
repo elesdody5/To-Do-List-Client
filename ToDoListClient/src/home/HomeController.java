@@ -66,7 +66,6 @@ public class HomeController implements Initializable {
             }.getType();
             ArrayList<ToDoList> todoList = gson.fromJson(json.getJSONArray("todo_list").toString(), ListType);
             // convert shared todo
-
             ArrayList<ToDoList> sharedList = gson.fromJson(json.getJSONArray("shared_list").toString(), ListType);
             // convert notification
             Type notificationListType = new TypeToken<ArrayList<Notifications>>() {
