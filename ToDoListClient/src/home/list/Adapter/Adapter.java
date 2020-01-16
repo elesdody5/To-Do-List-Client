@@ -3,10 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package home.list;
+package home.list.Adapter;
 
 import Entity.User;
 import authontication.LoginController;
+import home.list.FXMLListController;
+import home.list.FriendsListController;
+import home.list.ToDoForm;
 import home.to_do_list.ToDoList;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,10 +41,12 @@ import server_request.Server;
 public abstract class Adapter extends ListCell<ToDoList>{
     ListView<ToDoList>itemListView;
     ArrayList<User>friends;
+    ArrayList<ToDoList>todoList;
 
-    public Adapter(ListView<ToDoList> itemListView,ArrayList<User> friends) {
+    public Adapter(ListView<ToDoList> itemListView,ArrayList<User> friends,ArrayList<ToDoList>todoList) {
         this.itemListView = itemListView;
         this.friends  = friends;
+        this.todoList= todoList;
     }
  
     @Override
@@ -113,7 +118,6 @@ public abstract class Adapter extends ListCell<ToDoList>{
             try {
                 if (toDoForm.isEdited()) {
                     int response = updateInServer(createJson(todo));
-                    System.out.println(response);
                     if (response != -1) {
                         updateItem(todo, false);
                         showAleart(Alert.AlertType.INFORMATION, "Done ", "updated Succefully");
@@ -166,6 +170,7 @@ public abstract class Adapter extends ListCell<ToDoList>{
             int response = server.delete(new String[]{"list",todo.getId()+""});
             if (response != -1) {
                         itemListView.getItems().remove(todo);
+                        todoList.remove(todo);
                         showAleart(Alert.AlertType.INFORMATION, "Done ", "deleted Succefully");
                     } else {
                         showAleart(Alert.AlertType.ERROR, "Error ", "cann't delete todo");
@@ -182,10 +187,11 @@ public abstract class Adapter extends ListCell<ToDoList>{
         FriendsListController friendsList = loader.getController();
         friendsList.setFriendsList(friends);
         friendsList.setToDo(todo);
+        friendsList.setCollab(todo.getCollaborator());
         Scene scene = new Scene(form);
         Stage stage = new Stage();
         stage.setScene(scene);
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("friendship.png")));
+//        stage.getIcons().add(new Image(getClass().getResourceAsStream("friendship.png")));
         stage.setTitle("Frineds");
         stage.initStyle(StageStyle.UTILITY);
         stage.initOwner(getScene().getWindow());

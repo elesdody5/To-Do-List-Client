@@ -11,7 +11,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import home.list.FXMLListController;
-import home.menu_bar.ConnectWithController_MenuBar;
 import home.menu_bar.ConnectWithLoginView_MenuBar;
 import home.to_do_list.ToDoList;
 import home.to_do_list.ToDoListController;
@@ -30,9 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import server_request.Server;
 import java.lang.reflect.Type;
-import javafx.application.Platform;
 import javafx.scene.Parent;
-import server_connection.Connection;
 
 /**
  * FXML Controller class
@@ -72,7 +69,7 @@ public class HomeController implements Initializable {
             }.getType();
             ArrayList<Notifications> notifications = gson.fromJson(json.getJSONArray("notification").toString(), notificationListType);
             // start home screen
-            //System.out.println(json);
+            System.out.println(json);
             start(user, friendsList, todoList, sharedList, notifications);
         } catch (IOException ex) {
             Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);

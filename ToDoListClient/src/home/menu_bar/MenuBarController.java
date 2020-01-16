@@ -101,8 +101,8 @@ public class MenuBarController implements Initializable {
     /* end Aml*/
 
     boolean serverout;
-    ObservableList<Notifications> notLists;
-    ObservableList<Notifications> notTasks;
+    ObservableList<Notifications> notLists = FXCollections.observableArrayList();
+    ObservableList<Notifications> notTasks= FXCollections.observableArrayList();
     ObservableList<Notifications> notFriendRequests;
     List<Notifications> lists;
 
@@ -232,21 +232,21 @@ public class MenuBarController implements Initializable {
 
     void setListRequest(Notifications list) {
         notLists.add(list);
+        System.out.println(list.getId());
         listsNotification.setItems(notLists);
         listsNotification.setCellFactory((li) -> new ListRequestCell());
     }
+
     void setTaskRequest(Notifications task) {
-        ObservableList<Notifications> oLists = FXCollections.observableArrayList();
-        oLists.add(task);
-        listsNotification.setItems(oLists);
+        notTasks.add(task);
+        listsNotification.setItems(notTasks);
         listsNotification.setCellFactory((ta) -> new TaskRequestCell());
     }
 
     void setFriendRequest(Notifications friend) {
-//        ObservableList<Notifications> oLists = FXCollections.observableArrayList() ;
-//        oLists.add(friend);
-//        listsNotification.setItems(oLists);
-//        listsNotification.setCellFactory((li) -> new ListRequestCell());
+        notFriendRequests.add(friend);
+        listsNotification.setItems(notFriendRequests);
+        listsNotification.setCellFactory((ta) -> new friendRequestCell());
     }
 
     /*start Aml Functions */
@@ -279,14 +279,13 @@ public class MenuBarController implements Initializable {
         tasksNotification.setItems(notTasks);
         tasksNotification.setCellFactory((task) -> new TaskRequestCell());
         //get friend requests notifications
-//        notFriendRequests = FXCollections.observableArrayList();
-//        List<Notifications> friendRequests = getInstance.sendFriendRequestToView();
-//        for (Notifications li : friendRequests) {
-//            notFriendRequests.add(li);
-//        }
-//        friendRequestsNotification.setItems(notFriendRequests);
-        //todo friend request cell
-        //friendRequestsNotification.setCellFactory((friendRequest) -> new TaskRequestCell());
+        notFriendRequests = FXCollections.observableArrayList();
+        List<Notifications> friendRequests = getInstance.sendFriendRequestToView();
+        for (Notifications li : friendRequests) {
+            notFriendRequests.add(li);
+        }
+        friendRequestsNotification.setItems(notFriendRequests);
+        friendRequestsNotification.setCellFactory((friendRequest) -> new friendRequestCell());
         /*Aml Start*/
         //get friend list 
         ObservableList<User> items = FXCollections.observableArrayList();
@@ -300,10 +299,19 @@ public class MenuBarController implements Initializable {
 
     }
     /*start Aml Functions */
+
     @FXML
     public void sendFriendRequest(ActionEvent event) {
-            String friendRequestName = friendRequestTextField.getText().trim();
-             String result = ConnectWithController_MenuBar.getInastance().sendFriendRequest(friendRequestName);
-            resultLabel.setText(result);    
+        String friendRequestName = friendRequestTextField.getText().trim();
+        ConnectWithLoginView_MenuBar getInstance = ConnectWithLoginView_MenuBar.getInastance();
+        String name = getInstance.sendDataToView();
+        String result = "";
+        if (name.equals(friendRequestName)) {
+            result = "You can not send request to yourself";
+        } else {
+            result = ConnectWithController_MenuBar.getInastance().sendFriendRequest(friendRequestName);
+        }
+        resultLabel.setText(result);
     }   /*end Aml*/
+
 }
