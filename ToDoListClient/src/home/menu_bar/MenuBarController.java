@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -8,7 +9,6 @@ package home.menu_bar;
 import Entity.User;
 import authontication.LoginController;
 import home.Notifications;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +35,6 @@ import javafx.concurrent.Task;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import org.json.JSONException;
-import org.json.JSONObject;
-import server_request.Server;
 
 /**
  * FXML Controller class
@@ -85,6 +82,8 @@ public class MenuBarController implements Initializable {
     private ListView<Notifications> listsNotification;
     @FXML
     private ListView<Notifications> tasksNotification;
+    @FXML
+    private ListView<Notifications> friendRequestsNotification;
     /* start Aml Variables*/
     @FXML
     private Label label;
@@ -99,15 +98,14 @@ public class MenuBarController implements Initializable {
     @FXML
     private TextField friendRequestTextField;
     List<User> friendsOfUser;
-    ConnectWithLoginView_MenuBar getInstanceFromLogin;
+    List<User> friends ;
     /* end Aml*/
 
     boolean serverout;
-    List<String> lists;
-    List<String> tasks;
-    
-    
-    
+    ObservableList<Notifications> notLists;
+    ObservableList<Notifications> notTasks;
+    ObservableList<Notifications> notFriendRequests;
+    List<Notifications> lists;
 
     class ProcessService extends Service<Void> {
 
@@ -127,168 +125,7 @@ public class MenuBarController implements Initializable {
     Service service = new ProcessService();
 
   
-    @FXML
-    private void handleChangePasswordAction(ActionEvent event) {
-        if (newPassword.getText().equals(verfiyNewPassword.getText())) {
-            ConnectWithController_MenuBar.getInastance().setNewPassword(newPassword.getText());
-            if (ConnectWithController_MenuBar.getInastance().sendDataToView().equals("true")) {
-                 if (!service.isRunning()) {
-                service.start();
-                 }
-                status.setVisible(true);
-                status.setText("your password is changed");
-                newPassword.setText("");
-                verfiyNewPassword.setText("");
-                service.setOnSucceeded(e -> {
-                    status.setVisible(false);
-                    //reset service
-                    service.reset();
-                });
-            } else {
-                 if (!service.isRunning()) {
-                service.start();
-            }
-                newPassword.setText("");
-                verfiyNewPassword.setText("");
-                status.setVisible(true);
-                status.setText("your Password cannot be changed");
-                      service.setOnSucceeded(e -> {
-                    status.setVisible(false);
-                    //reset service
-                    service.reset();
-                });
-            }
-        } else {
-             if (!service.isRunning()) {
-                service.start();
-            }
-            status.setVisible(true);
-            status.setText("your Password verfication is not identical");
-                  service.setOnSucceeded(e -> {
-                    status.setVisible(false);
-                    //reset service
-                    service.reset();
-                });
-        }
-    }
-
-    @FXML
-    private void handleProfileMenuAction(ActionEvent event) {
-        status.setVisible(false);
-    }
-
-    @FXML
-    private void handleLogoutAction(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/authontication/login.fxml"));
-            Stage s = (Stage) menu.getScene().getWindow();
-            s.hide();
-            Parent root = (Parent) loader.load();
-            //send stage to login controller
-            LoginController controller = loader.getController();
-            Scene scene = new Scene(root);
-            controller.setStage(s);
-            s.setScene(scene);
-            s.show();
-
-        } catch (Exception ex) {
-            Logger.getLogger(MenuBarController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    } 
-
- 
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-
-        // get data of the instance created by login 
-        //get name
-        getInstanceFromLogin = ConnectWithLoginView_MenuBar.getInastance();
-        String name = getInstanceFromLogin.sendDataToView();
-        userName.setText(name);
-        userImage.setText(("" + name.charAt(0)).toUpperCase());
-        userNameIns.setText(name);
-        userImageIns.setText(("" + name.charAt(0)).toUpperCase());
-        //get lists notifications
-        ObservableList<Notifications> notLists = FXCollections.observableArrayList();
-        //List <Notifications> lists = getInstance.lists;
-        List<Notifications> lists = new ArrayList<>();
-        Notifications n = new Notifications();
-        n.setFromUserId("J");
-        n.setType("1");
-        n.setData("project c");
-        n.setStatus(null);
-        lists.add(n);
-        Notifications n2 = new Notifications();
-        n2.setFromUserId("k");
-        n2.setType("1");
-        n2.setData("project c");
-        n2.setStatus("1");
-        lists.add(n2);
-        for (Notifications li : lists) {
-            notLists.add(li);
-        }
-        listsNotification.setItems(notLists);
-        listsNotification.setCellFactory((list) -> new ListRequestCell());
-//        ObservableList<Notifications> notTasks = FXCollections.observableArrayList();
-//        List <Notifications> tasks = getInstance.tasks; 
-//        for(Notifications li : tasks){
-//           notTasks.add(li);
-//        }
-//        tasksNotification.setItems(notTasks);
-//        tasksNotification.setCellFactory((task) -> new TaskRequestCell());
-
-        /*Aml Start*/
-        ObservableList<User> items = FXCollections.observableArrayList();
-        friendsOfUser = getInstanceFromLogin.sendFriendListToView();
-        for (int i = 0; i < friendsOfUser.size(); i++) {
-            items.add(friendsOfUser.get(i));
-        }
-
-        friendsLV.setItems(items);
-        friendsLV.setCellFactory((listView) -> new FriendListViewCell());
-        /*Aml End */
-
-    }
-
-       /*start Aml Functions */
-  
-
-   
-    @FXML
-    public void sendFriendRequest(ActionEvent event) {
-        try {
-            String friendRequestName = friendRequestTextField.getText().trim();
-            System.out.println("friendRequestName :"+friendRequestName);
-            Server server = new Server();
-            String[] requestType = new String[1];
-            requestType[0] = "sendFriendRequest";
-            String id = getInstanceFromLogin.sendIdToView();
-            String name = getInstanceFromLogin.sendDataToView();
-            JSONObject friendJsonObject = new JSONObject();
-            friendJsonObject.put("currentUserID", id);
-            friendJsonObject.put("currentUserName", name);
-            friendJsonObject.put("friendName", friendRequestName);
-           JSONObject resultJSONObject = server.post(requestType, friendJsonObject);
-           String resultString = resultJSONObject.getString("result");
-           resultLabel.setText(resultString);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (JSONException ex) {
-            Logger.getLogger(MenuBarController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-     /*end Aml*/
-
-
-
-  
-
-  
-
-
-    @FXML
+      @FXML
     private void handleChangeNameAction(ActionEvent event) {
         ConnectWithController_MenuBar.getInastance().setNewName(newName.getText());
         if (ConnectWithController_MenuBar.getInastance().sendDataToView().equals("true")) {
@@ -325,32 +162,162 @@ public class MenuBarController implements Initializable {
 
     }
 
-//        class RealTimeThread extends Thread {
-//        public void run() {
-//            while (serverout == false) {
-//                try {
-//                    String replyMsg = dis.readUTF();
-//                    ta.appendText(replyMsg);
-//                } catch (EOFException e) {
-//                    try {
-//                        mySocket.close();
-//                        dis.close();
-//                        ps.close();
-//                        serverout=true;
-//                        tf.setEditable(false);  
-//                    } catch (IOException ex) {
-//                        Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
-//                    } 
-//            }catch (IOException ex) {
-//                    ex.printStackTrace();
-//                }
-//            }
-//        }
-//    }   
+    @FXML
+    private void handleChangePasswordAction(ActionEvent event) {
+        if (newPassword.getText().equals(verfiyNewPassword.getText())) {
+            ConnectWithController_MenuBar.getInastance().setNewPassword(newPassword.getText());
+            if (ConnectWithController_MenuBar.getInastance().sendDataToView().equals("true")) {
+                if (!service.isRunning()) {
+                    service.start();
+                }
+                status.setVisible(true);
+                status.setText("your password is changed");
+                newPassword.setText("");
+                verfiyNewPassword.setText("");
+                service.setOnSucceeded(e -> {
+                    status.setVisible(false);
+                    //reset service
+                    service.reset();
+                });
+            } else {
+                if (!service.isRunning()) {
+                    service.start();
+                }
+                newPassword.setText("");
+                verfiyNewPassword.setText("");
+                status.setVisible(true);
+                status.setText("your Password cannot be changed");
+                service.setOnSucceeded(e -> {
+                    status.setVisible(false);
+                    //reset service
+                    service.reset();
+                });
+            }
+        } else {
+            if (!service.isRunning()) {
+                service.start();
+            }
+            status.setVisible(true);
+            status.setText("your Password verfication is not identical");
+            service.setOnSucceeded(e -> {
+                status.setVisible(false);
+                //reset service
+                service.reset();
+            });
+        }
+    }
+
+    @FXML
+    private void handleProfileMenuAction(ActionEvent event) {
+        status.setVisible(false);
+    }
+
+    @FXML
+    private void handleLogoutAction(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/authontication/login.fxml"));
+            Stage s = (Stage) menu.getScene().getWindow();
+            s.hide();
+            Parent root = (Parent) loader.load();
+            //send stage to login controller
+            LoginController controller = loader.getController();
+            Scene scene = new Scene(root);
+            controller.setStage(s);
+            s.setScene(scene);
+            s.show();
+
+        } catch (Exception ex) {
+            Logger.getLogger(MenuBarController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    void setListRequest(Notifications list) {
+        notLists.add(list);
+        listsNotification.setItems(notLists);
+        listsNotification.setCellFactory((li) -> new ListRequestCell());
+    }
+    void setTaskRequest(Notifications task) {
+        ObservableList<Notifications> oLists = FXCollections.observableArrayList();
+        oLists.add(task);
+        listsNotification.setItems(oLists);
+        listsNotification.setCellFactory((ta) -> new TaskRequestCell());
+    }
+
+    void setFriendRequest(Notifications friend) {
+//        ObservableList<Notifications> oLists = FXCollections.observableArrayList() ;
+//        oLists.add(friend);
+//        listsNotification.setItems(oLists);
+//        listsNotification.setCellFactory((li) -> new ListRequestCell());
+    }
+
     /*start Aml Functions */
+    /*end Aml*/
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+
+        // get data of the instance created by login 
+        //get name
+        ConnectWithLoginView_MenuBar getInstance = ConnectWithLoginView_MenuBar.getInastance();
+        String name = getInstance.sendDataToView();
+        userName.setText(name);
+        userImage.setText(("" + name.charAt(0)).toUpperCase());
+        userNameIns.setText(name);
+        userImageIns.setText(("" + name.charAt(0)).toUpperCase());
+        //get lists notifications
+        notLists = FXCollections.observableArrayList();
+        List<Notifications> lists = getInstance.sendListsToView();
+        for (Notifications li : lists) {
+            notLists.add(li);
+        }
+        listsNotification.setItems(notLists);
+        listsNotification.setCellFactory((list) -> new ListRequestCell());
+        //get tasks notifications
+        notTasks = FXCollections.observableArrayList();
+        List<Notifications> tasks = getInstance.sendTasksToView();
+        for (Notifications li : tasks) {
+            notTasks.add(li);
+        }
+        tasksNotification.setItems(notTasks);
+        tasksNotification.setCellFactory((task) -> new TaskRequestCell());
+        //get friend requests notifications
+        notFriendRequests = FXCollections.observableArrayList();
+        List<Notifications> friendRequests = getInstance.sendFriendRequestToView();
+        for (Notifications li : friendRequests) {
+            notFriendRequests.add(li);
+        }
+        friendRequestsNotification.setItems(notFriendRequests);
+        friendRequestsNotification.setCellFactory((friendRequest) -> new friendRequestCell());
+        /*Aml Start*/
+        //get friend list 
+        ObservableList<User> items = FXCollections.observableArrayList();
+        friends = getInstance.sendFriendListToView();
+        for (User user : friends) {
+            items.add(user);
+        }
+        friendsLV.setItems(items);
+        friendsLV.setCellFactory((listView) -> new FriendListViewCell());
+        /*Aml End */
+
+    }
+    /*start Aml Functions */
+    @FXML
+    public void sendFriendRequest(ActionEvent event) {
+            String friendRequestName = friendRequestTextField.getText().trim();
+             ConnectWithLoginView_MenuBar getInstance = ConnectWithLoginView_MenuBar.getInastance();
+             String name = getInstance.sendDataToView();
+             String result = "";
+            if(name.equals(friendRequestName))
+                result = "You can not send request to yourself";
+            else
+                result = ConnectWithController_MenuBar.getInastance().sendFriendRequest(friendRequestName);
+            resultLabel.setText(result);    
+    }
     
-
-
-
+    public void notifyAcceptingFriend (User friendUser){
+       int size = friends.size();
+       friends.add(friendUser);
+       
+    } 
+    /*end Aml*/
 }
-

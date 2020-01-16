@@ -35,14 +35,15 @@ import server_request.Server;
  *
  * @author Elesdody
  */
-public class ListAdapter extends ListCell<ToDoList> {
+public abstract class Adapter extends ListCell<ToDoList>{
     ListView<ToDoList>itemListView;
     ArrayList<User>friends;
 
-    public ListAdapter(ListView<ToDoList> itemListView,ArrayList<User> friends) {
+    public Adapter(ListView<ToDoList> itemListView,ArrayList<User> friends) {
         this.itemListView = itemListView;
         this.friends  = friends;
     }
+ 
     @Override
     protected void updateItem(ToDoList item, boolean empty) {
         super.updateItem(item, empty);
@@ -64,7 +65,7 @@ public class ListAdapter extends ListCell<ToDoList> {
         
     }
 
-    private ContextMenu createContextMenu(ToDoList item) {
+    protected ContextMenu createContextMenu(ToDoList item) {
         ContextMenu contextMenu = new ContextMenu();
         MenuItem edit = new MenuItem("Edit");
         MenuItem share = new MenuItem("Share");
@@ -74,7 +75,7 @@ public class ListAdapter extends ListCell<ToDoList> {
             try {
                 openForm(item);
             } catch (IOException ex) {
-                Logger.getLogger(ListAdapter.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MyListAdapter.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
         delete.setOnAction((ActionEvent event) -> {
@@ -82,15 +83,15 @@ public class ListAdapter extends ListCell<ToDoList> {
         });
         share.setOnAction((ActionEvent event) -> {
             try {
-                openShareList(item.getId());
+                openShareList(item);
             } catch (IOException ex) {
-                Logger.getLogger(ListAdapter.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MyListAdapter.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
         return contextMenu;
     }
 
-    private void openForm(ToDoList todo) throws IOException {
+    protected void openForm(ToDoList todo) throws IOException {
 
         // to open form to add new todo to list 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/home/list/ListForm.fxml"));
@@ -127,7 +128,7 @@ public class ListAdapter extends ListCell<ToDoList> {
         });
     }
 
-    private int updateInServer(JSONObject json) {
+    protected int updateInServer(JSONObject json) {
 
         try {
             Server server = new Server();
@@ -140,7 +141,7 @@ public class ListAdapter extends ListCell<ToDoList> {
 
     }
 
-    private JSONObject createJson(ToDoList todo) throws JSONException {
+    protected JSONObject createJson(ToDoList todo) throws JSONException {
         JSONObject json = new JSONObject();
         json.put("id", todo.getId());
         json.put("ownerId", LoginController.UserId);
@@ -152,14 +153,14 @@ public class ListAdapter extends ListCell<ToDoList> {
         return json;
     }
 
-    private void showAleart(Alert.AlertType type, String title, String content) {
+    protected void showAleart(Alert.AlertType type, String title, String content) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setContentText(content);
         alert.showAndWait();
     }
 
-    private void delete(ToDoList todo) {
+    protected void delete(ToDoList todo) {
          try {
             Server server = new Server();
             int response = server.delete(new String[]{"list",todo.getId()+""});
@@ -174,13 +175,13 @@ public class ListAdapter extends ListCell<ToDoList> {
             
         }
 }
-    private void openShareList(int listId) throws IOException
+    protected void openShareList(ToDoList todo) throws IOException
     {
      FXMLLoader loader = new FXMLLoader(getClass().getResource("/home/list/FriendsList.fxml"));
         Parent form = loader.load();
         FriendsListController friendsList = loader.getController();
         friendsList.setFriendsList(friends);
-        friendsList.setToDoid(listId);
+        friendsList.setToDo(todo);
         Scene scene = new Scene(form);
         Stage stage = new Stage();
         stage.setScene(scene);

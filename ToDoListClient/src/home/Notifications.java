@@ -12,78 +12,79 @@ package home;
 public class Notifications {
 
     private int id;
-    private String fromUserId;
-    private String toUserId;
+    private int fromUserId;
+    private int toUserId;
+    private int dataId ;
+    //type -> list or task
+    private int type;
+
+   
+    //status -> accept 1 or reject 0 or noResponse -1
+    private int status;
+    private String dataName;
     private String fromUsername;
 
-    //type -> list or task
-    private String type;
-    //status -> accept or reject
-    private String status;
-    private String data;
-    private String dataName;
+    public void setFromUserName(String fromUserName) {
+        this.fromUsername = fromUserName;
+    }
+
+    public String getFromUserName() {
+        return fromUsername;
+    }
 
     public void setId(int id) {
         this.id = id;
     }
 
-    public void setFromUserId(String fromUserId) {
+    public void setFromUserId(int fromUserId) {
         this.fromUserId = fromUserId;
     }
 
-    public void setToUserId(String toUserId) {
+    public void setToUserId(int toUserId) {
         this.toUserId = toUserId;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
     public void setData(String data) {
-        this.data = data;
+        this.dataName = data;
     }
 
     public int getId() {
         return id;
     }
 
-    public String getFromUserId() {
+    public int getFromUserId() {
         return fromUserId;
     }
 
-    public String getToUserId() {
+    public int getToUserId() {
         return toUserId;
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
     public String getData() {
-        return data;
-    }
-public String getfromUserName() {
-        return fromUsername;
-    }
-
-    public void setfromUserName(String fromUsername) {
-        this.fromUsername = fromUsername;
-    }
-
-    public String getDataName() {
         return dataName;
     }
+     public void setDataId(int dataId) {
+        this.dataId = dataId;
+    }
 
-    public void setDataName(String dataName) {
-        this.dataName = dataName;
+    public int getDataId() {
+        return dataId;
     }
 
 }

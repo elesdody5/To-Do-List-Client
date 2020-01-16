@@ -18,6 +18,7 @@ public class REQUEST {
     public static final String GET = "GET";
 
     public static final String PUT = "PUT";
+    public static final String LOGOUT = "LOGOUT";
 
     public static final String DELETE = "DELETE";
     public static final String NOTIFICATION = "notification";

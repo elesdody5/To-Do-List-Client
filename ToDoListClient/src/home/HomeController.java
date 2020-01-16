@@ -73,7 +73,7 @@ public class HomeController implements Initializable {
             }.getType();
             ArrayList<Notifications> notifications = gson.fromJson(json.getJSONArray("notification").toString(), notificationListType);
             // start home screen
-            System.out.println(json);
+            //System.out.println(json);
             start(user, friendsList, todoList, sharedList, notifications);
         } catch (IOException ex) {
             Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
@@ -91,31 +91,33 @@ public class HomeController implements Initializable {
             ConnectWithLoginView_MenuBar connect = ConnectWithLoginView_MenuBar.getInastance();
             connect.setUserName(user.getUserName());
             connect.setId(user.getId() + "");
-            //System.out.println(notifications.get(0).getfromUserName());
+            connect.loadAllLists(friendsList, notifications);
             FXMLLoader menuloader = new FXMLLoader(getClass().getResource("/home/menu_bar/MenuBar.fxml"));
             Parent menuBar = menuloader.load();
-
+            
             // create left list 
-            FXMLLoader listloader = new FXMLLoader(getClass().getResource("/home/list/FXMLList.fxml"));
+            FXMLLoader listloader = View.getListLoader();
             VBox list = listloader.load();
             FXMLListController listController = listloader.getController();
-            listController.getMyListView().getItems().addAll(todoList);
+            listController.setToDoList(todoList);
             listController.getFriendsList().addAll(friendsList);
-            listController.getSharedListView().getItems().addAll(sharedList);
+            listController.setShareList(sharedList);
             // create todo loader and controller
-            FXMLLoader todoLoader = new FXMLLoader(getClass().getResource("/home/to_do_list/ToDoList.fxml"));
+            FXMLLoader todoLoader = View.getTodoLoader();
             Parent todo = todoLoader.load();
             ToDoListController todoController = todoLoader.getController();
-            ToDoList currentTodo;
+            listController.setToDoController(todoController);
+
             if (todoList.size() >= 1) {
-                currentTodo = todoList.get(0);
+                ToDoList currentTodo = todoList.get(0);
+
+                todoController.updateCurrentTodo(currentTodo);
+                listController.setCurrentToDo(currentTodo);
 
             } else {
-                currentTodo = new ToDoList();
+
+                todoController.updateCurrentTodo(null);
             }
-            currentTodo.addObserver(todoController);
-            todoController.update(currentTodo,null);
-            listController.setCurrentToDo(currentTodo);
 
             // add component to main pane
             borderPane.setLeft(list);

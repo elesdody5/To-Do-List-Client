@@ -8,6 +8,7 @@ package home.list;
 import Entity.User;
 import authontication.LoginController;
 import home.NotificationKeys;
+import home.to_do_list.ToDoList;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class FriendsListController implements Initializable {
      */
     @FXML
     private ListView<CheckBox> friendsListView;
-    private int listId;
+    private ToDoList todo;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -84,8 +85,8 @@ public class FriendsListController implements Initializable {
         }
     }
 
-    void setToDoid(int listId) {
-        this.listId = listId;
+    void setToDo(ToDoList toDo) {
+        this.todo=toDo;
     }
 
     private JSONObject createJson(int friendId) throws JSONException {
@@ -93,7 +94,7 @@ public class FriendsListController implements Initializable {
         json.put("fromUserId", LoginController.UserId);
         json.put("toUserId", friendId);
         json.put("type", NotificationKeys.ADD_COLLABORATOR);
-        json.put("listId", listId);
+        json.put("listId", todo.getId());
         return json;
     }
 }
