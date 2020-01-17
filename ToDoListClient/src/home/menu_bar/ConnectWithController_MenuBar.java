@@ -91,20 +91,20 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
         }
     }
 
-    private void showListRequest(Notifications obj) {  
-        MenuBarController con = new MenuBarController();
-        con.setListRequest(obj);
+    private void showListRequest(Notifications obj) {
+        MenuBarController instance = MenuBarController.getInastance();
+        instance.setListRequest(obj);
     }
 
     private void showTaskRequest(Notifications obj) {
-        MenuBarController con = new MenuBarController();
-        con.setTaskRequest(obj);
+        MenuBarController instance = MenuBarController.getInastance();
+        instance.setTaskRequest(obj);
 
     }
 
     private void showFriendRequest(Notifications obj) {
-        MenuBarController con = new MenuBarController();
-        con.setFriendRequest(obj);
+        MenuBarController instance = MenuBarController.getInastance();
+        instance.setFriendRequest(obj);
 
     }
 
@@ -155,7 +155,6 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
 
         if (isRequestAccepted) {
 
-            
             try {
                 //update notification table with this id
                 String[] key = {"updateRequestStatus"};
@@ -168,10 +167,10 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
                     //send notification to sender 
                     String[] keySender = {"sender:list:accept"};
                     JSONObject objSenderNotification = new JSONObject();
-                    objSenderNotification .put("fromUserId", request.getToUserId());
-                    objSenderNotification .put("toUserId", request.getFromUserId());
-                    objSenderNotification .put("dataId", request.getDataId());
-                    s.post(keySender, objSenderNotification );
+                    objSenderNotification.put("fromUserId", request.getToUserId());
+                    objSenderNotification.put("toUserId", request.getFromUserId());
+                    objSenderNotification.put("dataId", request.getDataId());
+                    s.post(keySender, objSenderNotification);
                     //add in collaborator table
                     String[] keyRequest = {"addNewColl"};
                     JSONObject objColl = new JSONObject();
@@ -183,10 +182,10 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
                     //send notification to sender 
                     String[] keySender = {"sender:task:accept"};
                     JSONObject objSenderNotification = new JSONObject();
-                    objSenderNotification .put("fromUserId", request.getToUserId());
-                    objSenderNotification .put("toUserId", request.getFromUserId());
-                    objSenderNotification .put("dataId", request.getDataId());
-                    s.post(keySender, objSenderNotification );
+                    objSenderNotification.put("fromUserId", request.getToUserId());
+                    objSenderNotification.put("toUserId", request.getFromUserId());
+                    objSenderNotification.put("dataId", request.getDataId());
+                    s.post(keySender, objSenderNotification);
                     //add in task member table
                     String[] keyRequest = {"addNewTaskMember"};
                     JSONObject objTask = new JSONObject();
@@ -194,13 +193,13 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
                     objTask.put("ItemId", request.getDataId());
                     s.post(keyRequest, objTask);
                 } else if (keyRequestAccept == "friend") {
-                     //send notification to sender 
+                    //send notification to sender 
                     String[] keySender = {"sender:friend:accept"};
                     JSONObject objSenderNotification = new JSONObject();
-                    objSenderNotification .put("fromUserId", request.getToUserId());
-                    objSenderNotification .put("toUserId", request.getFromUserId());
-                    objSenderNotification .put("dataId", request.getDataId());
-                    s.post(keySender, objSenderNotification );
+                    objSenderNotification.put("fromUserId", request.getToUserId());
+                    objSenderNotification.put("toUserId", request.getFromUserId());
+                    objSenderNotification.put("dataId", request.getDataId());
+                    s.post(keySender, objSenderNotification);
                     //add in friend table
                     String[] keyRequest = {"addNewFriend"};
                     JSONObject objFriend = new JSONObject();
