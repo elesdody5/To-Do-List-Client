@@ -99,6 +99,7 @@ public class MenuBarController implements Initializable {
     private TextField friendRequestTextField;
     List<User> friendsOfUser;
     List<User> friends;
+    ObservableList<User> friendObservableList ;
     /* end Aml*/
 
     boolean serverout;
@@ -291,12 +292,12 @@ public class MenuBarController implements Initializable {
         friendRequestsNotification.setCellFactory((friendRequest) -> new friendRequestCell());
         /*Aml Start*/
         //get friend list 
-        ObservableList<User> items = FXCollections.observableArrayList();
+       friendObservableList = FXCollections.observableArrayList();
         friends = getInstance.sendFriendListToView();
         for (User user : friends) {
-            items.add(user);
+            friendObservableList.add(user);
         }
-        friendsLV.setItems(items);
+        friendsLV.setItems(friendObservableList);
         friendsLV.setCellFactory((listView) -> new FriendListViewCell());
         /*Aml End */
 
@@ -321,6 +322,8 @@ public class MenuBarController implements Initializable {
     public void notifyAcceptingFriend(User friendUser) {
         int size = friends.size();
         friends.add(friendUser);
+        friendObservableList.removeAll(friends);
+        friendObservableList.addAll(friends);
 
     }
     /*end Aml*/
