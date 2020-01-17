@@ -98,11 +98,14 @@ public class MenuBarController implements Initializable {
     @FXML
     private TextField friendRequestTextField;
     List<User> friendsOfUser;
+    List<User> friends;
     /* end Aml*/
 
     boolean serverout;
-    ObservableList<Notifications> notLists = FXCollections.observableArrayList();
-    ObservableList<Notifications> notTasks= FXCollections.observableArrayList();
+
+    ObservableList<Notifications> notLists;
+    ObservableList<Notifications> notTasks;
+
     ObservableList<Notifications> notFriendRequests;
     List<Notifications> lists;
 
@@ -250,7 +253,7 @@ public class MenuBarController implements Initializable {
     }
 
     /*start Aml Functions */
-    /*end Aml*/
+ /*end Aml*/
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -289,7 +292,7 @@ public class MenuBarController implements Initializable {
         /*Aml Start*/
         //get friend list 
         ObservableList<User> items = FXCollections.observableArrayList();
-        List<User> friends = getInstance.sendFriendListToView();
+        friends = getInstance.sendFriendListToView();
         for (User user : friends) {
             items.add(user);
         }
@@ -298,10 +301,11 @@ public class MenuBarController implements Initializable {
         /*Aml End */
 
     }
-    /*start Aml Functions */
 
+    /*start Aml Functions */
     @FXML
     public void sendFriendRequest(ActionEvent event) {
+
         String friendRequestName = friendRequestTextField.getText().trim();
         ConnectWithLoginView_MenuBar getInstance = ConnectWithLoginView_MenuBar.getInastance();
         String name = getInstance.sendDataToView();
@@ -312,6 +316,17 @@ public class MenuBarController implements Initializable {
             result = ConnectWithController_MenuBar.getInastance().sendFriendRequest(friendRequestName);
         }
         resultLabel.setText(result);
-    }   /*end Aml*/
+    }
+
+    public void notifyAcceptingFriend(User friendUser) {
+        int size = friends.size();
+        friends.add(friendUser);
+
+    }
+    /*end Aml*/
 
 }
+/*end Aml*/
+
+
+
