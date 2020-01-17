@@ -59,7 +59,7 @@ public class TaskRequestCell extends ListCell<Notifications> {
             public void handle(ActionEvent event) {
                 not.setStatus(1);
                 ConnectWithController_MenuBar instance = ConnectWithController_MenuBar.getInastance();
-                instance.sendRequestResponse(not);
+                instance.sendNotificationResponse(not);
                 // make sure that Notification table is updated
                 if (instance.sendDataToView() == "true") {
                     updateItem(not, true);
@@ -71,7 +71,7 @@ public class TaskRequestCell extends ListCell<Notifications> {
             public void handle(ActionEvent event) {
                 not.setStatus(0);
                 ConnectWithController_MenuBar instance = ConnectWithController_MenuBar.getInastance();
-                instance.sendRequestResponse(not);
+                instance.sendNotificationResponse(not);
                 // make sure that Notification table is updated
                 if (instance.sendDataToView() == "true") {
                     updateItem(not, true);

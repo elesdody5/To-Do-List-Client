@@ -246,7 +246,7 @@ public class Server implements Request {
                 
                 case REQUEST.NOTIFICATION:
                    
-                    ConnectWithLoginView_MenuBar controller_MenuBar = ConnectWithLoginView_MenuBar.getInastance();
+                    ConnectWithController_MenuBar controller_MenuBar =  ConnectWithController_MenuBar.getInastance();
                     controller_MenuBar.setNotificationRequest((Notifications) object);
                     break;
                 case REQUEST.TASK:

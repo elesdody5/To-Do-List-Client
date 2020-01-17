@@ -24,7 +24,7 @@
   <menus>
       <Menu mnemonicParsing="false">
          <graphic>
-            <ToolBar prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #6F4CBB#6F4CBB #6F4CBB#6F4CBB;">
+            <ToolBar pickOnBounds="false" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #6F4CBB#6F4CBB #6F4CBB#6F4CBB;">
                <items>
                   <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -39,9 +39,9 @@
       </Menu>
     <Menu mnemonicParsing="false">
          <graphic>
-            <ToolBar prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB;">
+            <ToolBar disable="true" pickOnBounds="false" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB;">
                <items>
-                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView disable="true" fitHeight="30.0" fitWidth="30.0" preserveRatio="true">
                      <image>
                         <Image url="@icons/true.png" />
                      </image>
@@ -52,7 +52,7 @@
     </Menu>
     <Menu mnemonicParsing="false">
          <graphic>
-            <ToolBar prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB;">
+            <ToolBar mouseTransparent="true" pickOnBounds="false" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB;">
                <items>
                   <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -60,6 +60,9 @@
                      </image>
                   </ImageView>
                </items>
+               <tooltip>
+                  <Tooltip text="Friends" />
+               </tooltip>
             </ToolBar>
          </graphic>
          <items>
@@ -94,15 +97,8 @@
          </items>
     </Menu>
     <Menu mnemonicParsing="false">
-         <items>
-            <SeparatorMenuItem mnemonicParsing="false">
-               <content>
-                  <ListView prefHeight="200.0" prefWidth="200.0" />
-               </content>
-            </SeparatorMenuItem>
-         </items>
          <graphic>
-            <ToolBar prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB;">
+            <ToolBar mouseTransparent="true" pickOnBounds="false" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB;">
                <items>
                   <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -110,12 +106,40 @@
                      </image>
                   </ImageView>
                </items>
+               <tooltip>
+                  <Tooltip text="About us" />
+               </tooltip>
             </ToolBar>
          </graphic>
+         <items>
+            <SeparatorMenuItem mnemonicParsing="false" style="-fx-background-color: #e1e2e6;">
+               <content>
+                  <VBox alignment="CENTER" spacing="3.0" style="-fx-background-color: white;">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="30.0" text="ToDo List" textFill="#6f4cbb">
+                           <font>
+                              <Font name="American Typewriter" size="17.0" />
+                           </font>
+                        </Label>
+                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@icons/team.jpg" />
+                           </image>
+                        </ImageView>
+                        <Label text="&quot; Bring all your Team in One Place &quot;" textFill="#6f4cbb" wrapText="true">
+                           <font>
+                              <Font name="American Typewriter" size="10.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </content>
+            </SeparatorMenuItem>
+         </items>
     </Menu>
       <Menu mnemonicParsing="false">
          <graphic>
-            <ToolBar prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB;">
+            <ToolBar mouseTransparent="true" pickOnBounds="false" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB;">
                <items>
                   <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -123,6 +147,9 @@
                      </image>
                   </ImageView>
                </items>
+               <tooltip>
+                  <Tooltip text="All Notifications" />
+               </tooltip>
             </ToolBar>
          </graphic>
          <items>
@@ -135,6 +162,20 @@
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
                                     <ListView fx:id="listsNotification" prefHeight="200.0" prefWidth="200.0" />
+                                    <VBox fx:id="notListBox" prefHeight="200.0" prefWidth="100.0" visible="false">
+                                       <children>
+                                          <ImageView fitHeight="100.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@icons/not.jpg" />
+                                             </image>
+                                          </ImageView>
+                                          <Label text="&quot; Here You can Show Requests to Collaborate in any List &quot;" textAlignment="CENTER" textFill="#6f4cbb" wrapText="true">
+                                             <font>
+                                                <Font name="American Typewriter" size="13.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </VBox>
                                  </children></AnchorPane>
                         </content>
                       </Tab>
@@ -143,14 +184,42 @@
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
                                     <ListView fx:id="tasksNotification" prefHeight="200.0" prefWidth="200.0" />
+                                    <VBox fx:id="notTaskBox" prefHeight="200.0" prefWidth="100.0">
+                                       <children>
+                                          <ImageView fitHeight="100.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@icons/not.jpg" />
+                                             </image>
+                                          </ImageView>
+                                          <Label text="&quot; Here You can Show Requests to ask you assign in any Task &quot;" textAlignment="CENTER" textFill="#6f4cbb" wrapText="true">
+                                             <font>
+                                                <Font name="American Typewriter" size="13.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </VBox>
                                  </children></AnchorPane>
                         </content>
                       </Tab>
-                        <Tab text="Friend Requests">
+                        <Tab text="Friends">
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
                                     <ListView fx:id="friendRequestsNotification" prefHeight="200.0" prefWidth="200.0" />
+                                    <VBox fx:id="notFriendBox" prefHeight="200.0" prefWidth="100.0">
+                                       <children>
+                                          <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@icons/not.jpg" />
+                                             </image>
+                                          </ImageView>
+                                          <Label text="&quot; Here You can Show Friend Requests &quot;" textAlignment="CENTER" textFill="#6f4cbb" wrapText="true">
+                                             <font>
+                                                <Font name="American Typewriter" size="13.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </VBox>
                                  </children>
                               </AnchorPane>
                            </content>
@@ -163,7 +232,7 @@
       </Menu>
       <Menu mnemonicParsing="false">
          <graphic>
-            <ToolBar prefHeight="40.0" prefWidth="180.0" style="-fx-background-color: #6F4CBB#6F4CBB;">
+            <ToolBar mouseTransparent="true" pickOnBounds="false" prefHeight="40.0" prefWidth="180.0" style="-fx-background-color: #6F4CBB#6F4CBB;">
                <items>
                   <Label fx:id="userImage" alignment="CENTER" contentDisplay="CENTER" pickOnBounds="false" prefHeight="30.0" prefWidth="30.0" style="-fx-border-radius: 20; -fx-border-color: white;" text="U" textAlignment="CENTER" textFill="#00b0ff" textOverrun="CLIP">
                      <font>
@@ -181,50 +250,50 @@
             </ToolBar>
          </graphic>
          <items>
-            <SeparatorMenuItem mnemonicParsing="false" style="-fx-background-color: #e1e2e6;">
+            <SeparatorMenuItem mnemonicParsing="false" style="-fx-background-color: white;">
                <content>
-                  <VBox alignment="CENTER" spacing="3.0" style="-fx-background-color: #e1e2e6#e1e2e6;">
+                  <VBox alignment="CENTER" spacing="3.0" style="-fx-background-color: white;">
                      <children>
-                        <Label fx:id="userImageIns" alignment="CENTER" contentDisplay="CENTER" pickOnBounds="false" prefHeight="60.0" prefWidth="60.0" style="-fx-border-radius: 20; -fx-border-color: white;" text="U" textAlignment="CENTER" textFill="#6f4cbb" textOverrun="CLIP">
+                        <Label fx:id="userImageIns" alignment="CENTER" contentDisplay="CENTER" pickOnBounds="false" prefHeight="60.0" prefWidth="60.0" style="-fx-border-radius: 20; -fx-border-color: #6f4cbb#6f4cbb;" text="U" textAlignment="CENTER" textFill="#6f4cbb" textOverrun="CLIP">
                            <font>
                               <Font name="System Bold" size="25.0" />
                            </font>
                         </Label>
-                        <Label fx:id="userNameIns" alignment="CENTER" prefHeight="30.0" text="User Name" />
-                        <MenuButton mnemonicParsing="false" text="change user name">
+                        <Label fx:id="userNameIns" alignment="CENTER" prefHeight="30.0" text="User Name" textFill="#6f4cbb" />
+                        <MenuButton mnemonicParsing="false" style="-fx-background-color: white;" text="change user name" textFill="#6f4cbb">
                            <items>
                               <MenuItem mnemonicParsing="false">
                                  <graphic>
-                                    <TextField fx:id="newName" promptText="new user name" />
+                                    <TextField fx:id="newName" promptText="new user name" style="-fx-border-color: #6f4cbb; -fx-border-style: hidden;" />
                                  </graphic>
                               </MenuItem>
                               <MenuItem mnemonicParsing="false">
                                  <graphic>
-                                    <Button fx:id="changeName" mnemonicParsing="false" onAction="#handleChangeNameAction" text="Change" />
+                                    <Button fx:id="changeName" mnemonicParsing="false" onAction="#handleChangeNameAction" style="-fx-background-color: white;" text="Change" textFill="#6f4cbb" />
                                  </graphic>
                               </MenuItem>
                            </items>
                         </MenuButton>
-                        <MenuButton mnemonicParsing="false" text="Change password">
+                        <MenuButton mnemonicParsing="false" style="-fx-background-color: white;" text="Change password" textFill="#6f4cbb">
                            <items>
                               <MenuItem mnemonicParsing="false">
                                  <graphic>
-                                    <TextField fx:id="newPassword" promptText="new password" />
-                                 </graphic>
-                              </MenuItem>
-                              <MenuItem mnemonicParsing="false" onAction="#handleProfileMenuAction">
-                                 <graphic>
-                                    <TextField fx:id="verfiyNewPassword" promptText="verfiy new password" />
+                                    <TextField fx:id="newPassword" promptText="new password" style="-fx-border-style: hidden;" />
                                  </graphic>
                               </MenuItem>
                               <MenuItem mnemonicParsing="false">
                                  <graphic>
-                                    <Button fx:id="changePassword" mnemonicParsing="false" onAction="#handleChangePasswordAction" text="Change" />
+                                    <TextField fx:id="verfiyNewPassword" promptText="verfiy new password" style="-fx-border-style: hidden;" />
+                                 </graphic>
+                              </MenuItem>
+                              <MenuItem mnemonicParsing="false">
+                                 <graphic>
+                                    <Button fx:id="changePassword" mnemonicParsing="false" onAction="#handleChangePasswordAction" style="-fx-background-color: white; -fx-border-color: #6f4cbb;" text="Change" textFill="#6f4cbb" />
                                  </graphic>
                               </MenuItem>
                            </items>
                         </MenuButton>
-                        <Button fx:id="logout" mnemonicParsing="false" onAction="#handleLogoutAction" text="Logout" />
+                        <Button fx:id="logout" mnemonicParsing="false" onAction="#handleLogoutAction" style="-fx-background-color: white; -fx-border-color: #6f4cbb;" text="Logout" textFill="#6f4cbb" />
                         <Label fx:id="status" style="-fx-background-color: #c298f5#c298f5;" />
                      </children>
                   </VBox>

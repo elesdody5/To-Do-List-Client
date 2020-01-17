@@ -58,10 +58,10 @@ public class FriendsListController implements Initializable {
                 CheckBox box = friendsListView.getItems().get(i);
                 if (box.isSelected()) {
                     // if todo not have collaborator on it
-                    if (collab.isEmpty()) {
+                    if (collab!=null&&collab.isEmpty()) {
                         notificationJsonArray.put(createJson(Integer.parseInt(box.getId())));
                     }
-
+                    if(collab!=null)
                     for (User user : collab) {
                         // to check if friend not in collab already
                         if (user.getId() != Integer.parseInt(box.getId())) {
@@ -133,7 +133,7 @@ public class FriendsListController implements Initializable {
     private JSONObject createJson(int friendId) throws JSONException {
         JSONObject json = new JSONObject();
         json.put("fromUserId", LoginController.UserId);
-        json.put("fromUserName", ConnectWithController_MenuBar.getInastance().sendDataToView());
+        json.put("fromUserName", ConnectWithLoginView_MenuBar.getInastance().sendDataToView());
         json.put("toUserId", friendId);
         json.put("status", NotificationKeys.NORESPONSE_NOTIFICATION_REQUEST);
         json.put("type", NotificationKeys.ADD_COLLABORATOR);
