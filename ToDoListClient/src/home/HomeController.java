@@ -63,14 +63,12 @@ public class HomeController implements Initializable {
             }.getType();
             ArrayList<ToDoList> todoList = gson.fromJson(json.getJSONArray("todo_list").toString(), ListType);
             // convert shared todo
-
             ArrayList<ToDoList> sharedList = gson.fromJson(json.getJSONArray("shared_list").toString(), ListType);
             // convert notification
             Type notificationListType = new TypeToken<ArrayList<Notifications>>() {
             }.getType();
             ArrayList<Notifications> notifications = gson.fromJson(json.getJSONArray("notification").toString(), notificationListType);
             // start home screen
-            System.out.println(json);
             start(user, friendsList, todoList, sharedList, notifications);
         } catch (IOException ex) {
             Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
@@ -91,7 +89,7 @@ public class HomeController implements Initializable {
             connect.loadAllLists(friendsList, notifications);
             FXMLLoader menuloader = new FXMLLoader(getClass().getResource("/home/menu_bar/MenuBar.fxml"));
             Parent menuBar = menuloader.load();
-            
+
             // create left list 
             FXMLLoader listloader = View.getListLoader();
             VBox list = listloader.load();

@@ -69,6 +69,7 @@ public class FXMLListController implements Initializable {
         // TODO
         friendsList = new ArrayList<>();
         myTodos = new ArrayList<>();
+        currentToDo= new ToDoList();
         sharedTodos = new ArrayList<>();
         myListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         saredListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);

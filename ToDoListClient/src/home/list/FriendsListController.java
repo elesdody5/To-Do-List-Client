@@ -8,14 +8,18 @@ package home.list;
 import Entity.User;
 import authontication.LoginController;
 import home.NotificationKeys;
+import home.View;
 import home.menu_bar.ConnectWithController_MenuBar;
 import home.menu_bar.ConnectWithLoginView_MenuBar;
 import home.to_do_list.ToDoList;
+import home.to_do_list.ToDoListController;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
@@ -40,10 +44,14 @@ public class FriendsListController implements Initializable {
     @FXML
     private ListView<CheckBox> friendsListView;
     private ToDoList todo;
+    private ToDoListController toDoListController;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        FXMLLoader loader = View.getTodoLoader();
+        toDoListController = loader.getController();
+
     }
 
     @FXML
@@ -90,13 +98,18 @@ public class FriendsListController implements Initializable {
                     Server server = new Server();
 
                     JSONObject result = server.post(new String[]{"notification"}, request);
-                    System.out.println(result);
                     if (!result.has("Error")) {
+                        ArrayList<User> removedCollab = new ArrayList<>();
+                        
                         remoedFriends.forEach((user) -> {
-                            todo.getCollaborator().stream().filter((collab) -> (user.equals(collab))).forEachOrdered((collab) -> {
-                                todo.getCollaborator().remove(collab);
+                            todo.getCollaborator().stream().filter((collab) -> (user.getId()==collab.getId())).forEachOrdered((collab) -> {
+                                removedCollab.add(collab);
                             });
                         });
+                        todo.getCollaborator().remove(removedCollab);
+
+                        toDoListController.updateCurrentTodo(todo);
+
                     }
                 } catch (IOException ex) {
                     Alert alert = new Alert(Alert.AlertType.ERROR);

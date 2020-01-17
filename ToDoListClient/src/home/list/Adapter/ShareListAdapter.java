@@ -8,6 +8,7 @@ package home.list.Adapter;
 import Entity.User;
 import authontication.LoginController;
 import home.to_do_list.ToDoList;
+import home.to_do_list.ToDoListController;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -28,39 +29,37 @@ import server_request.Server;
  */
 public class ShareListAdapter extends Adapter {
 
+    public ShareListAdapter(ListView<ToDoList> itemListView, ArrayList<User> friends, ArrayList<ToDoList> toDoList) {
+        super(itemListView, friends, toDoList);
 
-    public ShareListAdapter(ListView<ToDoList> itemListView,ArrayList<User> friends,ArrayList<ToDoList>toDoList) {
-        super(itemListView,friends,toDoList);
-        
     }
-     @Override
+
+    @Override
     protected void updateItem(ToDoList item, boolean empty) {
         super.updateItem(item, empty);
-        if (item!=null&&!empty) {
+        if (item != null && !empty) {
             ImageView image = new ImageView(new Image(getClass().getResourceAsStream("lists.png")));
             image.setFitHeight(30);
             image.setFitWidth(30);
             setGraphic(image);
             setText(item.getTitle());
-           // setContextMenu(createContextMenu(item));
+            // setContextMenu(createContextMenu(item));
 
-        }
-        else
-        {
-            
+        } else {
+
             setGraphic(null);
             setText(null);
         }
-        
+
     }
 
     @Override
     protected ContextMenu createContextMenu(ToDoList item) {
-         ContextMenu contextMenu = new ContextMenu();
+        ContextMenu contextMenu = new ContextMenu();
         MenuItem edit = new MenuItem("Edit");
         MenuItem share = new MenuItem("Share");
         MenuItem leave = new MenuItem("Leave");
-        contextMenu.getItems().addAll(edit, share,leave);
+        contextMenu.getItems().addAll(edit, share, leave);
         edit.setOnAction((ActionEvent event) -> {
             try {
                 openForm(item);
@@ -68,7 +67,7 @@ public class ShareListAdapter extends Adapter {
                 Logger.getLogger(MyListAdapter.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-        
+
         share.setOnAction((ActionEvent event) -> {
             try {
                 openShareList(item);
@@ -85,19 +84,24 @@ public class ShareListAdapter extends Adapter {
     private void leaveToDo(ToDoList todo) {
         try {
             Server server = new Server();
-            int response = server.delete(new String[]{"collab",todo.getId()+"",LoginController.UserId+""});
+            int response = server.delete(new String[]{"collab", todo.getId() + "", LoginController.UserId + ""});
             if (response != -1) {
-                        itemListView.getItems().remove(todo);
-                        todoList.remove(todo);
-                        showAleart(Alert.AlertType.INFORMATION, "Done ", "Leaved Succefully");
-                    } else {
-                        showAleart(Alert.AlertType.ERROR, "Error ", "cann't leave todo");
-                    }
+                itemListView.getItems().remove(todo);
+                todoList.remove(todo);
+                if (!todoList.isEmpty()) //set current todo first one
+                {
+                    setCurrentTodo(todoList.get(0));
+                } else {
+                    setCurrentTodo(null);
+                }
+                showAleart(Alert.AlertType.INFORMATION, "Done ", "Leaved Succefully");
+            } else {
+                showAleart(Alert.AlertType.ERROR, "Error ", "cann't leave todo");
+            }
         } catch (IOException ex) {
             showAleart(Alert.AlertType.ERROR, "Connection lost", "Error update  List");
-            
+
         }
     }
-    
-    
+
 }

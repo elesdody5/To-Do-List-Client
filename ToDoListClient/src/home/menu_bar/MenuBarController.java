@@ -217,18 +217,17 @@ public class MenuBarController implements Initializable {
     @FXML
     private void handleLogoutAction(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/authontication/login.fxml"));
-            Stage s = (Stage) menu.getScene().getWindow();
-            s.hide();
-            Server server = new Server();
-            server.logOut();
-            Parent root = (Parent) loader.load();
-            //send stage to login controller
-            LoginController controller = loader.getController();
-            Scene scene = new Scene(root);
-            controller.setStage(s);
-            s.setScene(scene);
-            s.show();
+            ((Stage)menu.getScene().getWindow()).close();
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/authontication/login.fxml"));
+//            Parent root =  loader.load();
+//            //send stage to login controller
+//            LoginController controller = loader.getController();
+//            Scene scene = new Scene(root);
+//            Stage stage = new Stage();
+//            stage.setScene(scene);
+//            stage.show();
+           
+            
 
         } catch (Exception ex) {
             Logger.getLogger(MenuBarController.class.getName()).log(Level.SEVERE, null, ex);
