@@ -42,7 +42,6 @@ public class ListAdapter extends ListCell<User> {
        ToDoListController t=new ToDoListController();
        TaskInfo currntTask= ListAdapterOfTasksList.getCurrntTask();
           // TaskInfo currntTask= t.getCurrntTask();
-System.out.println(currntTask.getId());
         if (user != null) {
 
             ImageView image = new ImageView(new Image(getClass().getResourceAsStream("personIcon.png")));
@@ -50,7 +49,6 @@ System.out.println(currntTask.getId());
             image.setFitWidth(30);
             setGraphic(image);
             setText(user.getUserName());
-            //System.out.print(user.getUserName()+"ss");
              setOnMousePressed((MouseEvent event) -> {
                    ImageView imagereq = new ImageView(new Image(getClass().getResourceAsStream("request.png")));
             imagereq.setFitHeight(30);
@@ -58,14 +56,12 @@ System.out.println(currntTask.getId());
             setGraphic(imagereq);
             Notifications notificationData =new Notifications();
           ToDoList currntTodo=  ToDoListController.getTodoList();
-        //  System.out.println(currntTodo.getCollaborator().size());
           notificationData.setFromUserId(currntTodo.getOwnerId());
           notificationData.setToUserId(user.getId());
           notificationData.setType(NotificationKeys.ASSIGIN_TASK_MEMBER);
           notificationData.setStatus(NotificationKeys.NORESPONSE_NOTIFICATION_REQUEST);
           notificationData.setDataId(currntTask.getId());
           notificationList.add(notificationData);
-         System.out.print(notificationList.size());
     
       
          // sendNotificationToDataBase(notificationDataJsonObject);
@@ -80,7 +76,6 @@ System.out.println(currntTask.getId());
         }
         
          
-          //   System.out.println(notificationDataJsonObject.toString());
         
 
     }

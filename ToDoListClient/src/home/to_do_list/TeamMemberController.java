@@ -41,27 +41,28 @@ public class TeamMemberController implements Initializable {
     private JFXButton assignTeamMemberToTask;
     @FXML
     private ListView listViewOfassignedTeamMember;
-    List<User>teamMemberAssigned;
-    List<Notifications> notificationsList;  
+    List<User> teamMemberAssigned;
+    List<Notifications> notificationsList;
     TaskInfo currntTask;
     Server server = null;
+
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-            try {
+        try {
             server = new Server();
         } catch (IOException ex) {
             showAleart(Alert.AlertType.ERROR, "Connection lost", "Error update  List");
         }
-                  currntTask=ListAdapterOfTasksList.getCurrntTask();
+        currntTask = ListAdapterOfTasksList.getCurrntTask();
 
-        teamMemberAssigned=new ArrayList<User>();
-                todolist = ToDoListController.getTodoList();
+        teamMemberAssigned = new ArrayList<User>();
+        todolist = ToDoListController.getTodoList();
 
         // TODO
-            ToDoList todolist = new ToDoList();
+        ToDoList todolist = new ToDoList();
         ArrayList<User> teamMateInToDo = null;
         try {
             teamMateInToDo = getTeamMemberInToDo();
@@ -97,49 +98,46 @@ public class TeamMemberController implements Initializable {
             user.setId(id);
             teamMemberAssigned.add(user);
             listViewOfTeamMember.getItems().remove(user);
-            // System.out.println(user.getUserName());
             }
             }
             
             } catch (JSONException ex) {
             Logger.getLogger(TeamMemberController.class.getName()).log(Level.SEVERE, null, ex);
             }*/
-            teamMemberAssigned= getTaskMemberInToDo();
+            teamMemberAssigned = getTaskMemberInToDo();
         } catch (JSONException ex) {
             Logger.getLogger(TeamMemberController.class.getName()).log(Level.SEVERE, null, ex);
         }
-            if (teamMemberAssigned != null) {
-                System.out.print("fddddd");
-                for (int i = 0; i < teamMemberAssigned.size(); i++) {
-                    listViewOfassignedTeamMember.getItems().add(teamMemberAssigned.get(i));
-                    
-                    listViewOfassignedTeamMember.setCellFactory((param)
-                            -> {
-                        return new ListAdapterOfTaskMemberRequest((ListView<User>) param);
-                    });
-                }
-            }
-        
-        //////
-          listViewOfTeamMember.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        if (teamMemberAssigned != null) {
+            for (int i = 0; i < teamMemberAssigned.size(); i++) {
+                listViewOfassignedTeamMember.getItems().add(teamMemberAssigned.get(i));
 
-        @Override
-        public void handle(MouseEvent event) {
-         //   User teamMember= (User) listViewOfTeamMember.getSelectionModel().getSelectedItem();
-         //   teamMemberAssigned.add(teamMember);
+                listViewOfassignedTeamMember.setCellFactory((param)
+                        -> {
+                    return new ListAdapterOfTaskMemberRequest((ListView<User>) param);
+                });
+            }
         }
-    });
-    
-      
+
+        //////
+        listViewOfTeamMember.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent event) {
+                //   User teamMember= (User) listViewOfTeamMember.getSelectionModel().getSelectedItem();
+                //   teamMemberAssigned.add(teamMember);
+            }
+        });
+
     }
-/**/
-     private ArrayList<User> getTaskMemberInToDo() throws JSONException {
-       
+
+    /**/
+    private ArrayList<User> getTaskMemberInToDo() throws JSONException {
+
         String[] typrOfRequest = new String[2];
         typrOfRequest[0] = "getTaskMemberInToDo";
         typrOfRequest[1] = String.valueOf(currntTask.getId());
-        
-      
+
         JSONObject resultOfGetTeamMember = server.get(typrOfRequest);
         ArrayList<User> taskMemberInfoList = null;
         if (resultOfGetTeamMember != null) {
@@ -147,7 +145,7 @@ public class TeamMemberController implements Initializable {
             taskMemberInfoList = new ArrayList<User>();
             for (int i = 0; i < jsonArrayOfTeamMeber.length(); i++) {
                 JSONObject taskMember = jsonArrayOfTeamMeber.getJSONObject(i);
-              
+
                 String username = taskMember.getString("userName");
                 int userId = (int) taskMember.get("id");
 
@@ -158,18 +156,17 @@ public class TeamMemberController implements Initializable {
 
             }
         }
-        // System.out.println(jsonArrayOftodotasks);
         return taskMemberInfoList;
 
-    } 
+    }
+
     /**/
-   private ArrayList<User> getTeamMemberInToDo() throws JSONException {
-       
+    private ArrayList<User> getTeamMemberInToDo() throws JSONException {
+
         String[] typrOfRequest = new String[2];
         typrOfRequest[0] = "getTeamMemberInToDo";
         typrOfRequest[1] = String.valueOf(todolist.getId());
-        
-      
+
         JSONObject resultOfGetTeamMember = server.get(typrOfRequest);
         ArrayList<User> teamMemberInfoList = null;
         if (resultOfGetTeamMember != null) {
@@ -177,7 +174,7 @@ public class TeamMemberController implements Initializable {
             teamMemberInfoList = new ArrayList<User>();
             for (int i = 0; i < jsonArrayOfTeamMeber.length(); i++) {
                 JSONObject teammember = jsonArrayOfTeamMeber.getJSONObject(i);
-              
+
                 String username = teammember.getString("userName");
                 int userId = (int) teammember.get("id");
 
@@ -188,13 +185,12 @@ public class TeamMemberController implements Initializable {
 
             }
         }
-        // System.out.println(jsonArrayOftodotasks);
         return teamMemberInfoList;
 
-    }   
-    public List<Notifications> getNotification() throws JSONException
-    {
-           String[] typrOfRequest = new String[2];
+    }
+
+    public List<Notifications> getNotification() throws JSONException {
+        String[] typrOfRequest = new String[2];
         typrOfRequest[0] = "getnotificationInTask";
         typrOfRequest[1] = String.valueOf(currntTask.getId());
         Server server = null;
@@ -210,12 +206,12 @@ public class TeamMemberController implements Initializable {
             listOfnotification = new ArrayList<Notifications>();
             for (int i = 0; i < jsonArrayOfNotification.length(); i++) {
                 JSONObject notifications = jsonArrayOfNotification.getJSONObject(i);
-              
+
                 int id = notifications.getInt("id");
-                 int fromUserId = notifications.getInt("fromUserId");
-                   int toUserId = notifications.getInt("toUserId");
-                    int type = notifications.getInt("type");
-                     int status = notifications.getInt("status");
+                int fromUserId = notifications.getInt("fromUserId");
+                int toUserId = notifications.getInt("toUserId");
+                int type = notifications.getInt("type");
+                int status = notifications.getInt("status");
 
                 Notifications notification = new Notifications();
                 notification.setId(id);
@@ -227,9 +223,9 @@ public class TeamMemberController implements Initializable {
 
             }
         }
-        // System.out.println(jsonArrayOftodotasks);
         return listOfnotification;
     }
+
     private void showAleart(Alert.AlertType type, String title, String content) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
@@ -239,26 +235,26 @@ public class TeamMemberController implements Initializable {
 
     @FXML
     private void assignTeamMembertoTask(ActionEvent event) throws JSONException {
-        
-        JSONObject notificationDataJsonObject= ListAdapter.getNotificationObjectAsJson();
+
+        JSONObject notificationDataJsonObject = ListAdapter.getNotificationObjectAsJson();
         sendNotificationToDataBase(notificationDataJsonObject);
-        for(int i =0;i<teamMemberAssigned.size();i++)
-        {  listViewOfTeamMember.getItems().remove(teamMemberAssigned.get(i));
-         //  listViewOfassignedTeamMember.getItems().add(teamMemberAssigned.get(i));
+        for (int i = 0; i < teamMemberAssigned.size(); i++) {
+            listViewOfTeamMember.getItems().remove(teamMemberAssigned.get(i));
+            //  listViewOfassignedTeamMember.getItems().add(teamMemberAssigned.get(i));
         }
-    teamMemberAssigned=new ArrayList<User>();
+        teamMemberAssigned = new ArrayList<User>();
     }
-    public void sendNotificationToDataBase(JSONObject notificationDataJsonObject) 
-   {
-       Server server;
+
+    public void sendNotificationToDataBase(JSONObject notificationDataJsonObject) {
+        Server server;
         try {
             server = new Server();
-             server.post(new String[]{"Assignnotification"}, notificationDataJsonObject);
-            
+            server.post(new String[]{"Assignnotification"}, notificationDataJsonObject);
+
         } catch (IOException ex) {
- showAleart(Alert.AlertType.ERROR, "Connection lost", "Error update  List");
-               }
-         
-   }
-    
+            showAleart(Alert.AlertType.ERROR, "Connection lost", "Error update  List");
+        }
+
+    }
+
 }

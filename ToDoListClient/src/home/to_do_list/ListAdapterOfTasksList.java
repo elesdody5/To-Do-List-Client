@@ -68,6 +68,9 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
             //  this.task=task;
             if (currntUser.getId() == todo.getOwnerId()) {
                 setContextMenu(createContextMenu(task));
+            } else {
+                setContextMenu(createContextMenuOfSharedList(task));
+
             }
 
         } else {
@@ -205,6 +208,26 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
 
     static boolean isEdited() {
         return isEdit;
+    }
+    private ContextMenu createContextMenuOfSharedList(TaskInfo task) {
+        ContextMenu contextMenu = new ContextMenu();
+
+//                    System.out.println(currentTask.getId());
+        MenuItem edit = new MenuItem("Edit");
+       
+
+        contextMenu.getItems().addAll(edit);
+        edit.setOnAction((ActionEvent event) -> {
+
+            try {
+                openForm(task);
+            } catch (IOException ex) {
+                Logger.getLogger(ListAdapterOfTasksList.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        });
+      
+        return contextMenu;
     }
 
 }

@@ -119,7 +119,6 @@ public class TaskInformationViewController implements Initializable, Observer {
             teamMemberInfoList = new ArrayList<User>();
             for (int i = 0; i < jsonArrayOfTeamMeber.length(); i++) {
                 JSONObject teammember = jsonArrayOfTeamMeber.getJSONObject(i);
-                System.out.println(teammember.toString());
                 String username = teammember.getString("userName");
                 int userId = (int) teammember.get("id");
 
@@ -178,7 +177,6 @@ public class TaskInformationViewController implements Initializable, Observer {
             CurrentTask.setDeadLine(endDatePicker.getValue().toString());
             CurrentTask.setComment(comment.getText().toString());
             CurrentTask.setId(CurrentTask.getId());
-            //   System.out.println(CurrentTask.getId());
             toDoTaskJsonObject = CurrentTask.writeTaskInfoObjectAsJson();
             updateInServer(toDoTaskJsonObject);
             edit = false;
@@ -214,7 +212,6 @@ public class TaskInformationViewController implements Initializable, Observer {
 
     public void setTodoList(ToDoList toDoList) {
         this.todolist = toDoList;
-        System.out.println(toDoList.getTitle());
     }
 
     public void setTask(TaskInfo task) {
@@ -293,7 +290,6 @@ public class TaskInformationViewController implements Initializable, Observer {
         try {
             Server server = new Server();
             int response = server.put(new String[]{"task"}, json);
-            System.out.println(response);
             return response;
 
         } catch (IOException ex) {
