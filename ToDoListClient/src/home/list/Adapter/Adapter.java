@@ -187,7 +187,6 @@ public abstract class Adapter extends ListCell<ToDoList>{
         FriendsListController friendsList = loader.getController();
         friendsList.setFriendsList(friends);
         friendsList.setToDo(todo);
-        friendsList.setCollab(todo.getCollaborator());
         Scene scene = new Scene(form);
         Stage stage = new Stage();
         stage.setScene(scene);

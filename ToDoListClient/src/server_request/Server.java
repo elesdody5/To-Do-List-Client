@@ -6,6 +6,7 @@
 package server_request;
 
 import Enum.REQUEST;
+import authontication.LoginController;
 import home.Notifications;
 import home.View;
 import home.list.FXMLListController;
@@ -163,14 +164,13 @@ public class Server implements Request {
         return response;
     }
     
-    public void logOut(String userId) {
+    public void logOut() {
         ps.println(REQUEST.LOGOUT);
         
         ps.print("/");
-        ps.print(userId);
+        ps.print(LoginController.UserId);
         
         ps.println();
-        System.exit(0);
         //listener.stop();
     }
     

@@ -44,7 +44,7 @@ import server_request.Server;
  *
  * @author sara
  */
-public class TaskInformationViewController implements Initializable, Observer {
+public class TaskInformationViewController implements Initializable {
 
     @FXML
     private AnchorPane memberList;
@@ -206,11 +206,7 @@ public class TaskInformationViewController implements Initializable, Observer {
         CurrentTask = task;
     }
 
-    @Override
-    public void update(Observable o, Object o1) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-
-    }
+    
 
     private void showAleart(Alert.AlertType type, String title, String content) {
         Alert alert = new Alert(type);

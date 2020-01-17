@@ -66,9 +66,15 @@ public class User extends Observable{
         
         return user;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        User user = (User) o;
+        return user.id==this.id;
+    }
     
     
-    
+   
     
     
 }

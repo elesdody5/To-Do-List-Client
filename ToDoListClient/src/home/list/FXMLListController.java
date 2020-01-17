@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -75,22 +77,33 @@ public class FXMLListController implements Initializable {
         });
         myListView.setCellFactory((param)
                 -> {
-            return new MyListAdapter(param, friendsList,myTodos);
+            return new MyListAdapter(param, friendsList, myTodos);
         });
         saredListView.setCellFactory((param)
                 -> {
-            return new ShareListAdapter(param, friendsList,sharedTodos);
+            return new ShareListAdapter(param, friendsList, sharedTodos);
         });
         myListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (!myListView.getItems().isEmpty()) {
-                upadteCurrentTdo(myListView.getSelectionModel().getSelectedItem());
+                int index = myListView.getSelectionModel().getSelectedIndex();
+                upadteCurrentTdo(myTodos.get(index));
+                Platform.runLater(() -> {
+                    saredListView.getItems().clear();
+                    saredListView.getItems().addAll(sharedTodos);
+                });
             }
 
         });
 
         saredListView.getSelectionModel().selectedItemProperty().addListener((observable) -> {
             if (!saredListView.getItems().isEmpty()) {
-                upadteCurrentTdo(saredListView.getSelectionModel().getSelectedItem());
+                int index = saredListView.getSelectionModel().getSelectedIndex();
+                upadteCurrentTdo(sharedTodos.get(index));
+                Platform.runLater(() -> {
+                    myListView.getItems().clear();
+                    myListView.getItems().addAll(myTodos);
+                });
+
             }
         });
 
@@ -111,7 +124,7 @@ public class FXMLListController implements Initializable {
             stage.initModality(Modality.WINDOW_MODAL);
             stage.show();
             stage.setOnHidden((WindowEvent event) -> {
-                if (toDoForm.getToDo().getTitle()!=null) {
+                if (toDoForm.getToDo().getTitle() != null) {
                     try {
                         boolean result = addToServer(createJson(toDoForm.getToDo()));
                         if (result) {
@@ -200,12 +213,13 @@ public class FXMLListController implements Initializable {
         this.currentToDo = currentToDo;
 
     }
+
     // add share todo to list at real time
-    public void addSharedList(ToDoList todo)
-    {
+    public void addSharedList(ToDoList todo) {
         sharedTodos.add(todo);
         saredListView.getItems().add(todo);
     }
+
     private void showAleart(Alert.AlertType type, String title, String content) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
@@ -222,7 +236,6 @@ public class FXMLListController implements Initializable {
     }
 
     private void upadteCurrentTdo(ToDoList selectedItem) {
-
         toDoListController.updateCurrentTodo(selectedItem);
     }
 }

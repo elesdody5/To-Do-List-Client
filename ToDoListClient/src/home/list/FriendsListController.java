@@ -40,7 +40,6 @@ public class FriendsListController implements Initializable {
     @FXML
     private ListView<CheckBox> friendsListView;
     private ToDoList todo;
-    private ArrayList<User> collab;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -50,61 +49,71 @@ public class FriendsListController implements Initializable {
     @FXML
     private void shareList(MouseEvent e) {
         JSONObject request = new JSONObject();
-                    JSONArray notificationJsonArray = new JSONArray();
-                    JSONArray removedFriends = new JSONArray();
-                    try {
-                        // to get friends that assign to todo 
-                        for (int i = 1; i < friendsListView.getItems().size(); i++) {
-                            CheckBox box = friendsListView.getItems().get(i);
-                            if (box.isSelected()) {
-                                // if todo not have collaborator on it
-                                if (collab.isEmpty()) {
-                                    notificationJsonArray.put(createJson(Integer.parseInt(box.getId())));
-                                }
-
-                                for (User user : collab) {
-                                    // to check if friend not in collab already
-                                    if (user.getId() != Integer.parseInt(box.getId())) {
-                                        System.out.println("asdf");
-                                        notificationJsonArray.put(createJson(Integer.parseInt(box.getId())));
-                                    }
-                                }
-                            }
-                        }
-
-                        request.put("notification_List", notificationJsonArray);
-                        // to remove collab from todo
-                        for (CheckBox box : friendsListView.getItems()) {
-                            if (!box.isSelected()) {
-                                removedFriends.put(new User(Integer.parseInt(box.getId()), box.getText()).getUserAsJson());
-                            }
-                        }
-                        request.put("removed_friends", removedFriends);
-                        if (notificationJsonArray.length() > 0 || removedFriends.length() > 0) {
-                            try {
-                                Server server = new Server();
-
-                                server.post(new String[]{"notification"}, request);
-                                ((Stage) friendsListView.getScene().getWindow()).close();
-                            } catch (IOException ex) {
-                                Alert alert = new Alert(Alert.AlertType.ERROR);
-                                alert.setContentText("Connection lost ");
-                                alert.showAndWait();
-                            }
-
-                        }
-                    } catch (JSONException ex) {
-                        System.out.println(ex.getMessage());
+        JSONArray notificationJsonArray = new JSONArray();
+        JSONArray removedFriendsJsonArray = new JSONArray();
+        ArrayList<User> remoedFriends = new ArrayList<>();
+        try {
+            // to get friends that assign to todo 
+            for (int i = 1; i < friendsListView.getItems().size(); i++) {
+                CheckBox box = friendsListView.getItems().get(i);
+                if (box.isSelected()) {
+                    // if todo not have collaborator on it
+                    if (todo.getCollaborator().isEmpty()) {
+                        notificationJsonArray.put(createJson(Integer.parseInt(box.getId())));
                     }
 
+                    for (User user : todo.getCollaborator()) {
+                        // to check if friend not in collab already
+                        if (user.getId() != Integer.parseInt(box.getId())) {
+                            notificationJsonArray.put(createJson(Integer.parseInt(box.getId())));
+                        }
+                    }
+                }
+            }
+
+            request.put("notification_List", notificationJsonArray);
+            // to remove collab from todo
+            for (CheckBox box : friendsListView.getItems()) {
+                if (!box.isSelected()) {
+                    remoedFriends.add(new User(Integer.parseInt(box.getId()), box.getText()));
+                }
+            }
+            for (User user : remoedFriends) {
+                removedFriendsJsonArray.put(user.getUserAsJson());
+            }
+            request.put("removed_friends", removedFriendsJsonArray);
+            request.put("todoId", todo.getId());
+            if (notificationJsonArray.length() > 0 || removedFriendsJsonArray.length() > 0) {
+                try {
+                    ((Stage) friendsListView.getScene().getWindow()).close();
+
+                    Server server = new Server();
+
+                    JSONObject result = server.post(new String[]{"notification"}, request);
+                    System.out.println(result);
+                    if (!result.has("Error")) {
+                        remoedFriends.forEach((user) -> {
+                            todo.getCollaborator().stream().filter((collab) -> (user.equals(collab))).forEachOrdered((collab) -> {
+                                todo.getCollaborator().remove(collab);
+                            });
+                        });
+                    }
+                } catch (IOException ex) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setContentText("Connection lost ");
+                    alert.showAndWait();
                 }
 
-    
+            }
+        } catch (JSONException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+    }
 
     public void setFriendsList(ArrayList<User> list) {
         // add todo owner in first of list
-        String ownerName = ConnectWithLoginView_MenuBar.getInastance().sendDataToView();
-        CheckBox userCheckBox = new CheckBox(ownerName + " (Owner)");
+        CheckBox userCheckBox = new CheckBox(" (Owner)");
         userCheckBox.setId(LoginController.UserId + "");
         userCheckBox.setSelected(true);
         userCheckBox.setDisable(true);
@@ -117,8 +126,7 @@ public class FriendsListController implements Initializable {
         }
     }
 
-    public void setCollab(ArrayList<User> list) {
-        collab = list;
+    private void setCollab(ArrayList<User> list) {
         if (list != null && list.size() != 0) {
             friendsListView.getItems().forEach((friendbox) -> {
                 list.stream().filter((user) -> (user.getId() == Integer.parseInt(friendbox.getId()))).forEachOrdered((_item) -> {
@@ -130,12 +138,13 @@ public class FriendsListController implements Initializable {
 
     public void setToDo(ToDoList toDo) {
         this.todo = toDo;
+        setCollab(toDo.getCollaborator());
     }
 
     private JSONObject createJson(int friendId) throws JSONException {
         JSONObject json = new JSONObject();
         json.put("fromUserId", LoginController.UserId);
-        json.put("fromUserName", ConnectWithController_MenuBar.getInastance().sendDataToView());
+        json.put("fromUserName", ConnectWithLoginView_MenuBar.getInastance().sendDataToView());
         json.put("toUserId", friendId);
         json.put("status", NotificationKeys.NORESPONSE_NOTIFICATION_REQUEST);
         json.put("type", NotificationKeys.ADD_COLLABORATOR);
