@@ -22,6 +22,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 import org.json.JSONObject;
 
@@ -61,12 +62,16 @@ public class ToDoListController implements Initializable {
         appStage.initOwner(listOfTasks.getScene().getWindow());
         appStage.initModality(Modality.WINDOW_MODAL);
         appStage.show();
-        appStage.setOnHidden((WindowEvent event) -> {
-            if (TaskInformationViewController.getTaskInfo() != null) {
 
-                TaskInfo addefTask = TaskInformationViewController.getTaskInfo();
+        appStage.setOnHidden((WindowEvent event) -> {
+     TaskInfo addefTask = TaskInformationViewController.getTaskInfo();
+
+            if (addefTask != null) {
+
                 listOfTasks.getItems().add(addefTask);
+                addefTask=null;
             }
+               
 
         });
 
@@ -74,15 +79,20 @@ public class ToDoListController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //  Object ol = null;
-        // update(selectedTodo2, ol);
-        listOfTasks.setCellFactory((param)
+
+     listOfTasks.setCellFactory((param)
+
                 -> {
             return new ListAdapterOfTasksList( param);
         });
-        taskview = new TaskInformationViewController();
 
+      taskview=new TaskInformationViewController();
     }
+
+
+    
+ 
+    
 
     private  void setTodoList(ToDoList toDoList) {
 
