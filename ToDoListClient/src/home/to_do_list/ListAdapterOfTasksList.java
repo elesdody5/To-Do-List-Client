@@ -11,6 +11,7 @@ import com.jfoenix.controls.JFXCheckBox;
 import home.HomeController;
 import home.list.FXMLListController;
 import home.list.ToDoForm;
+import home.menu_bar.ConnectWithLoginView_MenuBar;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,44 +41,56 @@ import server_request.Server;
  */
 public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
 
-   private ListView<TaskInfo> listviewOfTasks;
-   private static TaskInfo task;
-   static boolean isEdit;
-   static TaskInfo currentTask=null;
+    private ListView<TaskInfo> listviewOfTasks;
+    private static TaskInfo task;
+    static boolean isEdit;
+    User currntUser;
+    static TaskInfo currentTask = null;
+    ToDoList todo = ToDoListController.getTodoList();
+    ConnectWithLoginView_MenuBar c;
+
     public ListAdapterOfTasksList(ListView<TaskInfo> listviewOfTasks) {
         this.listviewOfTasks = listviewOfTasks;
+        c = ConnectWithLoginView_MenuBar.getInastance();
+        currntUser = new User();
+
     }
 
     @Override
     protected void updateItem(TaskInfo task, boolean empty) {
+        currntUser.setUserName(c.sendDataToView());
+        currntUser.setId(Integer.parseInt(c.sendIdToView()));
         super.updateItem(task, empty);
         if (task != null) {
             JFXCheckBox checkbox = new JFXCheckBox();
             setGraphic(checkbox);
             setText(task.getTitle());
-            currentTask=task;
-          //  this.task=task;
-            setContextMenu(createContextMenu(task));
+            //  this.task=task;
+            if (currntUser.getId() == todo.getOwnerId()) {
+                setContextMenu(createContextMenu(task));
+            }
 
-        }
-        else
-        { setText("");
-        setGraphic(null);
+        } else {
+            setText("");
+            setGraphic(null);
         }
 
     }
-public static  TaskInfo getCurrntTask()
-{
-     
-    return currentTask;
-}
+
+    public static TaskInfo getCurrntTask() {
+
+        return currentTask;
+    }
+
     private ContextMenu createContextMenu(TaskInfo task) {
         ContextMenu contextMenu = new ContextMenu();
+
+//                    System.out.println(currentTask.getId());
         MenuItem edit = new MenuItem("Edit");
-         MenuItem share = new MenuItem("Assign ti teamMember");
+        MenuItem share = new MenuItem("Assign ti teamMember");
         MenuItem delete = new MenuItem("Delete");
-        
-        contextMenu.getItems().addAll(edit,share, delete);
+
+        contextMenu.getItems().addAll(edit, share, delete);
         edit.setOnAction((ActionEvent event) -> {
 
             try {
@@ -90,24 +103,25 @@ public static  TaskInfo getCurrntTask()
         delete.setOnAction((ActionEvent event) -> {
             delete(task);
         });
- share.setOnAction((ActionEvent event) -> {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("TeamMember.fxml"));
-        Parent form = null;
+        share.setOnAction((ActionEvent event) -> {
+            currentTask = task;
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("TeamMember.fxml"));
+            Parent form = null;
             try {
                 form = loader.load();
             } catch (IOException ex) {
                 Logger.getLogger(ListAdapterOfTasksList.class.getName()).log(Level.SEVERE, null, ex);
             }
-        TeamMemberController teamMemberController = loader.getController();
-      
-        Scene scene = new Scene(form);
-        Stage stage = new Stage();
-        stage.setScene(scene);
-       
-        stage.initStyle(StageStyle.UTILITY);
-        stage.initOwner(getScene().getWindow());
-        stage.initModality(Modality.WINDOW_MODAL);
-        stage.show();
+            TeamMemberController teamMemberController = loader.getController();
+
+            Scene scene = new Scene(form);
+            Stage stage = new Stage();
+            stage.setScene(scene);
+
+            stage.initStyle(StageStyle.UTILITY);
+            stage.initOwner(getScene().getWindow());
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.show();
         });
         return contextMenu;
     }
@@ -120,22 +134,22 @@ public static  TaskInfo getCurrntTask()
         Scene scene = new Scene(form);
         Stage stage = new Stage();
         stage.setScene(scene);
-        isEdit=true;
+        isEdit = true;
         stage.initStyle(StageStyle.UTILITY);
         stage.initOwner(getScene().getWindow());
         stage.initModality(Modality.WINDOW_MODAL);
         stage.show();
-        
+
         if (task != null) {
             // to update form ui
             taskInformationViewController.setTaskView(task);
-         setText(task.getTitle());
+            setText(task.getTitle());
 
         }
 
         stage.setOnHidden((WindowEvent event) -> {
-         setText(task.getTitle());
- isEdit=false;
+            setText(task.getTitle());
+            isEdit = false;
         });
     }
 
@@ -162,10 +176,10 @@ public static  TaskInfo getCurrntTask()
     private void delete(TaskInfo task) {
         try {
             Server server = new Server();
-            int response = server.delete(new String[]{"task",String.valueOf(task.getId())});
+            int response = server.delete(new String[]{"task", String.valueOf(task.getId())});
             if (response != -1) {
                 listviewOfTasks.getItems().remove(task);
-              
+
                 showAleart(Alert.AlertType.INFORMATION, "Done ", "deleted Succefully");
             } else {
                 showAleart(Alert.AlertType.ERROR, "Error ", "cann't delete todo");
@@ -188,9 +202,9 @@ public static  TaskInfo getCurrntTask()
 
         return json;
     }
-     static boolean isEdited() {
+
+    static boolean isEdited() {
         return isEdit;
     }
-
 
 }

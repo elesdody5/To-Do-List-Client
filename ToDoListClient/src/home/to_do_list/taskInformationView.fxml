@@ -11,11 +11,10 @@
 
 <AnchorPane fx:id="taskData" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#getIntialState" prefHeight="400.0" prefWidth="474.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.to_do_list.TaskInformationViewController">
    <children>
-      <Label layoutX="353.0" layoutY="35.0" text="ADD TO TODO LIST">
+      <Label layoutX="353.0" layoutY="14.0" text="ADD TO TODO LIST">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Label>
-      <JFXButton fx:id="memberInToDoList" layoutX="349.0" layoutY="63.0" onAction="#addMember" prefHeight="35.0" prefWidth="117.0" style="-fx-border-color: #6f4cbb;" text="Member" />
       <AnchorPane fx:id="memberList" layoutX="349.0" layoutY="103.0" prefHeight="200.0" prefWidth="117.0" visible="false">
          <children>
             <ListView fx:id="ListViewOfMember" prefHeight="200.0" prefWidth="117.0" />
@@ -26,8 +25,8 @@
          <font>
             <Font size="16.0" />
          </font></JFXButton>
-      <JFXDatePicker fx:id="StartDatePicker" defaultColor="#6f4cbb" layoutX="349.0" layoutY="122.0" onHidden="#setStartDate" prefHeight="35.0" prefWidth="117.0" promptText="Start Date" />
-      <JFXDatePicker fx:id="endDatePicker" defaultColor="#6f4cbb" layoutX="349.0" layoutY="183.0" onHidden="#setEndate" prefHeight="35.0" prefWidth="117.0" promptText="End Date" />
+      <JFXDatePicker fx:id="StartDatePicker" defaultColor="#6f4cbb" layoutX="350.0" layoutY="80.0" onHidden="#setStartDate" prefHeight="35.0" prefWidth="117.0" promptText="Start Date" />
+      <JFXDatePicker fx:id="endDatePicker" defaultColor="#6f4cbb" layoutX="350.0" layoutY="164.0" onHidden="#setEndate" prefHeight="35.0" prefWidth="117.0" promptText="End Date" />
       <JFXTextArea fx:id="description" focusColor="#6f4cbb" layoutX="14.0" layoutY="80.0" prefHeight="83.0" prefWidth="200.0" promptText="Description" unFocusColor="#6f4cbb" />
       <JFXTextArea fx:id="comment" focusColor="#6f4cbb" layoutX="14.0" layoutY="181.0" prefHeight="83.0" prefWidth="200.0" promptText="Comment" unFocusColor="#6f4cbb" />
    </children>

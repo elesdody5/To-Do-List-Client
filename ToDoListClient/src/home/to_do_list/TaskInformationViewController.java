@@ -72,8 +72,6 @@ public class TaskInformationViewController implements Initializable, Observer {
     private JFXTextArea comment;
     private boolean edit = false;
     private TaskInfo CurrentTask;
-    @FXML
-    private JFXButton memberInToDoList;
 
     /**
      * Initializes the controller class.
@@ -100,21 +98,6 @@ public class TaskInformationViewController implements Initializable, Observer {
         } catch (JSONException ex) {
             Logger.getLogger(TaskInformationViewController.class.getName()).log(Level.SEVERE, null, ex);
 
-        }
-
-    }
-
-    @FXML
-    private void addMember(ActionEvent event) {
-        if (memberList.isVisible()) {
-            memberList.setVisible(false);
-            StartDatePicker.setVisible(true);
-            endDatePicker.setVisible(true);
-
-        } else {
-            memberList.setVisible(true);
-            StartDatePicker.setVisible(false);
-            endDatePicker.setVisible(false);
         }
 
     }
@@ -147,7 +130,6 @@ public class TaskInformationViewController implements Initializable, Observer {
 
             }
         }
-        // System.out.println(jsonArrayOftodotasks);
         return teamMemberInfoList;
 
     }
@@ -252,12 +234,7 @@ public class TaskInformationViewController implements Initializable, Observer {
         alert.showAndWait();
     }
 
-    @FXML
-    private void getIntialState(MouseEvent event) {
-        memberList.setVisible(false);
-        StartDatePicker.setVisible(true);
-        endDatePicker.setVisible(true);
-    }
+   
 
     @FXML
     private void setStartDate(Event event) {

@@ -4,11 +4,21 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="292.0" style="-fx-background-color: #6f4cbb;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.to_do_list.TeamMemberController">
    <children>
-      <ListView fx:id="listViewOfTeamMember" layoutX="3.0" layoutY="36.0" prefHeight="379.0" prefWidth="286.0" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="36.0" />
-      <Label layoutX="6.0" layoutY="5.0" prefHeight="27.0" prefWidth="280.0" style="-fx-background-color: white;" text="                    Assign Team Member" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="5.0" />
-      <JFXButton fx:id="assignTeamMemberToTask" layoutX="6.0" layoutY="419.0" onAction="#assignTeamMembertoTask" prefHeight="38.0" prefWidth="280.0" style="-fx-background-color: #6f4cbb;" text="Assign " />
+      <ListView fx:id="listViewOfTeamMember" layoutX="3.0" layoutY="36.0" prefHeight="154.0" prefWidth="286.0" AnchorPane.bottomAnchor="270.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="36.0" />
+      <Label layoutX="6.0" layoutY="5.0" prefHeight="27.0" prefWidth="280.0" text="                    Assign Team Member" textFill="WHITE" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="5.0">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Label>
+      <JFXButton fx:id="assignTeamMemberToTask" layoutX="6.0" layoutY="192.0" onAction="#assignTeamMembertoTask" prefHeight="38.0" prefWidth="280.0" style="-fx-background-color: #6f4cbb; -fx-border-color: white;" text="Assign " textFill="WHITE" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" />
+      <Label layoutX="6.0" layoutY="230.0" prefHeight="27.0" prefWidth="280.0" text="                    Assigned Team Member" textFill="WHITE" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <ListView fx:id="listViewOfassignedTeamMember" layoutX="3.0" layoutY="257.0" prefHeight="198.0" prefWidth="286.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" />
    </children>
 </AnchorPane>

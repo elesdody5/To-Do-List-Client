@@ -39,7 +39,10 @@ public class ListAdapter extends ListCell<User> {
     protected void updateItem(User user, boolean empty) {
         super.updateItem(user, empty);
        // notificationList=new ArrayList<Notifications>();
+       ToDoListController t=new ToDoListController();
        TaskInfo currntTask= ListAdapterOfTasksList.getCurrntTask();
+          // TaskInfo currntTask= t.getCurrntTask();
+System.out.println(currntTask.getId());
         if (user != null) {
 
             ImageView image = new ImageView(new Image(getClass().getResourceAsStream("personIcon.png")));
@@ -55,13 +58,14 @@ public class ListAdapter extends ListCell<User> {
             setGraphic(imagereq);
             Notifications notificationData =new Notifications();
           ToDoList currntTodo=  ToDoListController.getTodoList();
+        //  System.out.println(currntTodo.getCollaborator().size());
           notificationData.setFromUserId(currntTodo.getOwnerId());
           notificationData.setToUserId(user.getId());
           notificationData.setType(NotificationKeys.ASSIGIN_TASK_MEMBER);
-          notificationData.setStatus(NotificationKeys.NoResponse_COLLABORATOR_REQUEST);
+          notificationData.setStatus(NotificationKeys.NORESPONSE_NOTIFICATION_REQUEST);
           notificationData.setDataId(currntTask.getId());
           notificationList.add(notificationData);
-                                System.out.print(notificationList.size());
+         System.out.print(notificationList.size());
     
       
          // sendNotificationToDataBase(notificationDataJsonObject);

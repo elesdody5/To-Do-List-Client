@@ -91,7 +91,7 @@ public class ToDoListController implements Initializable {
 
 
     
-
+ 
     
 
     private  void setTodoList(ToDoList toDoList) {
@@ -112,15 +112,6 @@ public class ToDoListController implements Initializable {
         return todo;
     }
 
-   /* @Override
-    public void update(Observable o, Object o1) {
-        listOfTasks.getItems().clear();
-        selectedTodo = (ToDoList) o;
-         titleOfTodo.setText(selectedTodo.getTitle());
-          titleOfTodo.setTextFill(Color.web(selectedTodo.getColor()));
-        todo=selectedTodo;
-        if (selectedTodo == null) {
-*/
     public void updateCurrentTodo(ToDoList toDoList) {
 
         if (toDoList==null) {
