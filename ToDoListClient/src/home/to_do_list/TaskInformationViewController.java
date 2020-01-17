@@ -6,39 +6,25 @@
 package home.to_do_list;
 
 import Entity.User;
-import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
-import com.jfoenix.controls.JFXScrollPane;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
-import home.HomeController;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,7 +35,7 @@ import server_request.Server;
  *
  * @author sara
  */
-public class TaskInformationViewController implements Initializable, Observer {
+public class TaskInformationViewController implements Initializable {
 
     @FXML
     private AnchorPane memberList;
@@ -218,11 +204,7 @@ public class TaskInformationViewController implements Initializable, Observer {
         CurrentTask = task;
     }
 
-    @Override
-    public void update(Observable o, Object o1) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-
-    }
+    
 
     private void showAleart(Alert.AlertType type, String title, String content) {
         Alert alert = new Alert(type);

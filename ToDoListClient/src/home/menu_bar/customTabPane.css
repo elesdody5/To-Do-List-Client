@@ -4,7 +4,7 @@
 
 .tab-pane
 {
-    -fx-tab-min-width:70px;
+    -fx-tab-min-width:50px;
 }
 
 .tab{

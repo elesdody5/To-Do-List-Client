@@ -18,6 +18,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import Utility.*;
 import java.io.IOException;
+import java.time.Clock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.EventHandler;
@@ -35,6 +36,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -157,7 +159,7 @@ public class LoginController implements Initializable {
         String password = sign_up_password_id.getText().trim();
         String confirm = sign_up_confirm_id.getText().trim();
         boolean isConfirmed = Validator.checkPasswordEquality(password, confirm);
-        if (isConfirmed&&!password.isEmpty()) {
+        if (isConfirmed && !password.isEmpty()) {
             goToRegistrationScreen();
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -239,9 +241,11 @@ public class LoginController implements Initializable {
             Stage stage = new Stage();
             stage.getIcons().add(new Image(getClass().getResourceAsStream("/authontication/Icons/logo.png")));
             stage.setOnCloseRequest((WindowEvent event) -> {
-                server.logOut(UserId + "");
+                server.logOut();
+                System.exit(0);
             });
             stage.setScene(scene);
+            //stage.initStyle(StageStyle.UTILITY);
             stage.show();
             this.stage.close();
 

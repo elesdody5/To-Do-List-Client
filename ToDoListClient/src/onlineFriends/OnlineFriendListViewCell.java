@@ -28,7 +28,7 @@ public class OnlineFriendListViewCell extends ListCell<User> {
         super.updateItem(friendItem, empty);
         if (friendItem != null) {
             setText(friendItem.getUserName());
-            String imageURL = "online.png";
+            String imageURL = "/home/menu_bar/icons/online.png";
             Image image = new Image(getClass().getResourceAsStream(imageURL));
             ImageView imageview = new ImageView(image);
             setGraphic(imageview);
