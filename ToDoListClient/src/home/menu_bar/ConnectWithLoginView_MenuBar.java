@@ -49,34 +49,7 @@ public class ConnectWithLoginView_MenuBar implements MenuBarModelInterface {
     public void setId(String id) {
         this.id = id;
     }
-//set new requests
 
-    public void setNotificationRequest(Notifications obj) {
-        if (obj.getType() == NotificationKeys.ADD_COLLABORATOR) {
-            showListRequest(obj);
-        } else if (obj.getType() == NotificationKeys.ASSIGIN_TASK_MEMBER) {
-            showTaskRequest(obj);
-        } else if (obj.getType() == NotificationKeys.REQUEST_FRIEND) {
-            showFriendRequest(obj);
-        }
-    }
-
-    private void showListRequest(Notifications obj) {  
-        MenuBarController con = new MenuBarController();
-        con.setListRequest(obj);
-    }
-
-    private void showTaskRequest(Notifications obj) {
-        MenuBarController con = new MenuBarController();
-        con.setTaskRequest(obj);
-
-    }
-
-    private void showFriendRequest(Notifications obj) {
-        MenuBarController con = new MenuBarController();
-        con.setFriendRequest(obj);
-
-    }
 
     //load old lists
 

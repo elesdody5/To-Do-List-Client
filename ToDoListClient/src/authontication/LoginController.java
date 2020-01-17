@@ -36,6 +36,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -158,7 +159,7 @@ public class LoginController implements Initializable {
         String password = sign_up_password_id.getText().trim();
         String confirm = sign_up_confirm_id.getText().trim();
         boolean isConfirmed = Validator.checkPasswordEquality(password, confirm);
-        if (isConfirmed&&!password.isEmpty()) {
+        if (isConfirmed && !password.isEmpty()) {
             goToRegistrationScreen();
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -244,6 +245,7 @@ public class LoginController implements Initializable {
                 System.exit(0);
             });
             stage.setScene(scene);
+            //stage.initStyle(StageStyle.UTILITY);
             stage.show();
             this.stage.close();
 

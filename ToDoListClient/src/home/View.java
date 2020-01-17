@@ -18,10 +18,13 @@ public class View {
     private View() {
         todoLoader = new FXMLLoader(getClass().getResource("/home/to_do_list/ToDoList.fxml"));
         listloader = new FXMLLoader(getClass().getResource("/home/list/FXMLList.fxml"));
+        onlineFriendsLoader = new FXMLLoader(getClass().getResource("/onlineFriends/OnlineFriends.fxml"));
+        
 
     }
     private static FXMLLoader todoLoader;
     private static FXMLLoader listloader;
+    private static FXMLLoader onlineFriendsLoader;
 
     public static FXMLLoader getTodoLoader() {
         if (todoLoader == null) {
@@ -39,5 +42,13 @@ public class View {
             }
         }
         return listloader;
+    }
+     public static FXMLLoader getOnlineListLoader() {
+        if (onlineFriendsLoader == null) {
+            synchronized (View.class) {
+                new View();
+            }
+        }
+        return onlineFriendsLoader;
     }
 }

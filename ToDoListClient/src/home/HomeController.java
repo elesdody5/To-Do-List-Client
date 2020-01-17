@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -30,6 +31,7 @@ import org.json.JSONObject;
 import server_request.Server;
 import java.lang.reflect.Type;
 import javafx.scene.Parent;
+import onlineFriends.OnlineFriendsController;
 
 /**
  * FXML Controller class
@@ -51,13 +53,16 @@ public class HomeController implements Initializable {
         try {
             Server server = new Server();
             JSONObject json = server.get(new String[]{"todo", LoginController.UserId + ""});
+            System.out.println("get");
             User user = new User(json.getInt("ID"), json.getString("user name"), json.getString("password"));
             Gson gson = new GsonBuilder().create();
+            System.out.println(json);
             // convert jsonArray to frindsList
             Type frindsListType = new TypeToken<ArrayList<User>>() {
             }.getType();
             ArrayList<User> friendsList = gson.fromJson(json.getJSONArray("friends").toString(), frindsListType);
-
+            // online friends
+            ArrayList<User> onlineFriends = gson.fromJson(json.getJSONArray("online_friends").toString(), frindsListType);
             // convert jsonArray to todoList
             Type ListType = new TypeToken<ArrayList<ToDoList>>() {
             }.getType();
@@ -69,7 +74,7 @@ public class HomeController implements Initializable {
             }.getType();
             ArrayList<Notifications> notifications = gson.fromJson(json.getJSONArray("notification").toString(), notificationListType);
             // start home screen
-            start(user, friendsList, todoList, sharedList, notifications);
+            start(user, friendsList, onlineFriends, todoList, sharedList, notifications);
         } catch (IOException ex) {
             Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (JSONException ex) {
@@ -79,7 +84,7 @@ public class HomeController implements Initializable {
 
     }
 
-    public void start(User user, ArrayList<User> friendsList, ArrayList<ToDoList> todoList, ArrayList<ToDoList> sharedList, ArrayList<Notifications> notifications) {
+    public void start(User user, ArrayList<User> friendsList, ArrayList<User> onlineFriends, ArrayList<ToDoList> todoList, ArrayList<ToDoList> sharedList, ArrayList<Notifications> notifications) {
         try {
             // TODO
             // create user menu bar 
@@ -113,11 +118,16 @@ public class HomeController implements Initializable {
 
                 todoController.updateCurrentTodo(null);
             }
-
+            // create online list 
+            FXMLLoader onlineLoader = View.getOnlineListLoader();
+            Parent onlineList = onlineLoader.load();
+            OnlineFriendsController friendsController = onlineLoader.getController();
+            friendsController.getOnlineFriends(onlineFriends);
             // add component to main pane
             borderPane.setLeft(list);
             borderPane.setCenter(todo);
             borderPane.setTop(menuBar);
+            borderPane.setRight(onlineList);
 
         } catch (IOException ex) {
             Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
