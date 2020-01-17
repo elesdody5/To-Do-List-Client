@@ -102,8 +102,10 @@ public class MenuBarController implements Initializable {
     /* end Aml*/
 
     boolean serverout;
-    ObservableList<Notifications> notLists = FXCollections.observableArrayList();
-    ObservableList<Notifications> notTasks = FXCollections.observableArrayList();
+
+    ObservableList<Notifications> notLists;
+    ObservableList<Notifications> notTasks;
+
     ObservableList<Notifications> notFriendRequests;
     List<Notifications> lists;
 
