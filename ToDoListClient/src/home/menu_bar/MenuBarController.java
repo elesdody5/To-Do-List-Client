@@ -35,7 +35,6 @@ import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 
 /**
