@@ -8,6 +8,7 @@ package home.menu_bar;
 import Entity.User;
 import authontication.LoginController;
 import home.Notifications;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -104,7 +106,7 @@ public class MenuBarController implements Initializable {
     private TextField friendRequestTextField;
     List<User> friendsOfUser;
     List<User> friends;
-    ObservableList<User> friendObservableList  ;
+    ObservableList<User> friendObservableList;
     /* end Aml*/
 
     boolean serverout;
@@ -321,7 +323,7 @@ public class MenuBarController implements Initializable {
         }
         /*Aml Start*/
         //get friend list 
-        
+
         friendObservableList = FXCollections.observableArrayList();
         friends = getInstance.sendFriendListToView();
         for (User user : friends) {
@@ -341,19 +343,30 @@ public class MenuBarController implements Initializable {
         ConnectWithLoginView_MenuBar getInstance = ConnectWithLoginView_MenuBar.getInastance();
         String name = getInstance.sendDataToView();
         String result = "";
+        boolean userInFriendList = false;
+        for (int i = 0; i < friends.size(); i++) {
+            if (friends.get(i).getUserName().equals(friendRequestName)) {
+                result = friendRequestName + " is already in your friend list";
+                userInFriendList = true;
+            }
+        }
         if (name.equals(friendRequestName)) {
-            result = "You can not send request to yourself";
+            result = "It is your name";
         } else {
-            result = ConnectWithController_MenuBar.getInastance().sendFriendRequest(friendRequestName);
+            if (!userInFriendList) {
+                result = ConnectWithController_MenuBar.getInastance().sendFriendRequest(friendRequestName);
+            }
         }
         resultLabel.setText(result);
+
+  
     }
 
     public void notifyAcceptingFriend(User friendUser) {
-        int size = friends.size();
-        friends.add(friendUser);
-        friendObservableList.removeAll(friends);
-        friendObservableList.addAll(friends);
+//        friends.add(friendUser);
+//        friendObservableList.removeAll(friends);
+//        friendObservableList.addAll(friends);
+        friendsLV.getItems().add(friendUser);
 
     }
     /*end Aml*/
