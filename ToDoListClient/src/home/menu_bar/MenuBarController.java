@@ -35,6 +35,7 @@ import javafx.concurrent.Task;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.stage.StageStyle;
 
 /**
  * FXML Controller class
