@@ -15,7 +15,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="borderPane_id" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="496.0" prefWidth="773.0" stylesheets="@CSS/LoginStyle.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="authontication.LoginController">
+<BorderPane fx:id="borderPane_id" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="496.0" prefWidth="773.0" stylesheets="@CSS/LoginStyle.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="authontication.LoginController">
    <left>
       <Pane prefHeight="446.0" prefWidth="334.0" styleClass="linear_grad" BorderPane.alignment="CENTER">
          <children>
@@ -31,12 +31,12 @@
                   <Image url="@Icons/logo.png" />
                </image>
             </ImageView>
-            <Label layoutX="77.0" layoutY="269.0" text="Task Manager" textFill="#d4b0e1">
+            <Label layoutX="77.0" layoutY="269.0" text="Online Todo" textFill="#d4b0e1">
                <font>
                   <Font name="Yu Gothic UI Semilight" size="30.0" />
                </font>
             </Label>
-            <Label layoutX="26.0" layoutY="314.0" text="Manage your team and your project" textFill="#d4b0e1">
+            <Label layoutX="26.0" layoutY="314.0" text="Bring All your Team in One place" textFill="#d4b0e1">
                <font>
                   <Font size="18.0" />
                </font>

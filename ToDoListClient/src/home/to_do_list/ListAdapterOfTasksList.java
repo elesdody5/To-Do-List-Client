@@ -8,8 +8,10 @@ package home.to_do_list;
 import Entity.User;
 import authontication.LoginController;
 import com.jfoenix.controls.JFXCheckBox;
+import home.HomeController;
 import home.list.FXMLListController;
 import home.list.ToDoForm;
+import home.menu_bar.ConnectWithLoginView_MenuBar;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,40 +41,59 @@ import server_request.Server;
  */
 public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
 
-   private ListView<TaskInfo> listviewOfTasks;
-   private TaskInfo task;
-   static boolean isEdit;
+    private ListView<TaskInfo> listviewOfTasks;
+    private static TaskInfo task;
+    static boolean isEdit;
+    User currntUser;
+    static TaskInfo currentTask = null;
+    ToDoList todo = ToDoListController.getTodoList();
+    ConnectWithLoginView_MenuBar c;
+
     public ListAdapterOfTasksList(ListView<TaskInfo> listviewOfTasks) {
         this.listviewOfTasks = listviewOfTasks;
+        c = ConnectWithLoginView_MenuBar.getInastance();
+        currntUser = new User();
+
     }
 
     @Override
     protected void updateItem(TaskInfo task, boolean empty) {
+        currntUser.setUserName(c.sendDataToView());
+        currntUser.setId(Integer.parseInt(c.sendIdToView()));
         super.updateItem(task, empty);
         if (task != null) {
             JFXCheckBox checkbox = new JFXCheckBox();
             setGraphic(checkbox);
             setText(task.getTitle());
-          //  this.task=task;
-            setContextMenu(createContextMenu(task));
+            //  this.task=task;
+            if (currntUser.getId() == todo.getOwnerId()) {
+                setContextMenu(createContextMenu(task));
+            } else {
+                setContextMenu(createContextMenuOfSharedList(task));
 
-        }
-        else
-        { setText("");
-        setGraphic(null);
+            }
+
+        } else {
+            setText("");
+            setGraphic(null);
         }
 
     }
-private   TaskInfo getCurrntTask()
-{
-     task = listviewOfTasks.getSelectionModel().getSelectedItem();
-    return task;
-}
+
+    public static TaskInfo getCurrntTask() {
+
+        return currentTask;
+    }
+
     private ContextMenu createContextMenu(TaskInfo task) {
         ContextMenu contextMenu = new ContextMenu();
+
+//                    System.out.println(currentTask.getId());
         MenuItem edit = new MenuItem("Edit");
+        MenuItem share = new MenuItem("Assign ti teamMember");
         MenuItem delete = new MenuItem("Delete");
-        contextMenu.getItems().addAll(edit, delete);
+
+        contextMenu.getItems().addAll(edit, share, delete);
         edit.setOnAction((ActionEvent event) -> {
 
             try {
@@ -85,7 +106,26 @@ private   TaskInfo getCurrntTask()
         delete.setOnAction((ActionEvent event) -> {
             delete(task);
         });
+        share.setOnAction((ActionEvent event) -> {
+            currentTask = task;
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("TeamMember.fxml"));
+            Parent form = null;
+            try {
+                form = loader.load();
+            } catch (IOException ex) {
+                Logger.getLogger(ListAdapterOfTasksList.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            TeamMemberController teamMemberController = loader.getController();
 
+            Scene scene = new Scene(form);
+            Stage stage = new Stage();
+            stage.setScene(scene);
+
+            stage.initStyle(StageStyle.UTILITY);
+            stage.initOwner(getScene().getWindow());
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.show();
+        });
         return contextMenu;
     }
 
@@ -97,19 +137,22 @@ private   TaskInfo getCurrntTask()
         Scene scene = new Scene(form);
         Stage stage = new Stage();
         stage.setScene(scene);
-        isEdit=true;
+        isEdit = true;
         stage.initStyle(StageStyle.UTILITY);
         stage.initOwner(getScene().getWindow());
         stage.initModality(Modality.WINDOW_MODAL);
         stage.show();
-        
+
         if (task != null) {
             // to update form ui
             taskInformationViewController.setTaskView(task);
+            setText(task.getTitle());
+
         }
 
         stage.setOnHidden((WindowEvent event) -> {
-            
+            setText(task.getTitle());
+            isEdit = false;
         });
     }
 
@@ -136,7 +179,7 @@ private   TaskInfo getCurrntTask()
     private void delete(TaskInfo task) {
         try {
             Server server = new Server();
-            int response = server.delete(new String[]{"task",String.valueOf(task.getId())});
+            int response = server.delete(new String[]{"task", String.valueOf(task.getId())});
             if (response != -1) {
                 listviewOfTasks.getItems().remove(task);
 
@@ -162,9 +205,29 @@ private   TaskInfo getCurrntTask()
 
         return json;
     }
-     static boolean isEdited() {
+
+    static boolean isEdited() {
         return isEdit;
     }
+    private ContextMenu createContextMenuOfSharedList(TaskInfo task) {
+        ContextMenu contextMenu = new ContextMenu();
 
+//                    System.out.println(currentTask.getId());
+        MenuItem edit = new MenuItem("Edit");
+       
+
+        contextMenu.getItems().addAll(edit);
+        edit.setOnAction((ActionEvent event) -> {
+
+            try {
+                openForm(task);
+            } catch (IOException ex) {
+                Logger.getLogger(ListAdapterOfTasksList.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        });
+      
+        return contextMenu;
+    }
 
 }

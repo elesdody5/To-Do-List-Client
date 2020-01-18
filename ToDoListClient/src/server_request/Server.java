@@ -5,8 +5,14 @@
  */
 package server_request;
 
+import Entity.User;
 import Enum.REQUEST;
 import authontication.LoginController;
+import home.Notifications;
+import home.View;
+import home.list.FXMLListController;
+import home.menu_bar.ConnectWithController_MenuBar;
+import home.to_do_list.ToDoList;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,6 +23,7 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
+import onlineFriends.OnlineFriendsController;
 import org.json.JSONException;
 import org.json.JSONObject;
 import server_connection.Connection;
@@ -157,15 +164,13 @@ public class Server implements Request {
         return response;
     }
 
-    public void logOut(String userId) {
+    public void logOut() {
         ps.println(REQUEST.LOGOUT);
 
         ps.print("/");
-        ps.print(userId);
+        ps.print(LoginController.UserId);
 
         ps.println();
-        System.out.println("logut");
-        System.exit(0);
         //listener.stop();
     }
 
@@ -188,11 +193,14 @@ public class Server implements Request {
                 // read if notification at real time not server response
                 if (!serverResoponse) {
                     String type = data;
+                    System.out.println(type);
+                    data = "";
                     readJson();
+                    System.out.println(json);
                     Object object = NotificationFactory.getNotificationObject(type, json);
                     // method send object to view that responsable for deal with it
-                    sendOjbectToView(type,object);
-                    
+                    sendOjbectToView(type, object);
+
                 }
                 if (readJson) {
                     readJson();
@@ -222,6 +230,7 @@ public class Server implements Request {
                 data = in.readLine();
 
             }
+            System.out.println(body.toString());
             json = new JSONObject(body.toString());
         }
 
@@ -232,17 +241,28 @@ public class Server implements Request {
         }
 
         private void sendOjbectToView(String type, Object object) {
-            FXMLLoader loader ;
+            FXMLLoader loader;
+            System.out.println(type);
             switch (type) {
-            case REQUEST.NOTIFICATION:
-//                ConnectWithController_MenuBar controller_MenuBar = ConnectWithController_MenuBar.getInastance();
-//                controller_MenuBar.
-            case REQUEST.TASK:
-                //return createTask(json);
-            case REQUEST.TODO:
-               // return createToDo(json);
 
-        }
+                case REQUEST.NOTIFICATION:
+
+                    ConnectWithController_MenuBar controller_MenuBar = ConnectWithController_MenuBar.getInastance();
+                    controller_MenuBar.setNotificationRequest((Notifications) object);
+                    break;
+                case REQUEST.TASK:
+                    break;
+                case REQUEST.TODO:
+                    ((FXMLListController) View.getListLoader().getController()).addSharedList((ToDoList) object);
+                    break;
+                case REQUEST.FRIEND_ONLINE:
+                    ((OnlineFriendsController) View.getOnlineListLoader().getController()).notifyUserOnlineOrOffline((User) object, false);
+                    break;
+                case REQUEST.FRIEND_OFFLINE:
+                    System.out.println("off");
+                    ((OnlineFriendsController) View.getOnlineListLoader().getController()).notifyUserOnlineOrOffline((User) object, true);
+                    break;
+            }
         }
     }
 }

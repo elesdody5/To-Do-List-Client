@@ -5,12 +5,16 @@
  */
 package server_request;
 
+import Entity.User;
 import Enum.REQUEST;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import home.Notifications;
 import home.to_do_list.TaskInfo;
 import home.to_do_list.ToDoList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -27,6 +31,10 @@ public class NotificationFactory {
                 return createTask(json);
             case REQUEST.TODO:
                 return createToDo(json);
+            case REQUEST.FRIEND_ONLINE:
+                return createUser(json);
+            case REQUEST.FRIEND_OFFLINE:
+                return createUser(json);
 
         }
         
@@ -47,6 +55,15 @@ public class NotificationFactory {
     private static ToDoList createToDo(JSONObject json) {
         Gson gson = new GsonBuilder().create();
         return gson.fromJson(json.toString(), ToDoList.class);
+    }
+
+    private static Object createUser(JSONObject json) {
+        try {
+            return new User(json.getInt("ID"),json.getString("user name"));
+        } catch (JSONException ex) {
+            Logger.getLogger(NotificationFactory.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
 }

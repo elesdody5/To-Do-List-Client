@@ -10,8 +10,6 @@ import com.jfoenix.controls.JFXListView;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,12 +17,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 import org.json.JSONObject;
 
@@ -64,12 +62,16 @@ public class ToDoListController implements Initializable {
         appStage.initOwner(listOfTasks.getScene().getWindow());
         appStage.initModality(Modality.WINDOW_MODAL);
         appStage.show();
-        appStage.setOnHidden((WindowEvent event) -> {
-            if (TaskInformationViewController.getTaskInfo() != null) {
 
-                TaskInfo addefTask = TaskInformationViewController.getTaskInfo();
+        appStage.setOnHidden((WindowEvent event) -> {
+     TaskInfo addefTask = TaskInformationViewController.getTaskInfo();
+
+            if (addefTask != null) {
+
                 listOfTasks.getItems().add(addefTask);
+                addefTask=null;
             }
+               
 
         });
 
@@ -77,15 +79,20 @@ public class ToDoListController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //  Object ol = null;
-        // update(selectedTodo2, ol);
-        listOfTasks.setCellFactory((param)
+
+     listOfTasks.setCellFactory((param)
+
                 -> {
             return new ListAdapterOfTasksList( param);
         });
-        taskview = new TaskInformationViewController();
 
+      taskview=new TaskInformationViewController();
     }
+
+
+    
+ 
+    
 
     private  void setTodoList(ToDoList toDoList) {
 
@@ -93,7 +100,7 @@ public class ToDoListController implements Initializable {
         titleOfTodo.setText(todo.getTitle());
         Color color =Color.valueOf(toDoList.getColor());
         titleOfTodo.setTextFill(color);
-        listOfTasks.setStyle("-fx-control-inner-background: "+color.toString().substring(0, 2));
+        listOfTasks.setStyle("-fx-control-inner-background: "+color.toString().substring(2));
         tasksListView.setVisible(true);
         List<TaskInfo> tasks = toDoList.getTasksInTODOList();
         listOfTasks.getItems().clear();
@@ -108,6 +115,7 @@ public class ToDoListController implements Initializable {
     public void updateCurrentTodo(ToDoList toDoList) {
 
         if (toDoList==null) {
+            System.out.println("empty");
             tasksListView.setVisible(false);
             initialStatePane.setVisible(true);
         } else {

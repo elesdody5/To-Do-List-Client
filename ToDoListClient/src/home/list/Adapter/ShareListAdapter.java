@@ -3,21 +3,25 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package home.list;
+package home.list.Adapter;
 
 import Entity.User;
+import authontication.LoginController;
 import home.to_do_list.ToDoList;
+import home.to_do_list.ToDoListController;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import server_request.Server;
 
 /**
  *
@@ -25,38 +29,37 @@ import javafx.scene.image.ImageView;
  */
 public class ShareListAdapter extends Adapter {
 
+    public ShareListAdapter(ListView<ToDoList> itemListView, ArrayList<User> friends, ArrayList<ToDoList> toDoList) {
+        super(itemListView, friends, toDoList);
 
-    public ShareListAdapter(ListView<ToDoList> itemListView,ArrayList<User> friends) {
-        super(itemListView,friends);
-        
     }
-     @Override
+
+    @Override
     protected void updateItem(ToDoList item, boolean empty) {
         super.updateItem(item, empty);
-        if (item!=null&&!empty) {
+        if (item != null && !empty) {
             ImageView image = new ImageView(new Image(getClass().getResourceAsStream("lists.png")));
             image.setFitHeight(30);
             image.setFitWidth(30);
             setGraphic(image);
             setText(item.getTitle());
-           // setContextMenu(createContextMenu(item));
+            // setContextMenu(createContextMenu(item));
 
-        }
-        else
-        {
-            
+        } else {
+
             setGraphic(null);
             setText(null);
         }
-        
+
     }
 
     @Override
     protected ContextMenu createContextMenu(ToDoList item) {
-         ContextMenu contextMenu = new ContextMenu();
+        ContextMenu contextMenu = new ContextMenu();
         MenuItem edit = new MenuItem("Edit");
         MenuItem share = new MenuItem("Share");
-        contextMenu.getItems().addAll(edit, share);
+        MenuItem leave = new MenuItem("Leave");
+        contextMenu.getItems().addAll(edit, share, leave);
         edit.setOnAction((ActionEvent event) -> {
             try {
                 openForm(item);
@@ -64,7 +67,7 @@ public class ShareListAdapter extends Adapter {
                 Logger.getLogger(MyListAdapter.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-        
+
         share.setOnAction((ActionEvent event) -> {
             try {
                 openShareList(item);
@@ -72,8 +75,33 @@ public class ShareListAdapter extends Adapter {
                 Logger.getLogger(MyListAdapter.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
+        leave.setOnAction((ActionEvent event) -> {
+            leaveToDo(item);
+        });
         return contextMenu;
     }
-    
-    
+
+    private void leaveToDo(ToDoList todo) {
+        try {
+            Server server = new Server();
+            int response = server.delete(new String[]{"collab", todo.getId() + "", LoginController.UserId + ""});
+            if (response != -1) {
+                itemListView.getItems().remove(todo);
+                todoList.remove(todo);
+                if (!todoList.isEmpty()) //set current todo first one
+                {
+                    setCurrentTodo(todoList.get(0));
+                } else {
+                    setCurrentTodo(null);
+                }
+                showAleart(Alert.AlertType.INFORMATION, "Done ", "Leaved Succefully");
+            } else {
+                showAleart(Alert.AlertType.ERROR, "Error ", "cann't leave todo");
+            }
+        } catch (IOException ex) {
+            showAleart(Alert.AlertType.ERROR, "Connection lost", "Error update  List");
+
+        }
+    }
+
 }

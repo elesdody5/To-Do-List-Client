@@ -63,7 +63,7 @@ public class ListRequestCell extends ListCell<Notifications> {
             public void handle(ActionEvent event) {
                 not.setStatus(1);
                 ConnectWithController_MenuBar instance = ConnectWithController_MenuBar.getInastance();
-                instance.sendRequestResponse(not);
+                instance.sendNotificationResponse(not);
                 // make sure that Notification table is updated
                 if (instance.sendDataToView() == "true") {
                     updateItem(not, true);
@@ -75,7 +75,7 @@ public class ListRequestCell extends ListCell<Notifications> {
             public void handle(ActionEvent event) {
                 not.setStatus(0);
                 ConnectWithController_MenuBar instance = ConnectWithController_MenuBar.getInastance();
-                instance.sendRequestResponse(not);
+                instance.sendNotificationResponse(not);
                 // make sure that Notification table is updated
                 if (instance.sendDataToView() == "true") {
                     updateItem(not, true);
@@ -110,7 +110,20 @@ public class ListRequestCell extends ListCell<Notifications> {
                 accept.setVisible(false);
                 reject.setVisible(false);
                 txt.setText("you rejected a Collaboration with " + not.getFromUserName() + " in List : " + not.getData());
-            } else if (not.getStatus() == NotificationKeys.NORESPONSE_NOTIFICATION_REQUEST){
+            } else if (not.getStatus() == NotificationKeys.SEND_RESPONSE_BACK_TO_SENDER_ACCEPT) {
+                setBackground(new Background(new BackgroundFill(Paint.valueOf("C2B5DE"), new CornerRadii(5), Insets.EMPTY)));
+                accept.setVisible(false);
+                reject.setVisible(false);
+                txt.setText(not.getFromUserName() + " accepted a Collaboration with you in List : " + not.getData());
+                setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+                    @Override
+                    public void handle(MouseEvent event) {
+                        txt.setTextFill(Paint.valueOf("black"));
+                        setBackground(new Background(new BackgroundFill(Paint.valueOf("white"), new CornerRadii(5), Insets.EMPTY)));
+                    }
+                });
+            } else if (not.getStatus() == NotificationKeys.NORESPONSE_NOTIFICATION_REQUEST) {
                 setBackground(new Background(new BackgroundFill(Paint.valueOf("C2B5DE"), new CornerRadii(5), Insets.EMPTY)));
                 txt.setText(not.getFromUserName() + " sends you a request to Collaborate in List : " + not.getData());
                 accept.setText("Accept");

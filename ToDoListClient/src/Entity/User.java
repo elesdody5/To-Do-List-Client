@@ -66,9 +66,14 @@ public class User extends Observable{
         
         return user;
     }
+
+    
+    public void setId(int id) {
+        this.id = id;
+    }
     
     
-    
+   
     
     
 }

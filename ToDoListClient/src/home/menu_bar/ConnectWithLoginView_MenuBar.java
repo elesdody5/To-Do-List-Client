@@ -78,6 +78,7 @@ public class ConnectWithLoginView_MenuBar implements MenuBarModelInterface {
 
     }
 
+
     //load old lists
 
     public void loadAllLists(List<User> friends, List<Notifications> notification) {

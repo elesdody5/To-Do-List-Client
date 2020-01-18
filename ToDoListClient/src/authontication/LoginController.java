@@ -18,6 +18,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import Utility.*;
 import java.io.IOException;
+import java.time.Clock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.fxml.FXMLLoader;
@@ -35,6 +36,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -245,9 +247,11 @@ public class LoginController implements Initializable {
             Stage stage = new Stage();
             stage.getIcons().add(new Image(getClass().getResourceAsStream("/authontication/Icons/logo.png")));
             stage.setOnCloseRequest((WindowEvent event) -> {
-                server.logOut(UserId + "");
+                server.logOut();
+                System.exit(0);
             });
             stage.setScene(scene);
+            //stage.initStyle(StageStyle.UTILITY);
             stage.show();
             this.stage.close();
 
