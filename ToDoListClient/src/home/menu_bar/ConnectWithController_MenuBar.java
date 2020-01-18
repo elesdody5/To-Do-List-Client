@@ -86,7 +86,7 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
             showListRequest(obj);
         } else if (obj.getType() == NotificationKeys.ASSIGIN_TASK_MEMBER) {
             showTaskRequest(obj);
-        } else if (obj.getType() == NotificationKeys.REQUEST_FRIEND) {
+        } else if (obj.getType() == NotificationKeys.REQUEST_FRIEND) {       
             showFriendRequest(obj);
         }
     }
