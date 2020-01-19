@@ -109,26 +109,8 @@ public class MenuBarController implements Initializable {
     ObservableList<Notifications> notLists;
     ObservableList<Notifications> notTasks;
     ObservableList<Notifications> notFriendRequests;
-    ObservableList<User> frienditems;
+    ObservableList<User> friendObservableList;
     List<Notifications> lists;
-    private static MenuBarController instance;
-
-    public MenuBarController() {
-        notLists = FXCollections.observableArrayList();
-        notTasks = FXCollections.observableArrayList();
-        notFriendRequests = FXCollections.observableArrayList();
-        frienditems = FXCollections.observableArrayList();
-    }
-
-    public static MenuBarController getInastance() {
-        if (instance == null) {
-            synchronized (MenuBarController.class) {
-                instance = new MenuBarController();
-            }
-        }
-        return instance;
-    }
-
     //to hide label after specific time
     class ProcessService extends Service<Void> {
 
@@ -150,14 +132,18 @@ public class MenuBarController implements Initializable {
     @FXML
     private void handleChangeNameAction(ActionEvent event) {
         ConnectWithController_MenuBar.getInastance().setNewName(newName.getText());
-        if (ConnectWithController_MenuBar.getInastance().sendDataToView().equals("true")) {
-            userName.setText(newName.getText());
+    }
+    public void setResultChangeName (String result){
+      if(result.equals("true")){
+          userName.setText(newName.getText());
             userImage.setText(("" + newName.getText().charAt(0)).toUpperCase());
             userNameIns.setText(newName.getText());
             userImageIns.setText(("" + newName.getText().charAt(0)).toUpperCase());
             newName.setText("");
-        } else if (ConnectWithController_MenuBar.getInastance().sendDataToView().equals("nameFound")) {
-            if (!service.isRunning()) {
+      
+      
+      }else if(result.equals("nameFound")){
+          if (!service.isRunning()) {
                 service.start();
             }
             newName.setText("");
@@ -168,8 +154,8 @@ public class MenuBarController implements Initializable {
                 //reset service
                 service.reset();
             });
-        } else {
-            if (!service.isRunning()) {
+      }else {
+           if (!service.isRunning()) {
                 service.start();
             }
             newName.setText("");
@@ -180,41 +166,15 @@ public class MenuBarController implements Initializable {
                 //reset service
                 service.reset();
             });
-        }
-
+      }
+    
     }
+    
 
     @FXML
     private void handleChangePasswordAction(ActionEvent event) {
         if (newPassword.getText().equals(verfiyNewPassword.getText())) {
             ConnectWithController_MenuBar.getInastance().setNewPassword(newPassword.getText());
-            if (ConnectWithController_MenuBar.getInastance().sendDataToView().equals("true")) {
-                if (!service.isRunning()) {
-                    service.start();
-                }
-                status.setVisible(true);
-                status.setText("your password is changed");
-                newPassword.setText("");
-                verfiyNewPassword.setText("");
-                service.setOnSucceeded(e -> {
-                    status.setVisible(false);
-                    //reset service
-                    service.reset();
-                });
-            } else {
-                if (!service.isRunning()) {
-                    service.start();
-                }
-                newPassword.setText("");
-                verfiyNewPassword.setText("");
-                status.setVisible(true);
-                status.setText("your Password cannot be changed");
-                service.setOnSucceeded(e -> {
-                    status.setVisible(false);
-                    //reset service
-                    service.reset();
-                });
-            }
         } else {
             if (!service.isRunning()) {
                 service.start();
@@ -228,7 +188,35 @@ public class MenuBarController implements Initializable {
             });
         }
     }
-
+    public void setResultChangePassword (String result ){
+        if(result.equals("true")){
+            if (!service.isRunning()) {
+                    service.start();
+                }
+                status.setVisible(true);
+                status.setText("your password is changed");
+                newPassword.setText("");
+                verfiyNewPassword.setText("");
+                service.setOnSucceeded(e -> {
+                    status.setVisible(false);
+                    //reset service
+                    service.reset();
+                });      
+        }else{
+               if (!service.isRunning()) {
+                    service.start();
+                }
+                newPassword.setText("");
+                verfiyNewPassword.setText("");
+                status.setVisible(true);
+                status.setText("your Password cannot be changed");
+                service.setOnSucceeded(e -> {
+                    status.setVisible(false);
+                    //reset service
+                    service.reset();
+                });
+        }
+    }
     @FXML
     private void handleLogoutAction(ActionEvent event) {
         try {
@@ -250,34 +238,39 @@ public class MenuBarController implements Initializable {
     }
 
     void setListRequest(Notifications list) {
+        
         notLists.add(0, list);
-        System.out.println(list.getId());
+        System.out.println("show List : "+list.getFromUserName() + list.getData());
+        notListBox.setVisible(false);  
         listsNotification.setItems(notLists);
+        listsNotification.setVisible(true);
         listsNotification.setCellFactory((li) -> new ListRequestCell());
     }
 
     void setTaskRequest(Notifications task) {
+        notTaskBox.setVisible(false);
         notTasks.add(0, task);
         tasksNotification.setItems(notTasks);
+        tasksNotification.setVisible(true);
         tasksNotification.setCellFactory((ta) -> new TaskRequestCell());
     }
 
     public void setFriendRequest(Notifications friend) {
-        System.out.println("new not friend: 268 mbc " + friend.getId());
-        
-        // notFriendBox.setVisible(false);
-        //notFriendRequests.add(friend);
-//        System.out.println(" lv "+friendRequestsNotification.getItems().get(0).getId());
-         resultLabel.setText("testtttttt");
-//        friendRequestsNotification.getItems().add(friend);
-//         friendRequestsNotification.refresh();
-        // friendRequestsNotification.setVisible(true);
-//        friendRequestsNotification.setCellFactory((fr) -> new friendRequestCell());
+        notFriendBox.setVisible(false);
+        notFriendRequests.add(0,friend);
+        friendRequestsNotification.setItems(notFriendRequests);
+        friendRequestsNotification.setVisible(true);
+        friendRequestsNotification.setCellFactory((fr) -> new friendRequestCell());
     }
+
+   
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        MenuBarController.getInastance();
+        notLists = FXCollections.observableArrayList();
+        notTasks = FXCollections.observableArrayList();
+        notFriendRequests = FXCollections.observableArrayList();
+        friendObservableList = FXCollections.observableArrayList();
         // get data of the instance created by login 
         //get name
         ConnectWithLoginView_MenuBar getInstance = ConnectWithLoginView_MenuBar.getInastance();
@@ -320,11 +313,9 @@ public class MenuBarController implements Initializable {
             notFriendBox.setVisible(false);
             for (Notifications li : friendRequests) {
                 notFriendRequests.add(0, li);
-                System.out.println("friend req Not :" + li);
             }
             friendRequestsNotification.setVisible(true);
             friendRequestsNotification.setItems(notFriendRequests);
-            System.out.println(friendRequestsNotification.getItems().get(0));
             friendRequestsNotification.setCellFactory((friendRequest) -> new friendRequestCell());
         } else {
             friendRequestsNotification.setVisible(false);
@@ -333,12 +324,12 @@ public class MenuBarController implements Initializable {
         }
         /*Aml Start*/
         //get friend list 
-
         friends = getInstance.sendFriendListToView();
         for (User user : friends) {
-            frienditems.add(user);
+            friendObservableList.add(user);
         }
-        friendsLV.setItems(frienditems);
+        friendsLV.setItems(friendObservableList);
+
         friendsLV.setCellFactory((listView) -> new FriendListViewCell());
         /*Aml End */
 
@@ -355,19 +346,25 @@ public class MenuBarController implements Initializable {
         if (name.equals(friendRequestName)) {
             result = "You can not send request to yourself";
         } else {
-            result = ConnectWithController_MenuBar.getInastance().sendFriendRequest(friendRequestName);
+            searchButton.setDisable(true);
+            ConnectWithController_MenuBar.getInastance().sendFriendRequest(friendRequestName);
         }
+    }
+     
+    public void setResultLabelFriendRequest(String res) {
         resultLabel.setMaxWidth(100);
         resultLabel.setWrapText(true);
-        resultLabel.setText(result);
+        resultLabel.setText(res);
         friendRequestTextField.setText("");
+        searchButton.setDisable(false);
     }
 
     public void notifyAcceptingFriend(User friendUser) {
         int size = friends.size();
         friends.add(friendUser);
+        friendObservableList.removeAll(friends);
+        friendObservableList.addAll(friends);
 
     }
     /*end Aml*/
 }
-/*end Aml*/

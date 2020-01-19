@@ -5,7 +5,9 @@
  */
 package server_request;
 
+import Entity.User;
 import Enum.REQUEST;
+import authontication.LoginController;
 import home.Notifications;
 import home.View;
 import home.list.FXMLListController;
@@ -24,6 +26,7 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
+import onlineFriends.OnlineFriendsController;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -164,14 +167,14 @@ public class Server implements Request {
         return response;
     }
 
-    public void logOut(String userId) {
+    public void logOut() {
         ps.println(REQUEST.LOGOUT);
 
         ps.print("/");
-        ps.print(userId);
+
+        ps.print(LoginController.UserId);
 
         ps.println();
-        System.exit(0);
         //listener.stop();
     }
 
@@ -253,8 +256,11 @@ public class Server implements Request {
                     break;
                 case REQUEST.TASK:
                     break;
-                case REQUEST.TODO:
+                case REQUEST.SHAREDTODO:
                     ((FXMLListController) View.getListLoader().getController()).addSharedList((ToDoList) object);
+                    break;
+                case REQUEST.NEWCOLLABORATOR: 
+                    break;
             }
         }
     }
