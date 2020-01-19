@@ -13,8 +13,10 @@ import org.json.JSONObject;
 import server_connection.Connection;
 import home.NotificationKeys;
 import home.Notifications;
+import home.View;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 
 /**
  *
@@ -22,7 +24,7 @@ import java.util.logging.Logger;
  */
 public class ConnectWithController_MenuBar implements MenuBarModelInterface {
 
-    private boolean isName, isRequestAccepted, isTask, isFriendRequest, isPassword, isRequestRejected;
+    private boolean isName = false, isRequestAccepted = false, isTask = false, isFriendRequest = false, isPassword = false, isRequestRejected = false;
     private int status = -1;
     private String name;
     private String password;
@@ -30,6 +32,8 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
     private static ConnectWithController_MenuBar instance;
     Notifications request = new Notifications();
     String friendRequestName, resultFriendRequest, keyRequestAccept;
+    String id = ConnectWithLoginView_MenuBar.getInastance().sendIdToView();
+    String currentName = ConnectWithLoginView_MenuBar.getInastance().sendDataToView();
 
     private ConnectWithController_MenuBar() {
 
@@ -39,6 +43,12 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
     public static ConnectWithController_MenuBar getInastance() {
         if (instance == null) {
             instance = new ConnectWithController_MenuBar();
+            try {
+                s = new Server();
+            } catch (IOException ex) {
+                AlertDialog.showInfoDialog("server", "Error", "Server Connection is out!");
+
+            }
         }
 
         return instance;
@@ -48,13 +58,15 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
     public void setNewName(String name) {
         this.name = name;
         isName = true;
-        sendDataToController();
+        ServerThread th = new ServerThread();
+        th.start();
     }
 
     public void setNewPassword(String password) {
         this.password = password;
         isPassword = true;
-        sendDataToController();
+        ServerThread th = new ServerThread();
+        th.start();
     }
 
     public void sendNotificationResponse(Notifications req) {
@@ -70,21 +82,24 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
             } else if (req.getType() == NotificationKeys.REQUEST_FRIEND) {
                 keyRequestAccept = "friend";
             }
-            sendDataToController();
+            ServerThread th = new ServerThread();
+            th.start();
         } else if (req.getStatus() == NotificationKeys.REJECT_NOTIFICATION_REQUEST) {
             //update notif id with status equal 0
             isRequestRejected = true;
             request = req;
-            sendDataToController();
+            ServerThread th = new ServerThread();
+            th.start();
         }
 
     }
     //set new requests
 
     public void setNotificationRequest(Notifications obj) {
-        if (obj.getType() == NotificationKeys.ADD_COLLABORATOR) {
+        
+        
             showListRequest(obj);
-        } else if (obj.getType() == NotificationKeys.ASSIGIN_TASK_MEMBER) {
+          if (obj.getType() == NotificationKeys.ASSIGIN_TASK_MEMBER) {
             showTaskRequest(obj);
         } else if (obj.getType() == NotificationKeys.REQUEST_FRIEND) {
             showFriendRequest(obj);
@@ -92,77 +107,197 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
     }
 
     private void showListRequest(Notifications obj) {
-        MenuBarController instance = MenuBarController.getInastance();
-        instance.setListRequest(obj);
+        Thread th = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                MenuBarController instance = View.getMenuLoader().getController();
+                System.out.println("inside thread list: "+ obj.getFromUserName() + obj.getToUserId() + obj.getDataId() );
+                instance.setListRequest(obj);
+            }
+        });
+        th.start();
+
     }
 
     private void showTaskRequest(Notifications obj) {
-        MenuBarController instance = MenuBarController.getInastance();
-        instance.setTaskRequest(obj);
+     
+            Thread th = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                MenuBarController instance = View.getMenuLoader().getController();
+                instance.setTaskRequest(obj);
+                System.out.println("inside thread task : "+ obj.getFromUserName() + obj.getToUserId() + obj.getDataId() );
+          
+            }
+        });
+        th.start();
 
     }
 
     private void showFriendRequest(Notifications obj) {
-        MenuBarController instance = MenuBarController.getInastance();
+        MenuBarController instance = View.getMenuLoader().getController();
         instance.setFriendRequest(obj);
 
     }
 
-    public String sendFriendRequest(String friendRequestName) {
+    public void sendFriendRequest(String friendRequestName) {
 
         this.friendRequestName = friendRequestName;
         isFriendRequest = true;
-        sendDataToController();
-        return resultFriendRequest;
+        ServerThread th = new ServerThread();
+        th.start();
+
     }
 
-    private void sendDataToController() {
+    class ServerThread extends Thread {
+
+        public void run() {
+            if(isName){
+                String result = sendDataToController();
+                MenuBarController instance = View.getMenuLoader().getController();
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        instance.setResultChangeName(result);
+                    }
+                });
+            }
+            if(isPassword){
+                String result = sendDataToController();
+                MenuBarController instance = View.getMenuLoader().getController();
+                Platform.runLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                         instance.setResultChangePassword(result);
+                    }
+                });
+            
+            }
+            if (isFriendRequest) {
+                String result = sendDataToController();
+                MenuBarController instance = View.getMenuLoader().getController();
+                Platform.runLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        instance.setResultLabelFriendRequest(result);
+                    }
+                });
+
+            }
+
+            if (isRequestAccepted) {
+                String result = sendDataToController();
+                if (result.equals("true")) {
+                    if (keyRequestAccept == "collaborator") {
+                        ListRequestCell obj = new ListRequestCell();
+                        obj.updateItem(request, true);
+                        //obj.accept.setDisable(false);
+                        System.out.println("true add coll : "+ request.getId() + request.getStatus());
+//                        Platform.runLater(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                               
+//                               
+//                                
+//                            }
+//                        });
+                    } else if (keyRequestAccept == "taskMember") {
+                        TaskRequestCell obj = new TaskRequestCell();
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                 obj.accept.setDisable(false);
+                                obj.updateItem(request, true);
+                            }
+                        });
+                    } else if (keyRequestAccept == "friend") {
+                        friendRequestCell obj = new friendRequestCell();
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                obj.updateItem(request, true);
+                            }
+                        });
+                    }
+
+                } else {
+                    Platform.runLater(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            AlertDialog.showInfoDialog("Cannot update notification table", "Error Updating", "");
+                        }
+                    });
+
+                }
+            }
+            if (isRequestRejected) {
+                String result = sendDataToController();
+                if (result.equals("true")) {
+                    friendRequestCell obj = new friendRequestCell();
+                    Platform.runLater(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            obj.updateItem(request, true);
+                        }
+                    });
+                } else {
+                    Platform.runLater(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            AlertDialog.showInfoDialog("Cannot update notification table", "Error Updating", "");
+                        }
+                    });
+
+                }
+            }
+        }
+    }
+
+    private void setNameServer() {
+        isName = false;
+        String[] key = {"setNewName"};
+        JSONObject obj = new JSONObject();
         try {
-            s = new Server();
-        } catch (IOException ex) {
-            AlertDialog.showInfoDialog("server", "Error", "Server Connection is out!");
-
+            obj.put("id", id);
+            obj.put("username", name);
+            status = s.put(key, obj);
+        } catch (JSONException ex) {
+            System.out.println("file:ConnectWithController_MenuBar cannot append new username");
         }
-        String id = ConnectWithLoginView_MenuBar.getInastance().sendIdToView();
+    }
 
-        if (isName) {
-            isName = false;
-            String[] key = {"setNewName"};
-            JSONObject obj = new JSONObject();
-            try {
-                obj.put("id", id);
-                obj.put("username", name);
-                status = s.put(key, obj);
-            } catch (JSONException ex) {
-                System.out.println("file:ConnectWithController_MenuBar 65 cannot append new username");
-            }
+    private void setPasswordServer() {
+        isPassword = false;
+        String[] key = {"setPassword"};
+        JSONObject obj = new JSONObject();
 
+        try {
+            obj.put("id", id);
+            obj.put("password", password);
+            status = s.put(key, obj);
+        } catch (JSONException ex) {
+            System.out.println("file:ConnectWithController_MenuBar cannot append new password");
         }
-        if (isPassword) {
-            isPassword = false;
-            String[] key = {"setPassword"};
-            JSONObject obj = new JSONObject();
+    }
 
-            try {
-                obj.put("id", id);
-                obj.put("password", password);
-                status = s.put(key, obj);
-            } catch (JSONException ex) {
-                System.out.println("file:ConnectWithController_MenuBar 78 cannot append new password");
-            }
-
-        }
-
-        if (isRequestAccepted) {
-
-            try {
-                //update notification table with this id
-                String[] key = {"updateRequestStatus"};
-                JSONObject objNot = new JSONObject();
-                objNot.put("notId", request.getId());
-                objNot.put("status", request.getStatus());
-                status = s.put(key, objNot);
-                //add new collaborator
+    private void RequestAcceptedServer() {
+        try {
+            isRequestAccepted = false;
+            //update notification table with this id
+            String[] key = {"updateRequestStatus"};
+            JSONObject objNot = new JSONObject();
+            objNot.put("notId", request.getId());
+            objNot.put("status", request.getStatus());
+            status = s.put(key, objNot);
+            //add new collaborator
+            if (status > 0) {
                 if (keyRequestAccept == "collaborator") {
                     //send notification to sender 
                     String[] keySender = {"sender:list:accept"};
@@ -170,14 +305,20 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
                     objSenderNotification.put("fromUserId", request.getToUserId());
                     objSenderNotification.put("toUserId", request.getFromUserId());
                     objSenderNotification.put("dataId", request.getDataId());
-                    s.post(keySender, objSenderNotification);
+                    objSenderNotification.put("fromUserName", request.getFromUserName());
+                    objSenderNotification.put("toUserName", currentName);
+                    objSenderNotification.put("data", request.getData());
+                    JSONObject res = s.post(keySender, objSenderNotification);
+                    System.out.println("added to table not sender:list:accept");
+                    //res.getInt("status");
+                   System.out.println("list status not: "+ res.getInt("status"));
                     //add in collaborator table
                     String[] keyRequest = {"addNewColl"};
                     JSONObject objColl = new JSONObject();
                     objColl.put("userId", request.getToUserId());
                     objColl.put("todoId", request.getDataId());
                     s.post(keyRequest, objColl);
-
+                    System.out.println("added to table coll ");
                 } else if (keyRequestAccept == "taskMember") {
                     //send notification to sender 
                     String[] keySender = {"sender:task:accept"};
@@ -185,7 +326,11 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
                     objSenderNotification.put("fromUserId", request.getToUserId());
                     objSenderNotification.put("toUserId", request.getFromUserId());
                     objSenderNotification.put("dataId", request.getDataId());
-                    s.post(keySender, objSenderNotification);
+                    objSenderNotification.put("fromUserName", request.getFromUserName());
+                    objSenderNotification.put("toUserName", currentName);
+                    objSenderNotification.put("data", request.getData());
+                    JSONObject res = s.post(keySender, objSenderNotification);
+                    status = res.getInt("status");
                     //add in task member table
                     String[] keyRequest = {"addNewTaskMember"};
                     JSONObject objTask = new JSONObject();
@@ -199,7 +344,10 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
                     objSenderNotification.put("fromUserId", request.getToUserId());
                     objSenderNotification.put("toUserId", request.getFromUserId());
                     objSenderNotification.put("dataId", request.getDataId());
-                    s.post(keySender, objSenderNotification);
+                    objSenderNotification.put("fromUserName", request.getFromUserName());
+                    objSenderNotification.put("toUserName", currentName);
+                    JSONObject res = s.post(keySender, objSenderNotification);
+                    status = res.getInt("status");
                     //add in friend table
                     String[] keyRequest = {"addNewFriend"};
                     JSONObject objFriend = new JSONObject();
@@ -207,41 +355,74 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
                     objFriend.put("friendId", request.getToUserId());
                     s.post(keyRequest, objFriend);
                 }
+            }
+        } catch (JSONException ex) {
+            System.out.println("file:ConnectWithController_MenuBar  cannot upate data");
+        }
 
-            } catch (JSONException ex) {
-                System.out.println("file:ConnectWithController_MenuBar 108 cannot append new collaborator");
+    }
+
+    private void RequestRejectedServer() {
+        isRequestRejected = false;
+        String[] key = {"updateRequestList"};
+        JSONObject objNot = new JSONObject();
+        try {
+            //update notification table with this id
+            objNot.put("notId", request.getId());
+            objNot.put("status", request.getStatus());
+            status = s.put(key, objNot);
+        } catch (JSONException ex) {
+            System.out.println("file:ConnectWithController_MenuBar 108 cannot append new collaborator");
+        }
+    }
+
+    private void friendRequestServer() {
+        isFriendRequest = false;
+        ConnectWithLoginView_MenuBar getInstance = ConnectWithLoginView_MenuBar.getInastance();
+        String[] requestType = {"sendFriendRequest"};
+        String name = getInstance.sendDataToView();
+        JSONObject friendJsonObject = new JSONObject();
+        try {
+            friendJsonObject.put("currentUserID", sendIdToView());
+            friendJsonObject.put("currentUserName", name);
+            friendJsonObject.put("friendName", friendRequestName);
+            JSONObject resultJSONObject = s.post(requestType, friendJsonObject);
+            resultFriendRequest = resultJSONObject.getString("result");
+        } catch (JSONException ex) {
+            System.out.println("file:ConnectWithController_MenuBar 253");
+        }
+    }
+
+    private String sendDataToController() {
+
+        if (isName) {
+            setNameServer();
+              if (status == 1) {
+                return "true";
+            } else if (status == 2) {
+            return "nameFound";
+              }
+        }
+        if (isPassword) {
+            setPasswordServer();
+        }
+        if (isRequestAccepted) {
+            RequestAcceptedServer();
+            if (status == 1) {
+                return "true";
             }
         }
         if (isRequestRejected) {
-
-            String[] key = {"updateRequestList"};
-            JSONObject objNot = new JSONObject();
-            try {
-                //update notification table with this id
-                objNot.put("notId", request.getId());
-                objNot.put("status", request.getStatus());
-                status = s.put(key, objNot);
-            } catch (JSONException ex) {
-                System.out.println("file:ConnectWithController_MenuBar 108 cannot append new collaborator");
+            RequestRejectedServer();
+            if (status == 1) {
+                return "true";
             }
         }
         if (isFriendRequest) {
-            ConnectWithLoginView_MenuBar getInstance = ConnectWithLoginView_MenuBar.getInastance();
-            String[] requestType = {"sendFriendRequest"};
-            String name = getInstance.sendDataToView();
-            JSONObject friendJsonObject = new JSONObject();
-            try {
-                friendJsonObject.put("currentUserID", sendIdToView());
-                friendJsonObject.put("currentUserName", name);
-                friendJsonObject.put("friendName", friendRequestName);
-                JSONObject resultJSONObject = s.post(requestType, friendJsonObject);
-                resultFriendRequest = resultJSONObject.getString("result");
-            } catch (JSONException ex) {
-                System.out.println("file:ConnectWithController_MenuBar 164 cannot send friend request");
-            }
-
+            friendRequestServer();
+            return resultFriendRequest;
         }
-
+        return "false";
     }
 
     @Override
@@ -259,4 +440,18 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
         return ConnectWithLoginView_MenuBar.getInastance().sendIdToView();
     }
 
+    public String removeFriend(int id){
+           
+            String[] requestType = {"removeFriend"};
+           
+            JSONObject friendJsonObject = new JSONObject();
+            try {
+                friendJsonObject.put("userID", id);
+                JSONObject resultJSONObject = s.post(requestType, friendJsonObject);
+                resultFriendRequest = resultJSONObject.getString("result");
+            } catch (JSONException ex) {
+                System.out.println("file:ConnectWithController_MenuBar 164 cannot send friend request");
+            }
+            return  resultFriendRequest;
+    }
 }

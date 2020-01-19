@@ -24,6 +24,7 @@ public class OnlineFriendsController implements Initializable {
 
     @FXML
     private ListView<User> onlineFriendsLV;
+
     List<User> onlineFriendsList ;
     ObservableList<User> onlineFriendsObseverList;
 
@@ -33,27 +34,33 @@ public class OnlineFriendsController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+
     }    
     
     public void getOnlineFriends(List<User> onlineFriends){
         this.onlineFriendsList = onlineFriends ;
          onlineFriendsObseverList = FXCollections.observableArrayList();
    
+
         for (User user : onlineFriends) {
             onlineFriendsObseverList.add(user);
         }
         onlineFriendsLV.setItems(onlineFriendsObseverList);
         onlineFriendsLV.setCellFactory((listView) -> new OnlineFriendListViewCell());
     }
+
     
     public void notifyUserOnlineOrOffline (User user , boolean status ){
         if (status){
-            onlineFriendsList.add(user);
+            onlineFriendsLV.getItems().add(user);
         }else{
-            onlineFriendsList.remove(user);
+            int removedItem =-8;
+            for (int i = 0; i < onlineFriendsLV.getItems().size(); i++) {
+                if (onlineFriendsLV.getItems().get(i).getId() == user.getId())
+                    removedItem = i ;
+            }
+             onlineFriendsLV.getItems().remove(removedItem);
 
- onlineFriendsObseverList.removeAll(onlineFriendsList);
-        onlineFriendsObseverList.addAll(onlineFriendsList);
         }
-    }    
+    }
 }

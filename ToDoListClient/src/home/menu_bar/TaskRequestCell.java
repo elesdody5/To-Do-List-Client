@@ -48,8 +48,14 @@ public class TaskRequestCell extends ListCell<Notifications> {
                 //do something                  
             }
         });
-        accept = new Button();
-        reject = new Button();
+    
+    }
+
+    @Override
+    protected void updateItem(Notifications not, boolean empty) {
+        super.updateItem(not, empty);
+        setWrapText(true);
+        this.not = not;
         accept.setTextFill(Paint.valueOf("white"));
         accept.setBackground(new Background(new BackgroundFill(Paint.valueOf("#6F4CBB"), new CornerRadii(5), Insets.EMPTY)));
         reject.setTextFill(Paint.valueOf("black"));
@@ -60,10 +66,6 @@ public class TaskRequestCell extends ListCell<Notifications> {
                 not.setStatus(1);
                 ConnectWithController_MenuBar instance = ConnectWithController_MenuBar.getInastance();
                 instance.sendNotificationResponse(not);
-                // make sure that Notification table is updated
-                if (instance.sendDataToView() == "true") {
-                    updateItem(not, true);
-                }
             }
         });
         reject.setOnAction(new EventHandler<ActionEvent>() {
@@ -72,19 +74,8 @@ public class TaskRequestCell extends ListCell<Notifications> {
                 not.setStatus(0);
                 ConnectWithController_MenuBar instance = ConnectWithController_MenuBar.getInastance();
                 instance.sendNotificationResponse(not);
-                // make sure that Notification table is updated
-                if (instance.sendDataToView() == "true") {
-                    updateItem(not, true);
-                }
             }
         });
-    }
-
-    @Override
-    protected void updateItem(Notifications not, boolean empty) {
-        super.updateItem(not, empty);
-        setWrapText(true);
-        this.not = not;
         accept.setVisible(false);
         reject.setVisible(false);
         accept.setTextFill(Paint.valueOf("white"));

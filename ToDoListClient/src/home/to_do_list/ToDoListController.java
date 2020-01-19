@@ -90,10 +90,6 @@ public class ToDoListController implements Initializable {
     }
 
 
-    
- 
-    
-
     private  void setTodoList(ToDoList toDoList) {
 
         todo = toDoList;
@@ -115,7 +111,6 @@ public class ToDoListController implements Initializable {
     public void updateCurrentTodo(ToDoList toDoList) {
 
         if (toDoList==null) {
-            System.out.println("empty");
             tasksListView.setVisible(false);
             initialStatePane.setVisible(true);
         } else {

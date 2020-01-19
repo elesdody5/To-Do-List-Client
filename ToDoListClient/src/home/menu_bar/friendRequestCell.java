@@ -27,7 +27,8 @@ import javafx.scene.text.TextAlignment;
  *
  * @author ghadeerelmahdy
  */
-public class friendRequestCell  extends ListCell<Notifications>{
+public class friendRequestCell extends ListCell<Notifications> {
+
     Button accept = new Button();
     Button reject = new Button();
     Notifications not;
@@ -50,13 +51,10 @@ public class friendRequestCell  extends ListCell<Notifications>{
         accept.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+
                 not.setStatus(1);
                 ConnectWithController_MenuBar instance = ConnectWithController_MenuBar.getInastance();
                 instance.sendNotificationResponse(not);
-                // make sure that Notification table is updated
-                if (instance.sendDataToView() == "true") {
-                    updateItem(not, true);
-                }
             }
         });
         reject.setOnAction(new EventHandler<ActionEvent>() {
@@ -65,14 +63,11 @@ public class friendRequestCell  extends ListCell<Notifications>{
                 not.setStatus(0);
                 ConnectWithController_MenuBar instance = ConnectWithController_MenuBar.getInastance();
                 instance.sendNotificationResponse(not);
-                // make sure that Notification table is updated
-                if (instance.sendDataToView() == "true") {
-                    updateItem(not, true);
-                }
             }
         });
     }
-        @Override
+
+    @Override
     protected void updateItem(Notifications not, boolean empty) {
         super.updateItem(not, empty);
         this.not = not;
@@ -100,17 +95,25 @@ public class friendRequestCell  extends ListCell<Notifications>{
                 setBackground(new Background(new BackgroundFill(Paint.valueOf("C2B5DE"), new CornerRadii(5), Insets.EMPTY)));
                 accept.setVisible(false);
                 reject.setVisible(false);
-                //TODO : mention name of this list
-                txt.setText(not.getFromUserName() + " accepted your friend request ") ;
+                txt.setText(not.getFromUserName() + " accepted your friend request ");
                 setOnMouseClicked(new EventHandler<MouseEvent>() {
 
                     @Override
                     public void handle(MouseEvent event) {
                         txt.setTextFill(Paint.valueOf("black"));
                         setBackground(new Background(new BackgroundFill(Paint.valueOf("white"), new CornerRadii(5), Insets.EMPTY)));
+                        not.setStatus(NotificationKeys.RESPONSE_BACK_IS_READ);
+                        ConnectWithController_MenuBar instance = ConnectWithController_MenuBar.getInastance();
+                        instance.sendNotificationResponse(not);
                     }
-                }); 
-             } else {
+                });
+            } else if (not.getStatus() == NotificationKeys.RESPONSE_BACK_IS_READ) {
+                txt.setTextFill(Paint.valueOf("black"));
+                setBackground(new Background(new BackgroundFill(Paint.valueOf("white"), new CornerRadii(5), Insets.EMPTY)));
+                txt.setText(not.getFromUserName() + " accepted your friend request ");
+                accept.setVisible(false);
+                reject.setVisible(false);
+            } else {
                 setBackground(new Background(new BackgroundFill(Paint.valueOf("white"), new CornerRadii(5), Insets.EMPTY)));
                 accept.setVisible(false);
                 reject.setVisible(false);
@@ -122,9 +125,8 @@ public class friendRequestCell  extends ListCell<Notifications>{
                 }
             }
         }
-        HBox buttonBox = new HBox(3,accept,reject);
-        VBox box = new VBox(txt,buttonBox);
+        HBox buttonBox = new HBox(3, accept, reject);
+        VBox box = new VBox(txt, buttonBox);
         setGraphic(box);
     }
 }
-
