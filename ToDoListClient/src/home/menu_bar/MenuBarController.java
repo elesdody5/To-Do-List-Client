@@ -372,10 +372,13 @@ public class MenuBarController implements Initializable ,RemoveItemInterface {
     }
     
         @Override
-    public void removeItem(User friend) {
-             friendsLV.getItems().remove(friend);
-            System.out.println("inssssssssssssssssssss");
-            System.out.println("id"+friend.getId());
+    public void removeItem(User friend) {  
+            System.out.println("ggg"+friend.getId());
+          String res=   ConnectWithController_MenuBar.getInastance().removeFriend(friend.getId());
+          if (res.equals("success remove friend"))
+               friendsLV.getItems().remove(friend);
+            System.out.println("result"+res);
+           
     }
      
     /*end Aml*/
