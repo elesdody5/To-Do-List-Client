@@ -21,11 +21,11 @@ import java.io.IOException;
 import java.time.Clock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.image.Image;
@@ -173,6 +173,8 @@ public class LoginController implements Initializable {
 
     //sign in method
     private void signIn() throws JSONException {
+        sign_in_btn_id.setDisable(true);
+        password_message_id.setText("");
         //get userName and password from input field
         String userName = email_id.getText().trim();
         String password = password_id.getText().trim();
@@ -205,6 +207,10 @@ public class LoginController implements Initializable {
                         break;
                     case RESPOND_CODE.FAILD:
                         showFaildAccessMessage();
+                        break;
+
+                    case RESPOND_CODE.IS_LOGIN:
+                        showIsLoginMessage();
                         break;
                 }
             } catch (IOException ex) {
@@ -255,6 +261,7 @@ public class LoginController implements Initializable {
     }
 
     private void showFaildAccessMessage() {
+        sign_in_btn_id.setDisable(false);
         // show wrong access message when wrong password or username got entered from user
         password_message_id.setText(MESSAGES.WRONG_ACCESS);
     }
@@ -270,5 +277,10 @@ public class LoginController implements Initializable {
         if (result == 1) {
             sign_in_pane_id.toFront();
         }
+    }
+
+    private void showIsLoginMessage() {
+        sign_in_btn_id.setDisable(false);
+        password_message_id.setText("This User Is Already Loggin");
     }
 }
