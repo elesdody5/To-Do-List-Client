@@ -13,6 +13,7 @@ import home.Notifications;
 import home.View;
 import home.list.FXMLListController;
 import home.menu_bar.ConnectWithController_MenuBar;
+import home.menu_bar.MenuBarController;
 import home.to_do_list.ToDoList;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -245,7 +246,6 @@ public class Server implements Request {
         }
 
         private void sendOjbectToView(String type, Object object) {
-            FXMLLoader loader;
             System.out.println(type);
             switch (type) {
 
@@ -267,6 +267,8 @@ public class Server implements Request {
                 case REQUEST.FRIEND_OFFLINE:
                     ((OnlineFriendsController) View.getOnlineListLoader().getController()).notifyUserOnlineOrOffline((User) object, false);
                     break;
+                case REQUEST.ACCEPT_FRIEND:
+                    ((MenuBarController)View.getMenuLoader().getController()).notifyAcceptingFriend((User) object);
             }
         }
     }

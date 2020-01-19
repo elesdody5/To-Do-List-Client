@@ -6,11 +6,11 @@
 package home.menu_bar;
 
 import Utility.AlertDialog;
+import authontication.LoginController;
 import java.io.IOException;
 import server_request.Server;
 import org.json.JSONException;
 import org.json.JSONObject;
-import server_connection.Connection;
 import home.NotificationKeys;
 import home.Notifications;
 import home.View;
@@ -358,7 +358,7 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
                     objSenderNotification.put("fromUserId", request.getToUserId());
                     objSenderNotification.put("toUserId", request.getFromUserId());
                     objSenderNotification.put("dataId", request.getDataId());
-                    objSenderNotification.put("fromUserName", request.getFromUserName());
+                    objSenderNotification.put("fromUserName", ConnectWithLoginView_MenuBar.getInastance().sendDataToView());
                     objSenderNotification.put("toUserName", currentName);
                     JSONObject res = s.post(keySender, objSenderNotification);
                    if( res.getInt("status") == 1){

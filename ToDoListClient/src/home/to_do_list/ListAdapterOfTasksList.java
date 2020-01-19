@@ -76,7 +76,7 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
             JFXCheckBox checkbox = new JFXCheckBox();
             setGraphic(checkbox);
             setText(task.getTitle());
-
+            checkbox.setSelected(task.isStatus());
             checkbox.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 
                 try {
@@ -353,6 +353,7 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
 
     private void updateTaskStatus(Boolean newValue, TaskInfo task, CheckBox checkBox) throws IOException, JSONException {
         ProgressIndicator bar = new ProgressIndicator(0);
+        bar.setProgress(USE_PREF_SIZE);
         setGraphic(bar);
         if (newValue) {
             Server server = new Server();
@@ -386,7 +387,7 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
     public void showAlert() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setContentText("Error update task");
-        alert.showAndWait();
+        alert.show();
     }
 
 }

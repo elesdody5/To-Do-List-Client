@@ -29,5 +29,6 @@ public class REQUEST {
     public static final String END = "-1";
        public static final String FRIEND_OFFLINE = "OFFLINE";
     public static final String FRIEND_ONLINE = "ONLINE";
+    public static final String ACCEPT_FRIEND="friend";
 
 }

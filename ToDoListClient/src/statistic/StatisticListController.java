@@ -37,11 +37,7 @@ public class StatisticListController implements Initializable {
     @FXML
     private PieChart piechart;
 
-    public StatisticListController(int numberDoneTasks, int numberInprogressTasks, int numberExpiredTasks) {
-        this.numberDoneTasks = numberDoneTasks;
-        this.numberInprogressTasks = numberInprogressTasks;
-        this.numberExpiredTasks = numberExpiredTasks;
-    }
+   
 
     /**
      * Initializes the controller class.

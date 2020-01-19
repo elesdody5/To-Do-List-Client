@@ -37,6 +37,10 @@ public class NotificationFactory {
                 return createUser(json);
             case REQUEST.FRIEND_OFFLINE:
                 return createUser(json);
+            case REQUEST.ACCEPT_FRIEND:
+                return createUser(json);
+                
+           
 
         }
         

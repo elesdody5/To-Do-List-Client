@@ -83,7 +83,7 @@ public abstract class Adapter extends ListCell<ToDoList> {
         MenuItem share = new MenuItem("Share");
         MenuItem statistics = new MenuItem("Statistic");
         MenuItem delete = new MenuItem("Delete");
-        contextMenu.getItems().addAll(edit, share, delete);
+        contextMenu.getItems().addAll(edit, share, statistics,delete);
         edit.setOnAction((ActionEvent event) -> {
             try {
                 openForm(item);
@@ -104,10 +104,16 @@ public abstract class Adapter extends ListCell<ToDoList> {
         statistics.setOnAction((ActionEvent event) -> {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/statistic/StatisticList.fxml"));
-                Parent parent = loader.load();
-                StatisticListController controller = loader.getController();
-                controller.setTaskes(item.getTasksInTODOList());
+                Parent form = loader.load();
+                StatisticListController toDo = loader.getController();
+                toDo.setTaskes(item.getTasksInTODOList());
+                Scene scene = new Scene(form);
                 Stage stage = new Stage();
+                stage.setScene(scene);
+                stage.initStyle(StageStyle.UTILITY);
+                stage.initOwner(getScene().getWindow());
+                stage.initModality(Modality.WINDOW_MODAL);
+                stage.show();
             } catch (IOException ex) {
                 Logger.getLogger(Adapter.class.getName()).log(Level.SEVERE, null, ex);
             }

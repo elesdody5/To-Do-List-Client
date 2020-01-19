@@ -389,9 +389,6 @@ public class MenuBarController implements Initializable ,RemoveItemInterface {
     }
 
     public void notifyAcceptingFriend(User friendUser) {
-//        friends.add(friendUser);
-//        friendObservableList.removeAll(friends);
-//        friendObservableList.addAll(friends);
         friendsLV.getItems().add(friendUser);
 
     }
