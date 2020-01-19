@@ -62,14 +62,13 @@ public class ToDoListController implements Initializable {
         appStage.initOwner(listOfTasks.getScene().getWindow());
         appStage.initModality(Modality.WINDOW_MODAL);
         appStage.show();
+   
 
         appStage.setOnHidden((WindowEvent event) -> {
-     TaskInfo addefTask = TaskInformationViewController.getTaskInfo();
-
+ TaskInfo addefTask = TaskInformationViewController.getTaskInfo();
             if (addefTask != null) {
 
                 listOfTasks.getItems().add(addefTask);
-                addefTask=null;
             }
                
 
@@ -116,6 +115,7 @@ public class ToDoListController implements Initializable {
         } else {
             tasksListView.setVisible(true);
             initialStatePane.setVisible(false);
+            todo=toDoList;
             setTodoList(toDoList);
         }
 

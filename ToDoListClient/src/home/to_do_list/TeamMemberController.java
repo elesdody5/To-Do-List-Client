@@ -50,7 +50,6 @@ public class TeamMemberController implements Initializable {
     private AnchorPane listView;
     @FXML
     private AnchorPane initialimage;
-
     /**
      * Initializes the controller class.
      */
@@ -90,32 +89,18 @@ public class TeamMemberController implements Initializable {
                 
             }
         
-       
-            //////
-            /*   try {
-            notificationsList=getNotification();
-            for (int i = 0; i < notificationsList.size(); i++) {
-            if(notificationsList.get(i).getStatus()==1)
-            {
-            User user;
-            String[] typrOfRequest = new String[2];
-            typrOfRequest[0] = "getUser";
-            typrOfRequest[1] = String.valueOf(notificationsList.get(i).getToUserId());
-            JSONObject resultOfGetUser= server.get(typrOfRequest);
-            String userName=resultOfGetUser.getString("user name");
-            int id =notificationsList.get(i).getToUserId();
-            user =new User();
-            user.setUserName(userName);
-            user.setId(id);
-            teamMemberAssigned.add(user);
-            listViewOfTeamMember.getItems().remove(user);
-            }
-            }
-            
-            } catch (JSONException ex) {
+        try {
+          
+            teamMemberAssigned = getTaskMemberInToDo(currntTask.getId());
+        } catch (JSONException ex) {
             Logger.getLogger(TeamMemberController.class.getName()).log(Level.SEVERE, null, ex);
-            }*/
-            teamMemberAssigned = todolist.getCollaborator();
+        } catch (IOException ex) {
+            Logger.getLogger(TeamMemberController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+       
+      
+          //  teamMemberAssigned = todolist.getCollaborator();
        
         if (teamMemberAssigned != null) {
             for (int i = 0; i < teamMemberAssigned.size(); i++) {
@@ -130,6 +115,33 @@ public class TeamMemberController implements Initializable {
 
         //////
         
+
+    }
+     private ArrayList<User> getTaskMemberInToDo(int currntTaskid) throws JSONException, IOException {
+
+        String[] typrOfRequest = new String[2];
+        typrOfRequest[0] = "getTaskMemberInToDo";
+        typrOfRequest[1] = String.valueOf(currntTaskid);
+        Server server = new Server();
+        JSONObject resultOfGetTeamMember = server.get(typrOfRequest);
+        ArrayList<User> taskMemberInfoList = null;
+        if (resultOfGetTeamMember != null) {
+            JSONArray jsonArrayOfTeamMeber = resultOfGetTeamMember.getJSONArray("listOfTaskMember");
+            taskMemberInfoList = new ArrayList<User>();
+            for (int i = 0; i < jsonArrayOfTeamMeber.length(); i++) {
+                JSONObject taskMember = jsonArrayOfTeamMeber.getJSONObject(i);
+
+                String username = taskMember.getString("userName");
+                int userId = (int) taskMember.get("id");
+
+                User TeamMember = new User();
+                TeamMember.setUserName(username);
+                TeamMember.setId(userId);
+                taskMemberInfoList.add(TeamMember);
+
+            }
+        }
+        return taskMemberInfoList;
 
     }
 
@@ -200,16 +212,21 @@ public class TeamMemberController implements Initializable {
         teamMemberAssigned = new ArrayList<User>();
     }
 
-    public void sendNotificationToDataBase(JSONObject notificationDataJsonObject) {
-        Server server;
-        try {
-            server = new Server();
-            server.post(new String[]{"Assignnotification"}, notificationDataJsonObject);
+    public void sendNotificationToDataBase(JSONObject notificationDataJsonObject) throws JSONException {
 
-        } catch (IOException ex) {
-            showAleart(Alert.AlertType.ERROR, "Connection lost", "Error update  List");
-        }
-
+           JSONObject res= server.post(new String[]{"Assignnotification"}, notificationDataJsonObject);
+         String isNotifayBefore=res.getString("Notify_before");
+         if(isNotifayBefore.equals("yes"))
+         {
+           showAleart(Alert.AlertType.ERROR, "pay attention", "you send request to this user before");
+  
+         }
+    }
+    public int isNotificationExistBefor(JSONObject notificationDataJsonObject)
+    {
+        int response=0;
+        
+        return response;
     }
 
 }

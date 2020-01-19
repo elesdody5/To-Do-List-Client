@@ -68,7 +68,24 @@ public class TaskInformationViewController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+          if(ListAdapterOfTasksList.disableEditFun())
+        {
+           titleOfTask.setDisable(true);
+            description.setDisable(true);
+            comment.setDisable(true);
+            StartDatePicker.setDisable(true);
+            endDatePicker.setDisable(true);
+        }
+          else
+          {
+              titleOfTask.setDisable(false);
+            description.setDisable(false);
+            comment.setDisable(false);
+            StartDatePicker.setDisable(false);
+            endDatePicker.setDisable(false);
+          }
+     
+        taskInfostatic=null;
         todolist = ToDoListController.getTodoList();
         memberList.setVisible(false);
         User user = new User();
@@ -120,7 +137,9 @@ public class TaskInformationViewController implements Initializable {
         private void saveTaskData(ActionEvent event) {
         isClicked = true;
         TaskInfo addedTask = null;
-        if (!titleOfTask.getText().equals("") && StartDatePicker.getValue() != null && endDatePicker.getValue() != null) {
+        if (!titleOfTask.getText().toString().equals("") && StartDatePicker.getValue() != null && endDatePicker.getValue() != null) {
+           
+
             addedTask = new TaskInfo();
             addedTask.setTitle(titleOfTask.getText());
             addedTask.setListId(todolist.getId());
@@ -143,12 +162,14 @@ public class TaskInformationViewController implements Initializable {
                  //  JSONObject notificationDataJsonObject= ListAdapter.getNotificationObjectAsJson();
                   // sendNotificationToDataBase(notificationDataJsonObject);
                     ((Stage) taskData.getScene().getWindow()).close();
+                   addedTask=null; 
                 }
                 else
                 {
                      Alert alert = new Alert(Alert.AlertType.WARNING);
                     alert.setContentText("you must enter title of the task , start date and deadline");
                     alert.showAndWait(); 
+                    taskInfostatic=null;
                 }
 
             } catch (IOException ex) {
@@ -156,6 +177,8 @@ public class TaskInformationViewController implements Initializable {
             }
 
         } else {
+   
+    
 
             CurrentTask.setTitle(titleOfTask.getText());
             CurrentTask.setListId(todolist.getId());
@@ -169,11 +192,13 @@ public class TaskInformationViewController implements Initializable {
             edit = false;
 
             ((Stage) taskData.getScene().getWindow()).close();
-
+     
         }
+       
     }
 
     public static TaskInfo getTaskInfo() {
+              
         return taskInfostatic;
     }
  public void sendNotificationToDataBase(JSONObject notificationDataJsonObject) 
@@ -221,7 +246,7 @@ public class TaskInformationViewController implements Initializable {
         if (StartDatePicker.getValue() != null) {
             if (endDatePicker.getValue() != null) {
                 if (endDatePicker.getValue().compareTo(StartDatePicker.getValue()) <= 0 ) {
-
+  StartDatePicker.setValue(null);
                     Alert alert = new Alert(Alert.AlertType.WARNING);
                     alert.setContentText("Sorry the End Date must be after the start Date");
                     alert.showAndWait();
@@ -234,6 +259,7 @@ public class TaskInformationViewController implements Initializable {
            Date todoStart = format.parse(todolist.getStartTime());
            Date taskStart = format.parse(StartDatePicker.getValue().toString());
                  if (taskStart.compareTo(todoStart) < 0 ) {
+  StartDatePicker.setValue(null);
 
                     Alert alert = new Alert(Alert.AlertType.WARNING);
                     alert.setContentText("Sorry the start Date must be after the todo start Date");

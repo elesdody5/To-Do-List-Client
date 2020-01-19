@@ -40,31 +40,43 @@ import server_request.Server;
  */
 public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
 
+
     private ListView<TaskInfo> listviewOfTasks;
     private static TaskInfo task;
     static boolean isEdit;
     User currntUser;
     static TaskInfo currentTask = null;
-    ToDoList todo = ToDoListController.getTodoList();
+    ToDoList todo;
+
     ConnectWithLoginView_MenuBar c;
     List<User> teamMemberAssigned;
+    static boolean disableEdit=false;
+   /* ToDoList todo = ToDoListController.getTodoList();
+    ConnectWithLoginView_MenuBar c;
+    List<User> teamMemberAssigned;*/
 
     public ListAdapterOfTasksList(ListView<TaskInfo> listviewOfTasks) {
         this.listviewOfTasks = listviewOfTasks;
         c = ConnectWithLoginView_MenuBar.getInastance();
         currntUser = new User();
+      
 
     }
 
+    static boolean disableEditFun() {
+        return disableEdit;
+    }
     @Override
     protected void updateItem(TaskInfo task, boolean empty) {
         currntUser.setUserName(c.sendDataToView());
-        currntUser.setId(Integer.parseInt(c.sendIdToView()));
+        currntUser.setId(Integer.parseInt(c.sendIdToView()));   
+        todo = ToDoListController.getTodoList();
         super.updateItem(task, empty);
         if (task != null) {
             JFXCheckBox checkbox = new JFXCheckBox();
             setGraphic(checkbox);
             setText(task.getTitle());
+
             checkbox.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 
                 try {
@@ -77,17 +89,20 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
 
             });
 
-            //  this.task=task;
+
             if (currntUser.getId() == todo.getOwnerId()) {
                 setContextMenu(createContextMenu(task));
             } else {
+              setContextMenu(createContextMenuOfSharedList(task));
+              disableEdit=false;
                 try {
                     teamMemberAssigned = getTaskMemberInToDo(task.getId());
                     for (int i = 0; i < teamMemberAssigned.size(); i++) {
                         if (currntUser.getId() == teamMemberAssigned.get(i).getId()) {
-                            setText(task.getTitle() + "      (you are assigned to this task)");
+                            setText(task.getTitle() + "       (you are assigned to this task)");
                             setContextMenu(createContextMenuOfSharedListifassign(task));
-                        } else {
+                        } 
+                            else {
                             setContextMenu(createContextMenuOfSharedList(task));
 
                         }
@@ -157,6 +172,8 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
     }
 
     private void openForm(TaskInfo task) throws IOException {
+
+        
         FXMLLoader loader = new FXMLLoader(getClass().getResource("taskInformationView.fxml"));
         Parent form = loader.load();
         TaskInformationViewController taskInformationViewController = loader.getController();
@@ -180,6 +197,8 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
         stage.setOnHidden((WindowEvent event) -> {
             setText(task.getTitle());
             isEdit = false;
+           disableEdit=false;
+
         });
     }
 
@@ -246,6 +265,7 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
         edit.setOnAction((ActionEvent event) -> {
 
             try {
+                disableEdit=true;
                 openForm(task);
             } catch (IOException ex) {
                 Logger.getLogger(ListAdapterOfTasksList.class.getName()).log(Level.SEVERE, null, ex);
@@ -329,6 +349,7 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
         }
         return response;
     }
+
 
     private void updateTaskStatus(Boolean newValue, TaskInfo task, CheckBox checkBox) throws IOException, JSONException {
         ProgressIndicator bar = new ProgressIndicator(0);

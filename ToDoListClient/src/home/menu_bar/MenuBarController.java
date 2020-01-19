@@ -44,7 +44,7 @@ import server_request.Server;
  *
  * @author Elesdody
  */
-public class MenuBarController implements Initializable {
+public class MenuBarController implements Initializable ,RemoveItemInterface {
 
     //labels
     @FXML
@@ -113,6 +113,24 @@ public class MenuBarController implements Initializable {
     ObservableList<Notifications> notFriendRequests;
     ObservableList<User> friendObservableList;
     List<Notifications> lists;
+    private static MenuBarController instance;
+
+    public MenuBarController() {
+        notLists = FXCollections.observableArrayList();
+        notTasks = FXCollections.observableArrayList();
+        notFriendRequests = FXCollections.observableArrayList();
+    }
+
+    public static MenuBarController getInastance() {
+        if (instance == null) {
+            instance = new MenuBarController();
+        }
+        return instance;
+    }
+
+
+
+
     //to hide label after specific time
     class ProcessService extends Service<Void> {
 
@@ -336,7 +354,10 @@ public class MenuBarController implements Initializable {
         }
         friendsLV.setItems(friendObservableList);
 
-        friendsLV.setCellFactory((listView) -> new FriendListViewCell());
+        friendsLV.setCellFactory((listView) -> new FriendListViewCell(this));
+
+
+
         /*Aml End */
 
     }
@@ -381,5 +402,16 @@ public class MenuBarController implements Initializable {
         friendsLV.getItems().add(friendUser);
 
     }
+    
+        @Override
+    public void removeItem(User friend) {  
+            System.out.println("ggg"+friend.getId());
+          String res=   ConnectWithController_MenuBar.getInastance().removeFriend(friend.getId());
+          if (res.equals("success remove friend"))
+               friendsLV.getItems().remove(friend);
+            System.out.println("result"+res);
+           
+    }
+     
     /*end Aml*/
 }

@@ -441,4 +441,18 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
         return ConnectWithLoginView_MenuBar.getInastance().sendIdToView();
     }
 
+    public String removeFriend(int id){
+           
+            String[] requestType = {"removeFriend"};
+           
+            JSONObject friendJsonObject = new JSONObject();
+            try {
+                friendJsonObject.put("userID", id);
+                JSONObject resultJSONObject = s.post(requestType, friendJsonObject);
+                resultFriendRequest = resultJSONObject.getString("result");
+            } catch (JSONException ex) {
+                System.out.println("file:ConnectWithController_MenuBar 164 cannot send friend request");
+            }
+            return  resultFriendRequest;
+    }
 }
