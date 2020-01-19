@@ -29,10 +29,10 @@ import javafx.scene.text.TextAlignment;
  */
 public class friendRequestCell extends ListCell<Notifications> {
 
-    Button accept = new Button();
-    Button reject = new Button();
-    Notifications not;
-
+     Button accept ;
+     Button reject;
+     Notifications not;
+    //static int updatedStatus = -1;
     public friendRequestCell() {
         super();
         setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -42,6 +42,8 @@ public class friendRequestCell extends ListCell<Notifications> {
                 //do something                  
             }
         });
+        accept = new Button();
+        reject = new Button();
         accept.setTextFill(Paint.valueOf("white"));
         accept.setBackground(new Background(new BackgroundFill(Paint.valueOf("#6F4CBB"), new CornerRadii(5), Insets.EMPTY)));
         reject.setTextFill(Paint.valueOf("black"));
@@ -51,21 +53,31 @@ public class friendRequestCell extends ListCell<Notifications> {
             public void handle(ActionEvent event) {
 
                 not.setStatus(1);
-                ConnectWithController_MenuBar instance = ConnectWithController_MenuBar.getInastance();
-                
+                accept.setDisable(true);
+                reject.setDisable(true);
+                ConnectWithController_MenuBar instance = ConnectWithController_MenuBar.getInastance();           
                 instance.sendNotificationResponse(not);
+               if( instance.getFriendStatus() == 1){
+                   updateItem(not, true);
+               
+               }
             }
         });
         reject.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 not.setStatus(0);
+                 accept.setDisable(true);
+                reject.setDisable(true);
                 ConnectWithController_MenuBar instance = ConnectWithController_MenuBar.getInastance();
                 instance.sendNotificationResponse(not);
+                  if( instance.getFriendStatus() == 1){
+                   updateItem(not, true);
+               
+               }
             }
         });
     }
-
     @Override
     protected void updateItem(Notifications not, boolean empty) {
         super.updateItem(not, empty);
@@ -104,6 +116,7 @@ public class friendRequestCell extends ListCell<Notifications> {
                         not.setStatus(NotificationKeys.RESPONSE_BACK_IS_READ);
                         ConnectWithController_MenuBar instance = ConnectWithController_MenuBar.getInastance();
                         instance.sendNotificationResponse(not);
+                        
                     }
                 });
             } else if (not.getStatus() == NotificationKeys.RESPONSE_BACK_IS_READ) {

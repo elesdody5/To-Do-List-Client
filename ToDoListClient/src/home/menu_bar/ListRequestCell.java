@@ -70,18 +70,30 @@ public class ListRequestCell extends ListCell<Notifications> {
             @Override
             public void handle(ActionEvent event) {
                 not.setStatus(1);
+                accept.setDisable(true);
+                reject.setDisable(true);
                 ConnectWithController_MenuBar instance = ConnectWithController_MenuBar.getInastance();
                 //accept.setDisable(true);
                 instance.sendNotificationResponse(not);
+                if( instance.getCollStatus() == 1){
+                   updateItem(not, true);
+               
+               }
             }
         });
         reject.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 not.setStatus(0);
+                accept.setDisable(true);
+                reject.setDisable(true);
                 ConnectWithController_MenuBar instance = ConnectWithController_MenuBar.getInastance();
                 //reject.setDisable(true);
                 instance.sendNotificationResponse(not);
+                 if( instance.getCollStatus() == 1){
+                   updateItem(not, true);
+               
+               }
             }
         });
         setWrapText(true);

@@ -25,12 +25,12 @@ import javafx.application.Platform;
 public class ConnectWithController_MenuBar implements MenuBarModelInterface {
 
     private boolean isName = false, isRequestAccepted = false, isTask = false, isFriendRequest = false, isPassword = false, isRequestRejected = false;
-    private int status = -1;
+    private int status = -1, friendStatus = -1, collStatus=-1 , taskStatus=-1;
     private String name;
     private String password;
     static Server s;
     private static ConnectWithController_MenuBar instance;
-    Notifications request = new Notifications();
+    Notifications request ;
     String friendRequestName, resultFriendRequest;
     String id = ConnectWithLoginView_MenuBar.getInastance().sendIdToView();
     String currentName = ConnectWithLoginView_MenuBar.getInastance().sendDataToView();
@@ -70,30 +70,81 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
     }
 
     public void sendNotificationResponse(Notifications req) {
-        String keyRequestAccept = "";
         if (req.getStatus() == NotificationKeys.ACCEPET_NOTIFICATION_REQUEST) {
             //update notif id with status equal 1
             //insert into coll table
             if (req.getType() == NotificationKeys.ADD_COLLABORATOR) {
-                keyRequestAccept = "collaborator";
+                 Thread th = new Thread( new Runnable() {
+                    @Override
+                    public void run() {
+                        int status = RequestAcceptedServer(req, "collaborator");
+                               if(status == 1) {
+                                   collStatus = status;
+                               }else{
+                                 AlertDialog.showInfoDialog("Cannot update notification table", "Error Updating status", "");
+                               }
+                    }
+                });
+                th.start();
+                try {
+                    th.join();
+                } catch (InterruptedException ex) {
+                    System.err.println(ex); 
+                  
+                }
             } else if (req.getType() == NotificationKeys.ASSIGIN_TASK_MEMBER) {
-                keyRequestAccept = "taskMember";
+                  
+                 Thread th = new Thread( new Runnable() {
+                    @Override
+                    public void run() {
+                              int status = RequestAcceptedServer(req, "taskMember");
+                               if(status == 1) {
+                                   taskStatus = status;
+                               }else{
+                                 AlertDialog.showInfoDialog("Cannot update notification table", "Error Updating status", "");
+                               }
+                    }
+                });
+                th.start();
+                try {
+                    th.join();
+                } catch (InterruptedException ex) {
+                    System.err.println(ex); 
+                  
+                }
             } else if (req.getType() == NotificationKeys.REQUEST_FRIEND) {
-                keyRequestAccept = "friend";
+                 Thread th = new Thread( new Runnable() {
+                    @Override
+                    public void run() {
+                         int status = RequestAcceptedServer(req, "friend");
+                               if(status == 1) {
+                                   friendStatus = status;
+                               }else{
+                                 AlertDialog.showInfoDialog("Cannot update notification table", "Error Updating status", "");
+                               }
+                    }
+                });
+                th.start();
+                try {
+                    th.join();
+                } catch (InterruptedException ex) {
+                    System.err.println(ex); 
+                  
+                }       
             }
-            if (keyRequestAccept .equals("friend") ) {
-                
-                Thread th = new Thread( new Runnable() {
+            
+        } else if (req.getStatus() == NotificationKeys.REJECT_NOTIFICATION_REQUEST) {
+            //update notif id with status equal 0
+            Thread th = new Thread( new Runnable() {
                     @Override
                     public void run() {
                         friendRequestCell obj = new friendRequestCell();
                         Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
-                                System.out.println("friend updating: "+ req.getStatus());
-                               int status = RequestAcceptedServer(req, "friend");
+                               int status = RequestRejectedServer(request);
                                if(status == 1) {
-                                obj.updateItem(request, true);
+                                   friendStatus = status;
                                }else{
                                  AlertDialog.showInfoDialog("Cannot update notification table", "Error Updating status", "");
                                }
@@ -102,22 +153,31 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
                     }
                 });
                 th.start();
-                        
-                    }
-        } else if (req.getStatus() == NotificationKeys.REJECT_NOTIFICATION_REQUEST) {
-            //update notif id with status equal 0
-            isRequestRejected = true;
-            request = req;
+                try {
+                    th.join();
+                } catch (InterruptedException ex) {
+                    System.err.println(ex); 
+                  
+                }
         }
-
+    }
+    
+    public int getFriendStatus (){
+      return friendStatus;
+    }
+      public int getCollStatus (){
+      return collStatus;
+    }
+         public int getTaskStatus (){
+      return taskStatus;
     }
     //set new requests
 
     public void setNotificationRequest(Notifications obj) {
         
-        
+        if (obj.getType() == NotificationKeys.ADD_COLLABORATOR) {
             showListRequest(obj);
-          if (obj.getType() == NotificationKeys.ASSIGIN_TASK_MEMBER) {
+        }else if (obj.getType() == NotificationKeys.ASSIGIN_TASK_MEMBER) {
             showTaskRequest(obj);
         } else if (obj.getType() == NotificationKeys.REQUEST_FRIEND) {
             showFriendRequest(obj);
@@ -206,77 +266,6 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
                 });
 
             }
-//
-//            if (isRequestAccepted) {
-//                String result = sendDataToController();
-//                System.out.println("updating not status inside thread : "+ result);
-//                if (result == "true") {
-//                    if (keyRequestAccept == "collaborator") {
-//                        ListRequestCell obj = new ListRequestCell();
-//                        obj.updateItem(request, true);
-//                        //obj.accept.setDisable(false);
-//                        System.out.println("true add coll : "+ request.getId() + request.getStatus());
-////                        Platform.runLater(new Runnable() {
-////                            @Override
-////                            public void run() {
-////                               
-////                               
-////                                
-////                            }
-////                        });
-//                    } else if (keyRequestAccept == "taskMember") {
-//                        TaskRequestCell obj = new TaskRequestCell();
-//                        Platform.runLater(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                 obj.accept.setDisable(false);
-//                                obj.updateItem(request, true);
-//                            }
-//                        });
-//                    } else if (keyRequestAccept == "friend") {
-//                        friendRequestCell obj = new friendRequestCell();
-//                        Platform.runLater(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                System.out.println("friend updating: "+ request.getStatus());
-//                                obj.updateItem(request, true);
-//                            }
-//                        });
-//                    }
-//
-//                } else {
-//                    Platform.runLater(new Runnable() {
-//
-//                        @Override
-//                        public void run() {
-//                            AlertDialog.showInfoDialog("Cannot update notification table", "Error Updating", "");
-//                        }
-//                    });
-//
-//                }
-//            }
-//            if (isRequestRejected) {
-//                String result = sendDataToController();
-//                if (result.equals("true")) {
-//                    friendRequestCell obj = new friendRequestCell();
-//                    Platform.runLater(new Runnable() {
-//
-//                        @Override
-//                        public void run() {
-//                            obj.updateItem(request, true);
-//                        }
-//                    });
-//                } else {
-//                    Platform.runLater(new Runnable() {
-//
-//                        @Override
-//                        public void run() {
-//                            AlertDialog.showInfoDialog("Cannot update notification table", "Error Updating", "");
-//                        }
-//                    });
-//
-//                }
-//            }
         }
     }
 
@@ -317,7 +306,6 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
             objNot.put("notId", request.getId());
             objNot.put("status", request.getStatus());
             status = s.put(key, objNot);
-            System.out.println("319 : "+ status);
             //add new collaborator
             if (status > 0) {
                 if (keyRequestAccept .equals("collaborator") ) {
@@ -339,7 +327,8 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
                     JSONObject objColl = new JSONObject();
                     objColl.put("userId", request.getToUserId());
                     objColl.put("todoId", request.getDataId());
-                    s.post(keyRequest, objColl);
+                    res = s.post(keyRequest, objColl);
+                    status = res.getInt("status");
                     System.out.println("added to table coll ");
                 } else if (keyRequestAccept .equals("taskMember")) {
                   
@@ -359,7 +348,8 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
                     JSONObject objTask = new JSONObject();
                     objTask.put("userId", request.getToUserId());
                     objTask.put("ItemId", request.getDataId());
-                    s.post(keyRequest, objTask);
+                    res = s.post(keyRequest, objTask);
+                    status = res.getInt("status");
                 } else if (keyRequestAccept .equals("friend")) {
                    
                     //send notification to sender 
@@ -377,7 +367,8 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
                     JSONObject objFriend = new JSONObject();
                     objFriend.put("userId", request.getFromUserId());
                     objFriend.put("friendId", request.getToUserId());
-                    s.post(keyRequest, objFriend);
+                    res = s.post(keyRequest, objFriend);
+                     status = res.getInt("status");
                    }
                 }
             }
@@ -388,9 +379,9 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
 
     }
 
-    private void RequestRejectedServer() {
-        isRequestRejected = false;
+    private int RequestRejectedServer(Notifications request) {
         String[] key = {"updateRequestList"};
+        int status = -1;
         JSONObject objNot = new JSONObject();
         try {
             //update notification table with this id
@@ -398,8 +389,9 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
             objNot.put("status", request.getStatus());
             status = s.put(key, objNot);
         } catch (JSONException ex) {
-            System.out.println("file:ConnectWithController_MenuBar 108 cannot append new collaborator");
+            System.out.println("file:ConnectWithController_MenuBar  cannot append new collaborator");
         }
+        return status;
     }
 
     private void friendRequestServer() {
