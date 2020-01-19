@@ -132,6 +132,7 @@ public class FXMLListController implements Initializable {
                             myTodos.add(toDoForm.getToDo());
                             myListView.getItems().add(toDoForm.getToDo());
                             setCurrentToDo(toDoForm.getToDo());
+                            upadteCurrentTdo(currentToDo);
                         }
                     } catch (JSONException ex) {
                         Logger.getLogger(FXMLListController.class.getName()).log(Level.SEVERE, null, ex);

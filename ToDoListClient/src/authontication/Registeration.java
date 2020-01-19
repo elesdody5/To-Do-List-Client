@@ -65,7 +65,7 @@ public class Registeration {
                 alert.showAndWait();
             } else if (validatePassword == RESPOND_CODE.SHORT_PASSWORD) {
                 Alert alert  = new Alert(Alert.AlertType.ERROR);
-                alert.setContentText("password length => 6");
+                alert.setContentText("password length must be greater than 6");
                 alert.showAndWait();
             }
 

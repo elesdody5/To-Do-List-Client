@@ -49,7 +49,7 @@
          <children>
             <Pane fx:id="sign_up_pane_id" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #fff;">
                <children>
-                  <TextField fx:id="sign_up_email_id" layoutX="75.0" layoutY="140.0" prefHeight="40.0" prefWidth="290.0" promptText="Email">
+                  <TextField fx:id="sign_up_email_id" layoutX="75.0" layoutY="140.0" prefHeight="40.0" prefWidth="290.0" promptText="User name">
                      <font>
                         <Font size="15.0" />
                      </font>
@@ -84,7 +84,7 @@
             </Pane>
             <Pane fx:id="sign_in_pane_id" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #fff;">
                <children>
-                  <TextField fx:id="email_id" layoutX="75.0" layoutY="108.0" prefHeight="40.0" prefWidth="290.0" promptText="Email">
+                  <TextField fx:id="email_id" layoutX="75.0" layoutY="108.0" prefHeight="40.0" prefWidth="290.0" promptText="User name">
                      <font>
                         <Font size="15.0" />
                      </font>

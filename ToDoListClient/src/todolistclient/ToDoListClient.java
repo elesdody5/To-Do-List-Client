@@ -5,24 +5,21 @@
  */
 package todolistclient;
 
-
 import authontication.LoginController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import server_request.Server;
 
-
 /**
  *
  * @author Elesdody
  */
-
-
 public class ToDoListClient extends Application {
 
     private double xOffset, yOffset;
@@ -34,10 +31,11 @@ public class ToDoListClient extends Application {
         //send stage to login controller
         LoginController loginController = loader.getController();
         loginController.setStage(stage);
-       
+
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.initStyle(StageStyle.TRANSPARENT);
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/authontication/Icons/logo.png")));
 
         root.setOnMousePressed((MouseEvent event) -> {
             xOffset = stage.getX() - event.getScreenX();
@@ -52,7 +50,7 @@ public class ToDoListClient extends Application {
 
         });
         stage.setScene(scene);
-        
+
         stage.show();
     }
 
@@ -61,7 +59,7 @@ public class ToDoListClient extends Application {
      */
     public static void main(String[] args) {
         launch(args);
-        
-    }
 
     }
+
+}

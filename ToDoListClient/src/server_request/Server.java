@@ -174,6 +174,7 @@ public class Server implements Request {
 
         ps.println();
         //listener.stop();
+          System.exit(0);
     }
 
     private void startnewThread() {
@@ -191,11 +192,11 @@ public class Server implements Request {
         @Override
         public void run() {
             try {
+                
                 data = in.readLine();
                 // read if notification at real time not server response
                 if (!serverResoponse) {
                     String type = data;
-                    System.out.println(type);
                     data = "";
                     readJson();
                     Object object = NotificationFactory.getNotificationObject(type, json);
@@ -203,6 +204,7 @@ public class Server implements Request {
                     Platform.runLater(() -> {
                         sendOjbectToView(type, object);
                     });
+                    startnewThread();
                 }
                 if (readJson) {
                     readJson();

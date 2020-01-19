@@ -5,14 +5,7 @@
  */
 package onlineFriends;
 
-import home.menu_bar.*;
 import Entity.User;
-import java.io.File;
-import java.net.MalformedURLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -33,6 +26,9 @@ public class OnlineFriendListViewCell extends ListCell<User> {
             ImageView imageview = new ImageView(image);
             setGraphic(imageview);
 
+        } else {
+            setText("");
+            setGraphic(null);
         }
     }
 }

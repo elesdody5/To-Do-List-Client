@@ -47,7 +47,7 @@ import server_request.Server;
  * @author Ashraf Mohamed
  */
 public class LoginController implements Initializable {
-
+    
     private Stage stage;
     private boolean isFull;
     public static int UserId;
@@ -89,12 +89,12 @@ public class LoginController implements Initializable {
     private Label password_message_id;
     private Server server;
     private String[] params = {REQUEST.LOGIN};
-
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        
     }
-
+    
     @FXML
     private void handleMouseClicked(MouseEvent event) {
         if (event.getSource().equals(close_id)) {
@@ -104,25 +104,25 @@ public class LoginController implements Initializable {
             new animatefx.animation.FadeIn(sign_in_pane_id).setSpeed(2).play();
             sign_in_pane_id.toFront();
         }
-
+        
         if (event.getSource().equals(restor_down_id)) {
             System.out.println("restor down ");
             maxmizeLoginWindow();
         }
         if (event.getSource().equals(min_id)) {
             minimzeLoginWindow();
-
+            
         }
     }
-
+    
     private void closeLoginWindow() {
         System.exit(0);
     }
-
+    
     private void minimzeLoginWindow() {
         stage.setIconified(true);
     }
-
+    
     private void maxmizeLoginWindow() {
         isFull = stage.isFullScreen();
         if (isFull) {
@@ -130,9 +130,9 @@ public class LoginController implements Initializable {
         } else {
             stage.setFullScreen(true);
         }
-
+        
     }
-
+    
     @FXML
     private void handleButtonClicked(ActionEvent event) throws JSONException {
         if (event.getSource().equals(create_account_btn_id)) {
@@ -148,7 +148,7 @@ public class LoginController implements Initializable {
         if (event.getSource().equals(forget_password_id)) {
             forgetPassword();
         }
-
+        
     }
 
     //sign up method
@@ -167,7 +167,7 @@ public class LoginController implements Initializable {
             alert.setHeaderText("Password Issue");
             alert.show();
         }
-
+        
     }
 
     //sign in method
@@ -192,7 +192,7 @@ public class LoginController implements Initializable {
              */
             try {
                 server = new Server();
-
+                
                 JSONObject response = server.post(params, userJson);
                 int code = 0;
                 //get respond code (SUCCESS , FAILD)after server request
@@ -207,10 +207,12 @@ public class LoginController implements Initializable {
                     case RESPOND_CODE.FAILD:
                         showFaildAccessMessage();
                         break;
-
+                    
                     case RESPOND_CODE.IS_LOGIN:
                         showIsLoginMessage();
                         break;
+                    default:
+                        sign_in_btn_id.setDisable(false);
                 }
             } catch (IOException ex) {
                 //AlertDialog.showInfoDialog("Connection Down", "Connection Issue", "Please try again");
@@ -218,15 +220,15 @@ public class LoginController implements Initializable {
                 alert.setContentText("Connection Down");
                 alert.showAndWait();
                 sign_in_btn_id.setDisable(false);
-
+                
             }
         } else {
             //show alert if userName or password is empty
             //AlertDialog.showInfoDialog("Empty User Name or Password", "Invalid Input", "Please try again");
             Alert alert = new Alert(AlertType.ERROR);
-                alert.setContentText("Connection Down");
-                alert.showAndWait();
-                sign_in_btn_id.setDisable(false);
+            alert.setContentText("Connection Down");
+            alert.showAndWait();
+            sign_in_btn_id.setDisable(false);
         }
 
         //TODO: send data to server for authontication
@@ -243,7 +245,7 @@ public class LoginController implements Initializable {
         // get stage reference for minimizing and maxmizing scene operation
         stage = s;
     }
-
+    
     private void goToHomeScreen() {
         try {
             // go to home scene after success login
@@ -262,31 +264,31 @@ public class LoginController implements Initializable {
             //stage.initStyle(StageStyle.UTILITY);
             stage.show();
             this.stage.close();
-
+            
         } catch (IOException ex) {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     private void showFaildAccessMessage() {
         sign_in_btn_id.setDisable(false);
         // show wrong access message when wrong password or username got entered from user
         password_message_id.setText(MESSAGES.WRONG_ACCESS);
     }
-
+    
     private void goToRegistrationScreen() {
         String userName = sign_up_email_id.getText().trim();
         String password = sign_up_password_id.getText().trim();
         String confirm = sign_up_confirm_id.getText().trim();
         User user = new User(userName, password);
-
+        
         Registeration registration = new Registeration(user, confirm);
         int result = registration.registerUser();
         if (result == 1) {
             sign_in_pane_id.toFront();
         }
     }
-
+    
     private void showIsLoginMessage() {
         sign_in_btn_id.setDisable(false);
         password_message_id.setText("This User Is Already Loggin");

@@ -62,5 +62,6 @@ public class OnlineFriendsController implements Initializable {
              onlineFriendsLV.getItems().remove(removedItem);
 
         }
+        onlineFriendsLV.refresh();
     }
 }

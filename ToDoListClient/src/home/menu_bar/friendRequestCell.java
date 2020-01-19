@@ -48,19 +48,15 @@ public class friendRequestCell extends ListCell<Notifications> {
         accept.setBackground(new Background(new BackgroundFill(Paint.valueOf("#6F4CBB"), new CornerRadii(5), Insets.EMPTY)));
         reject.setTextFill(Paint.valueOf("black"));
         reject.setBackground(new Background(new BackgroundFill(Paint.valueOf("#E3D9F8"), new CornerRadii(5), Insets.EMPTY)));
-        accept.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-
-                not.setStatus(1);
-                accept.setDisable(true);
-                reject.setDisable(true);
-                ConnectWithController_MenuBar instance = ConnectWithController_MenuBar.getInastance();           
-                instance.sendNotificationResponse(not);
-               if( instance.getFriendStatus() == 1){
-                   updateItem(not, true);
-               
-               }
+        accept.setOnAction((ActionEvent event) -> {
+            not.setStatus(1);
+            accept.setDisable(true);
+            reject.setDisable(true);
+            ConnectWithController_MenuBar instance = ConnectWithController_MenuBar.getInastance();
+            instance.sendNotificationResponse(not);
+            if( instance.getFriendStatus() == 1){
+                updateItem(not, true);
+                
             }
         });
         reject.setOnAction(new EventHandler<ActionEvent>() {

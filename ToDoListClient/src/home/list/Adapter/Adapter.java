@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -25,6 +26,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -35,6 +37,7 @@ import javafx.stage.WindowEvent;
 import org.json.JSONException;
 import org.json.JSONObject;
 import server_request.Server;
+import statistic.StatisticListController;
 
 /**
  *
@@ -78,6 +81,7 @@ public abstract class Adapter extends ListCell<ToDoList> {
         ContextMenu contextMenu = new ContextMenu();
         MenuItem edit = new MenuItem("Edit");
         MenuItem share = new MenuItem("Share");
+        MenuItem statistics = new MenuItem("Statistic");
         MenuItem delete = new MenuItem("Delete");
         contextMenu.getItems().addAll(edit, share, delete);
         edit.setOnAction((ActionEvent event) -> {
@@ -95,6 +99,17 @@ public abstract class Adapter extends ListCell<ToDoList> {
                 openShareList(item);
             } catch (IOException ex) {
                 Logger.getLogger(MyListAdapter.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        statistics.setOnAction((ActionEvent event) -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/statistic/StatisticList.fxml"));
+                Parent parent = loader.load();
+                StatisticListController controller = loader.getController();
+                controller.setTaskes(item.getTasksInTODOList());
+                Stage stage = new Stage();
+            } catch (IOException ex) {
+                Logger.getLogger(Adapter.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
         return contextMenu;
