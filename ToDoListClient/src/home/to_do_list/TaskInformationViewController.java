@@ -11,9 +11,13 @@ import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.chrono.ChronoLocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,7 +62,6 @@ public class TaskInformationViewController implements Initializable {
     private JFXTextArea comment;
     private boolean edit = false;
     private TaskInfo CurrentTask;
-
     /**
      * Initializes the controller class.
      */
@@ -149,6 +152,12 @@ public class TaskInformationViewController implements Initializable {
                   // sendNotificationToDataBase(notificationDataJsonObject);
                     ((Stage) taskData.getScene().getWindow()).close();
                 }
+                else
+                {
+                     Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setContentText("you must enter title of the task , start date and deadline");
+                    alert.showAndWait(); 
+                }
 
             } catch (IOException ex) {
                 showAleart(Alert.AlertType.ERROR, "Connection lost", "Error update  List");
@@ -216,33 +225,57 @@ public class TaskInformationViewController implements Initializable {
    
 
     @FXML
-    private void setStartDate(Event event) {
+    private void setStartDate(Event event) throws ParseException {
         if (StartDatePicker.getValue() != null) {
             if (endDatePicker.getValue() != null) {
-                if (endDatePicker.getValue().compareTo(StartDatePicker.getValue()) < 0) {
+                if (endDatePicker.getValue().compareTo(StartDatePicker.getValue()) <= 0 ) {
 
                     Alert alert = new Alert(Alert.AlertType.WARNING);
                     alert.setContentText("Sorry the End Date must be after the start Date");
                     alert.showAndWait();
                     return;
                 }
+           
             }
+                  SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+           Date todoStart = format.parse(todolist.getStartTime());
+           Date taskStart = format.parse(StartDatePicker.getValue().toString());
+                 if (taskStart.compareTo(todoStart) < 0 ) {
+
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setContentText("Sorry the start Date must be after the todo start Date");
+                    alert.showAndWait();
+                    return;
+                }
 
         }
     }
 
     @FXML
-    private void setEndate(Event event) {
+    private void setEndate(Event event) throws ParseException {
         if (StartDatePicker.getValue() != null) {
             if (endDatePicker.getValue() != null) {
-                if (endDatePicker.getValue().compareTo(StartDatePicker.getValue()) < 0) {
+                if (endDatePicker.getValue().compareTo(StartDatePicker.getValue()) <= 0) {
                     endDatePicker.setValue(null);
                     Alert alert = new Alert(Alert.AlertType.WARNING);
                     alert.setContentText("Sorry the End Date must be after the start Date");
                     alert.showAndWait();
                 }
-
+   
             }
+            if (endDatePicker.getValue() != null) {
+           SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+           Date todoend = format.parse(todolist.getDeadLine());
+           Date taskend = format.parse(endDatePicker.getValue().toString());
+                 if (taskend.compareTo(todoend) > 0 ) {
+                    endDatePicker.setValue(null);
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setContentText("Sorry the end Date must be before the todo end Date");
+                    alert.showAndWait();
+                    return;
+                } }
         } else {
             endDatePicker.setValue(null);
             Alert alert = new Alert(Alert.AlertType.ERROR);

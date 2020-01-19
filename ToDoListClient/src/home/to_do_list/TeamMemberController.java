@@ -22,6 +22,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,6 +46,10 @@ public class TeamMemberController implements Initializable {
     List<Notifications> notificationsList;
     TaskInfo currntTask;
     Server server = null;
+    @FXML
+    private AnchorPane listView;
+    @FXML
+    private AnchorPane initialimage;
 
     /**
      * Initializes the controller class.
@@ -66,7 +71,18 @@ public class TeamMemberController implements Initializable {
         ArrayList<User> teamMateInToDo = null;
         try {
             teamMateInToDo = getTeamMemberInToDo();
+            if(teamMateInToDo.size()==0)
+            {
+                initialimage.setVisible(true);
+                listView.setVisible(false);
+            }
+            else
+            {
+                 initialimage.setVisible(false);
+                listView.setVisible(true);
+            }
             if (teamMateInToDo != null) {
+                
                 for (int i = 0; i < teamMateInToDo.size(); i++) {
                     listViewOfTeamMember.getItems().add(teamMateInToDo.get(i));
                     listViewOfTeamMember.setCellFactory((param)
