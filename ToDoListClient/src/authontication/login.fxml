@@ -112,7 +112,7 @@
                         <Font name="System Bold" size="25.0" />
                      </font>
                   </Label>
-                  <Label fx:id="forget_password_id" layoutX="75.0" layoutY="262.0" onMouseClicked="#handleMouseClicked" prefHeight="32.0" prefWidth="131.0" text="Forget Password?" textFill="#6f4cbb">
+                  <Label fx:id="forget_password_id" layoutX="75.0" layoutY="262.0" onMouseClicked="#handleMouseClicked" prefHeight="32.0" prefWidth="131.0" text="Forget Password?" textFill="#6f4cbb" visible="false">
                      <font>
                         <Font name="Arial" size="14.0" />
                      </font>

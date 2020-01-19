@@ -6,16 +6,13 @@
 package home.to_do_list;
 
 import Entity.User;
-import authontication.LoginController;
 import com.jfoenix.controls.JFXCheckBox;
-import home.HomeController;
-import home.list.FXMLListController;
-import home.list.ToDoForm;
 import home.menu_bar.ConnectWithLoginView_MenuBar;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -27,13 +24,12 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.control.ProgressIndicator;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import server_request.Server;
@@ -51,6 +47,7 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
     static TaskInfo currentTask = null;
     ToDoList todo = ToDoListController.getTodoList();
     ConnectWithLoginView_MenuBar c;
+    List<User> teamMemberAssigned;
 
     public ListAdapterOfTasksList(ListView<TaskInfo> listviewOfTasks) {
         this.listviewOfTasks = listviewOfTasks;
@@ -79,11 +76,28 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
                 }
 
             });
+
             //  this.task=task;
             if (currntUser.getId() == todo.getOwnerId()) {
                 setContextMenu(createContextMenu(task));
             } else {
-                setContextMenu(createContextMenuOfSharedList(task));
+                try {
+                    teamMemberAssigned = getTaskMemberInToDo(task.getId());
+                    for (int i = 0; i < teamMemberAssigned.size(); i++) {
+                        if (currntUser.getId() == teamMemberAssigned.get(i).getId()) {
+                            setText(task.getTitle() + "      (you are assigned to this task)");
+                            setContextMenu(createContextMenuOfSharedListifassign(task));
+                        } else {
+                            setContextMenu(createContextMenuOfSharedList(task));
+
+                        }
+
+                    }
+                } catch (JSONException ex) {
+                    Logger.getLogger(ListAdapterOfTasksList.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(ListAdapterOfTasksList.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
             }
 
@@ -102,9 +116,8 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
     private ContextMenu createContextMenu(TaskInfo task) {
         ContextMenu contextMenu = new ContextMenu();
 
-//                    System.out.println(currentTask.getId());
         MenuItem edit = new MenuItem("Edit");
-        MenuItem share = new MenuItem("Assign ti teamMember");
+        MenuItem share = new MenuItem("Assign to teamMember");
         MenuItem delete = new MenuItem("Delete");
 
         contextMenu.getItems().addAll(edit, share, delete);
@@ -227,7 +240,6 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
     private ContextMenu createContextMenuOfSharedList(TaskInfo task) {
         ContextMenu contextMenu = new ContextMenu();
 
-//                    System.out.println(currentTask.getId());
         MenuItem edit = new MenuItem("Edit");
 
         contextMenu.getItems().addAll(edit);
@@ -244,33 +256,107 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
         return contextMenu;
     }
 
+    private ContextMenu createContextMenuOfSharedListifassign(TaskInfo task) {
+        ContextMenu contextMenu = new ContextMenu();
+
+        MenuItem edit = new MenuItem("Edit");
+        MenuItem leave = new MenuItem("Leave");
+
+        contextMenu.getItems().addAll(edit, leave);
+        edit.setOnAction((ActionEvent event) -> {
+
+            try {
+                openForm(task);
+            } catch (IOException ex) {
+                Logger.getLogger(ListAdapterOfTasksList.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        });
+        leave.setOnAction((ActionEvent event) -> {
+
+            int response = leaveTask(currntUser);
+            if (response != -1) {
+                setText(task.getTitle());
+            }
+
+        });
+
+        return contextMenu;
+    }
+
+    private ArrayList<User> getTaskMemberInToDo(int currntTaskid) throws JSONException, IOException {
+
+        String[] typrOfRequest = new String[2];
+        typrOfRequest[0] = "getTaskMemberInToDo";
+        typrOfRequest[1] = String.valueOf(currntTaskid);
+        Server server = new Server();
+        JSONObject resultOfGetTeamMember = server.get(typrOfRequest);
+        ArrayList<User> taskMemberInfoList = null;
+        if (resultOfGetTeamMember != null) {
+            JSONArray jsonArrayOfTeamMeber = resultOfGetTeamMember.getJSONArray("listOfTaskMember");
+            taskMemberInfoList = new ArrayList<User>();
+            for (int i = 0; i < jsonArrayOfTeamMeber.length(); i++) {
+                JSONObject taskMember = jsonArrayOfTeamMeber.getJSONObject(i);
+
+                String username = taskMember.getString("userName");
+                int userId = (int) taskMember.get("id");
+
+                User TeamMember = new User();
+                TeamMember.setUserName(username);
+                TeamMember.setId(userId);
+                taskMemberInfoList.add(TeamMember);
+
+            }
+        }
+        return taskMemberInfoList;
+
+    }
+
+    private int leaveTask(User user) {
+        int response = 0;
+        try {
+            Server server = new Server();
+            response = server.delete(new String[]{"teammember", String.valueOf(user.getId())});
+            if (response != -1) {
+
+                showAleart(Alert.AlertType.INFORMATION, "Done ", "deleted Succefully");
+            } else {
+                showAleart(Alert.AlertType.ERROR, "Error ", "cann't delete todo");
+            }
+        } catch (IOException ex) {
+            showAleart(Alert.AlertType.ERROR, "Connection lost", "Error update  List");
+
+        }
+        return response;
+    }
+
     private void updateTaskStatus(Boolean newValue, TaskInfo task, CheckBox checkBox) throws IOException, JSONException {
-        ProgressBar bar = new ProgressBar();
+        ProgressIndicator bar = new ProgressIndicator(0);
         setGraphic(bar);
         if (newValue) {
             Server server = new Server();
-            JSONObject json = createJson(task);
-            json.put("status", true);
-            int result = server.put(new String[]{"task", task.getId() + ""}, json);
+            task.setStatus(true);
+            int result = server.put(new String[]{"task", task.getId() + ""}, task.writeTaskInfoObjectAsJson());
             if (result != -1) {
                 setGraphic(checkBox);
             } else {
                 showAlert();
                 checkBox.setSelected(false);
                 setGraphic(checkBox);
+                task.setStatus(false);
 
             }
         } else {
-             Server server = new Server();
-            JSONObject json = createJson(task);
-            json.put("status", false);
-            int result = server.put(new String[]{"task", task.getId() + ""}, json);
+            Server server = new Server();
+            task.setStatus(false);
+            int result = server.put(new String[]{"task", task.getId() + ""}, task.writeTaskInfoObjectAsJson());
             if (result != -1) {
                 setGraphic(checkBox);
             } else {
                 showAlert();
                 checkBox.setSelected(true);
                 setGraphic(checkBox);
+                task.setStatus(true);
 
             }
         }

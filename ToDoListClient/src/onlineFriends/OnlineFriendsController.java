@@ -24,7 +24,9 @@ public class OnlineFriendsController implements Initializable {
 
     @FXML
     private ListView<User> onlineFriendsLV;
-    List<User> onlineFriends;
+
+    List<User> onlineFriendsList ;
+    ObservableList<User> onlineFriendsObseverList;
 
     /**
      * Initializes the controller class.
@@ -32,34 +34,33 @@ public class OnlineFriendsController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-    }
 
-    public void getOnlineFriends(List<User> onlineFriends) {
-        this.onlineFriends = onlineFriends;
-        ObservableList<User> items = FXCollections.observableArrayList();
+    }    
+    
+    public void getOnlineFriends(List<User> onlineFriends){
+        this.onlineFriendsList = onlineFriends ;
+         onlineFriendsObseverList = FXCollections.observableArrayList();
+   
 
         for (User user : onlineFriends) {
-            items.add(user);
+            onlineFriendsObseverList.add(user);
         }
-        onlineFriendsLV.setItems(items);
+        onlineFriendsLV.setItems(onlineFriendsObseverList);
         onlineFriendsLV.setCellFactory((listView) -> new OnlineFriendListViewCell());
     }
 
-    public void notifyUserOnlineOrOffline(User user, boolean status) {
-        System.out.println(status);
-
-        if (status) {
-            int removedUserIndex = 0;
-            for (User listUser : onlineFriendsLV.getItems()) {
-                if (user.getId() == listUser.getId()) {
-                    removedUserIndex = onlineFriendsLV.getItems().indexOf(listUser);
-                }
-            }
-            onlineFriendsLV.getItems().remove(removedUserIndex);
-
-        } else {
-            //          onlineFriends.add(user);
+    
+    public void notifyUserOnlineOrOffline (User user , boolean status ){
+        if (status){
             onlineFriendsLV.getItems().add(user);
+        }else{
+            int removedItem =-8;
+            for (int i = 0; i < onlineFriendsLV.getItems().size(); i++) {
+                if (onlineFriendsLV.getItems().get(i).getId() == user.getId())
+                    removedItem = i ;
+            }
+             onlineFriendsLV.getItems().remove(removedItem);
+
         }
     }
 }

@@ -9,25 +9,30 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="taskData" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"  prefHeight="400.0" prefWidth="474.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.to_do_list.TaskInformationViewController">
+<AnchorPane fx:id="taskData" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="474.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.to_do_list.TaskInformationViewController">
    <children>
-      <Label layoutX="353.0" layoutY="14.0" text="ADD TO TODO LIST">
+      <Label layoutX="188.0" layoutY="15.0" prefHeight="27.0" prefWidth="128.0" text="Add Task" textFill="#6f4cbb">
          <font>
-            <Font name="System Bold" size="12.0" />
+            <Font name="System Bold" size="18.0" />
          </font></Label>
       <AnchorPane fx:id="memberList" layoutX="349.0" layoutY="103.0" prefHeight="200.0" prefWidth="117.0" visible="false">
          <children>
             <ListView fx:id="ListViewOfMember" prefHeight="200.0" prefWidth="117.0" />
          </children>
       </AnchorPane>
-      <JFXTextField fx:id="titleOfTask" focusColor="#6f4cbb" layoutX="14.0" layoutY="43.0" promptText="Title" unFocusColor="#6f4cbb" />
+      <JFXTextField fx:id="titleOfTask" focusColor="#6f4cbb" layoutX="14.0" layoutY="43.0" unFocusColor="#6f4cbb" />
       <JFXButton layoutX="152.0" layoutY="315.0" onAction="#saveTaskData" prefHeight="37.0" prefWidth="180.0" style="-fx-background-color: #6f4cbb;" text="save" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font size="16.0" />
          </font></JFXButton>
       <JFXDatePicker fx:id="StartDatePicker" defaultColor="#6f4cbb" layoutX="350.0" layoutY="80.0" onHidden="#setStartDate" prefHeight="35.0" prefWidth="117.0" promptText="Start Date" />
       <JFXDatePicker fx:id="endDatePicker" defaultColor="#6f4cbb" layoutX="350.0" layoutY="164.0" onHidden="#setEndate" prefHeight="35.0" prefWidth="117.0" promptText="End Date" />
-      <JFXTextArea fx:id="description" focusColor="#6f4cbb" layoutX="14.0" layoutY="80.0" prefHeight="83.0" prefWidth="200.0" promptText="Description" unFocusColor="#6f4cbb" />
-      <JFXTextArea fx:id="comment" focusColor="#6f4cbb" layoutX="14.0" layoutY="181.0" prefHeight="83.0" prefWidth="200.0" promptText="Comment" unFocusColor="#6f4cbb" />
+      <JFXTextArea fx:id="description" focusColor="#6f4cbb" layoutX="14.0" layoutY="98.0" prefHeight="83.0" prefWidth="200.0" unFocusColor="#6f4cbb" />
+      <JFXTextArea fx:id="comment" focusColor="#6f4cbb" layoutX="14.0" layoutY="208.0" prefHeight="83.0" prefWidth="200.0" unFocusColor="#6f4cbb" />
+      <Label layoutX="14.0" layoutY="23.0" prefHeight="25.0" prefWidth="44.0" text="Title" textFill="#6f4cbb" />
+      <Label layoutX="14.0" layoutY="80.0" text="Description" textFill="#6f4cbb" />
+      <Label layoutX="14.0" layoutY="191.0" text="Comment" textFill="#6f4cbb" />
+      <Label layoutX="349.0" layoutY="60.0" text="Start Date" textFill="#6f4cbb" />
+      <Label layoutX="349.0" layoutY="147.0" text="End Date" textFill="#6f4cbb" />
    </children>
 </AnchorPane>
