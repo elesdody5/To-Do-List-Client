@@ -42,7 +42,7 @@ import javafx.scene.layout.VBox;
  *
  * @author Elesdody
  */
-public class MenuBarController implements Initializable {
+public class MenuBarController implements Initializable ,RemoveItemInterface {
 
     //labels
     @FXML
@@ -127,6 +127,8 @@ public class MenuBarController implements Initializable {
         }
         return instance;
     }
+
+
 
     //to hide label after specific time
     class ProcessService extends Service<Void> {
@@ -329,7 +331,7 @@ public class MenuBarController implements Initializable {
             friendObservableList.add(user);
         }
         friendsLV.setItems(friendObservableList);
-        friendsLV.setCellFactory((listView) -> new FriendListViewCell());
+        friendsLV.setCellFactory((listView) -> new FriendListViewCell(this));
         /*Aml End */
 
     }
@@ -368,6 +370,14 @@ public class MenuBarController implements Initializable {
         friendsLV.getItems().add(friendUser);
 
     }
+    
+        @Override
+    public void removeItem(User friend) {
+             friendsLV.getItems().remove(friend);
+            System.out.println("inssssssssssssssssssss");
+            System.out.println("id"+friend.getId());
+    }
+     
     /*end Aml*/
 }
 /*end Aml*/
