@@ -30,7 +30,10 @@ public class ToDoList extends Observable {
         return collaborator;
     }
 
-   
+   public void setCollaborator(ArrayList<User> collaborator)
+   {
+   this.collaborator= collaborator;
+   }
 
     public ArrayList<TaskInfo> getTasksInTODOList() {
         return taskes;
@@ -42,7 +45,7 @@ public class ToDoList extends Observable {
 
     public ToDoList() {
         taskes = new ArrayList<>();
-        
+        collaborator=new ArrayList<>();
     }
 
     public ToDoList(String title, int ownerId,String startTime, String deadLine,  String color,ArrayList<TaskInfo> tasks) {

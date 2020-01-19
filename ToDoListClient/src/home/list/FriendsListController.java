@@ -64,10 +64,10 @@ public class FriendsListController implements Initializable {
                 CheckBox box = friendsListView.getItems().get(i);
                 if (box.isSelected()) {
                     // if todo not have collaborator on it
-                    if (todo.getCollaborator().isEmpty()) {
+                    if (todo.getCollaborator()!=null&&todo.getCollaborator().isEmpty()) {
                         notificationJsonArray.put(createJson(Integer.parseInt(box.getId())));
                     }
-
+                    if(todo.getCollaborator()!=null)
                     for (User user : todo.getCollaborator()) {
                         // to check if friend not in collab already
                         if (user.getId() != Integer.parseInt(box.getId())) {
@@ -160,6 +160,7 @@ public class FriendsListController implements Initializable {
         json.put("status", NotificationKeys.NORESPONSE_NOTIFICATION_REQUEST);
         json.put("type", NotificationKeys.ADD_COLLABORATOR);
         json.put("listId", todo.getId());
+        json.put("listTitle", todo.getTitle());
         
         return json;
     }

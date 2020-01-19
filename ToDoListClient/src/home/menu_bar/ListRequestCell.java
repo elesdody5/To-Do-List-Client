@@ -39,8 +39,8 @@ import javafx.scene.text.TextAlignment;
  */
 public class ListRequestCell extends ListCell<Notifications> {
 
-    Button accept;
-    Button reject;
+    Button accept= new Button();
+    Button reject = new Button();
     Notifications not;
 
     public ListRequestCell() {
@@ -52,8 +52,16 @@ public class ListRequestCell extends ListCell<Notifications> {
                 //do something                  
             }
         });
-        accept = new Button();
-        reject = new Button();
+     
+       
+    }
+
+    @Override
+    protected void updateItem(Notifications not, boolean empty) {
+        super.updateItem(not, empty);
+        this.not = not;  
+        accept.setVisible(false);
+        reject.setVisible(false);
         accept.setTextFill(Paint.valueOf("white"));
         accept.setBackground(new Background(new BackgroundFill(Paint.valueOf("#6F4CBB"), new CornerRadii(5), Insets.EMPTY)));
         reject.setTextFill(Paint.valueOf("black"));
@@ -63,11 +71,8 @@ public class ListRequestCell extends ListCell<Notifications> {
             public void handle(ActionEvent event) {
                 not.setStatus(1);
                 ConnectWithController_MenuBar instance = ConnectWithController_MenuBar.getInastance();
+                //accept.setDisable(true);
                 instance.sendNotificationResponse(not);
-                // make sure that Notification table is updated
-                if (instance.sendDataToView() == "true") {
-                    updateItem(not, true);
-                }
             }
         });
         reject.setOnAction(new EventHandler<ActionEvent>() {
@@ -75,19 +80,10 @@ public class ListRequestCell extends ListCell<Notifications> {
             public void handle(ActionEvent event) {
                 not.setStatus(0);
                 ConnectWithController_MenuBar instance = ConnectWithController_MenuBar.getInastance();
+                //reject.setDisable(true);
                 instance.sendNotificationResponse(not);
-                // make sure that Notification table is updated
-                if (instance.sendDataToView() == "true") {
-                    updateItem(not, true);
-                }
             }
         });
-    }
-
-    @Override
-    protected void updateItem(Notifications not, boolean empty) {
-        this.not = not;
-        super.updateItem(not, empty);
         setWrapText(true);
         Label txt = new Label();
         txt.setMaxWidth(180);
@@ -95,10 +91,7 @@ public class ListRequestCell extends ListCell<Notifications> {
         txt.setAlignment(Pos.CENTER);
         txt.setTextAlignment(TextAlignment.JUSTIFY);
         txt.setTextFill(Paint.valueOf("black"));
-        accept.setVisible(false);
-        reject.setVisible(false);
         if (not != null) {
-            System.out.println(not.getStatus());
             if (not.getStatus() == NotificationKeys.ACCEPET_NOTIFICATION_REQUEST) {
                 setBackground(new Background(new BackgroundFill(Paint.valueOf("white"), new CornerRadii(5), Insets.EMPTY)));
                 accept.setVisible(false);

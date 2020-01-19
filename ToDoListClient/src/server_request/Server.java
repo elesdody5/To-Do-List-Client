@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -168,6 +169,7 @@ public class Server implements Request {
         ps.println(REQUEST.LOGOUT);
 
         ps.print("/");
+
         ps.print(LoginController.UserId);
 
         ps.println();
@@ -196,14 +198,11 @@ public class Server implements Request {
                     System.out.println(type);
                     data = "";
                     readJson();
-                    System.out.println(json);
                     Object object = NotificationFactory.getNotificationObject(type, json);
                     // method send object to view that responsable for deal with it
                     Platform.runLater(() -> {
                         sendOjbectToView(type, object);
-
                     });
-
                 }
                 if (readJson) {
                     readJson();
@@ -250,19 +249,21 @@ public class Server implements Request {
 
                 case REQUEST.NOTIFICATION:
 
-                    ConnectWithController_MenuBar controller_MenuBar = ConnectWithController_MenuBar.getInastance();
+                    ConnectWithController_MenuBar controller_MenuBar =  ConnectWithController_MenuBar.getInastance();
                     controller_MenuBar.setNotificationRequest((Notifications) object);
                     break;
                 case REQUEST.TASK:
                     break;
-                case REQUEST.TODO:
+                case REQUEST.SHAREDTODO:
                     ((FXMLListController) View.getListLoader().getController()).addSharedList((ToDoList) object);
                     break;
-                case REQUEST.FRIEND_ONLINE:
-                    ((OnlineFriendsController) View.getOnlineListLoader().getController()).notifyUserOnlineOrOffline((User) object, false);
+                case REQUEST.NEWCOLLABORATOR: 
+                    break;
+                    case REQUEST.FRIEND_ONLINE:
+                    ((OnlineFriendsController) View.getOnlineListLoader().getController()).notifyUserOnlineOrOffline((User) object, true);
                     break;
                 case REQUEST.FRIEND_OFFLINE:
-                    ((OnlineFriendsController) View.getOnlineListLoader().getController()).notifyUserOnlineOrOffline((User) object, true);
+                    ((OnlineFriendsController) View.getOnlineListLoader().getController()).notifyUserOnlineOrOffline((User) object, false);
                     break;
             }
         }

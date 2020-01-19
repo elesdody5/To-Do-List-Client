@@ -29,8 +29,10 @@ public class NotificationFactory {
                 return createNotification(json);
             case REQUEST.TASK:
                 return createTask(json);
-            case REQUEST.TODO:
+            case REQUEST.SHAREDTODO:
                 return createToDo(json);
+            case REQUEST.NEWCOLLABORATOR:
+                return createUser(json);    
             case REQUEST.FRIEND_ONLINE:
                 return createUser(json);
             case REQUEST.FRIEND_OFFLINE:
