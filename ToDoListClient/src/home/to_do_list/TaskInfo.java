@@ -26,6 +26,7 @@ public class TaskInfo extends Observable{
     private String deadLine;
     private String startTime;
     private String comment;
+    private boolean status ;
 
     public TaskInfo(int id, int listId, String title, String description, String deadLine, String startTime,String comment) {
         this.id = id;
@@ -100,6 +101,14 @@ public class TaskInfo extends Observable{
 
     public void setStartTime(String startTime) {
         this.startTime = startTime;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     public JSONObject writeTaskInfoObjectAsJson() {

@@ -48,12 +48,15 @@ public class OnlineFriendsController implements Initializable {
     
     public void notifyUserOnlineOrOffline (User user , boolean status ){
         if (status){
-            onlineFriendsList.add(user);
+            onlineFriendsLV.getItems().add(user);
         }else{
-            onlineFriendsList.remove(user);
+            int removedItem =-8;
+            for (int i = 0; i < onlineFriendsLV.getItems().size(); i++) {
+                if (onlineFriendsLV.getItems().get(i).getId() == user.getId())
+                    removedItem = onlineFriendsLV.getItems().get(i).getId() ;
+            }
+             onlineFriendsLV.getItems().remove(removedItem);
 
- onlineFriendsObseverList.removeAll(onlineFriendsList);
-        onlineFriendsObseverList.addAll(onlineFriendsList);
         }
     }    
 }

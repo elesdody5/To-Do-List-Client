@@ -9,6 +9,7 @@ package home.menu_bar;
 import Entity.User;
 import authontication.LoginController;
 import home.Notifications;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,10 +32,10 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 
 /**
@@ -324,6 +325,8 @@ public class MenuBarController implements Initializable {
         }
         /*Aml Start*/
         //get friend list 
+
+        friendObservableList = FXCollections.observableArrayList();
         friends = getInstance.sendFriendListToView();
         for (User user : friends) {
             friendObservableList.add(user);
@@ -343,11 +346,20 @@ public class MenuBarController implements Initializable {
         ConnectWithLoginView_MenuBar getInstance = ConnectWithLoginView_MenuBar.getInastance();
         String name = getInstance.sendDataToView();
         String result = "";
+        boolean userInFriendList = false;
+        for (int i = 0; i < friends.size(); i++) {
+            if (friends.get(i).getUserName().equals(friendRequestName)) {
+                result = friendRequestName + " is already in your friend list";
+                userInFriendList = true;
+            }
+        }
         if (name.equals(friendRequestName)) {
-            result = "You can not send request to yourself";
+            result = "It is your name";
         } else {
             searchButton.setDisable(true);
-            ConnectWithController_MenuBar.getInastance().sendFriendRequest(friendRequestName);
+            if (!userInFriendList) {
+                ConnectWithController_MenuBar.getInastance().sendFriendRequest(friendRequestName);
+            }
         }
     }
      
@@ -360,10 +372,10 @@ public class MenuBarController implements Initializable {
     }
 
     public void notifyAcceptingFriend(User friendUser) {
-        int size = friends.size();
-        friends.add(friendUser);
-        friendObservableList.removeAll(friends);
-        friendObservableList.addAll(friends);
+//        friends.add(friendUser);
+//        friendObservableList.removeAll(friends);
+//        friendObservableList.addAll(friends);
+        friendsLV.getItems().add(friendUser);
 
     }
     /*end Aml*/

@@ -15,7 +15,6 @@ import home.menu_bar.ConnectWithController_MenuBar;
 import home.menu_bar.ConnectWithLoginView_MenuBar;
 import home.menu_bar.MenuBarController;
 import home.to_do_list.ToDoList;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -27,7 +26,6 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import onlineFriends.OnlineFriendsController;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import server_connection.Connection;
@@ -43,6 +41,7 @@ public class Server implements Request {
     Socket socket;
     PrintStream ps;
     BufferedReader in;
+    LoginController loginController;
     private static Listener listener;
 
     public Server() throws IOException {
@@ -53,7 +52,7 @@ public class Server implements Request {
             startnewThread();
         }
     }
-
+    
     @Override
     public JSONObject post(String[] paramters, JSONObject body) {
         ps.println(REQUEST.POST);
