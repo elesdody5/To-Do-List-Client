@@ -8,6 +8,7 @@ package home.list;
 import Entity.User;
 import authontication.LoginController;
 import home.NotificationKeys;
+import home.Notifications;
 import home.View;
 import home.menu_bar.ConnectWithController_MenuBar;
 import home.menu_bar.ConnectWithLoginView_MenuBar;
@@ -17,7 +18,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -94,7 +94,7 @@ public class FriendsListController implements Initializable {
             if (notificationJsonArray.length() > 0 || removedFriendsJsonArray.length() > 0) {
                 try {
                     ((Stage) friendsListView.getScene().getWindow()).close();
-
+                  
                     Server server = new Server();
 
                     JSONObject result = server.post(new String[]{"notification"}, request);
@@ -162,6 +162,7 @@ public class FriendsListController implements Initializable {
         json.put("status", NotificationKeys.NORESPONSE_NOTIFICATION_REQUEST);
         json.put("type", NotificationKeys.ADD_COLLABORATOR);
         json.put("listId", todo.getId());
+        
         return json;
     }
 }

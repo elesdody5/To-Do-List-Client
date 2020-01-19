@@ -24,7 +24,7 @@ public class OnlineFriendsController implements Initializable {
 
     @FXML
     private ListView<User> onlineFriendsLV;
-    List<User> onlineFriends ;
+    List<User> onlineFriends;
 
     /**
      * Initializes the controller class.
@@ -32,26 +32,34 @@ public class OnlineFriendsController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-    }    
-    
-    public void getOnlineFriends(List<User> onlineFriends){
-        this.onlineFriends = onlineFriends ;
+    }
+
+    public void getOnlineFriends(List<User> onlineFriends) {
+        this.onlineFriends = onlineFriends;
         ObservableList<User> items = FXCollections.observableArrayList();
-   
+
         for (User user : onlineFriends) {
             items.add(user);
         }
         onlineFriendsLV.setItems(items);
         onlineFriendsLV.setCellFactory((listView) -> new OnlineFriendListViewCell());
     }
-    
-    public void notifyUserOnlineOrOffline (User user , boolean status ){
-        if (status){
-            onlineFriends.remove(user);
-            //onlineFriendsLV.getItems().remove(user);
-        }else{
-                        onlineFriends.add(user);
-            //onlineFriendsLV.getItems().add(user);
+
+    public void notifyUserOnlineOrOffline(User user, boolean status) {
+        System.out.println(status);
+
+        if (status) {
+            int removedUserIndex = 0;
+            for (User listUser : onlineFriendsLV.getItems()) {
+                if (user.getId() == listUser.getId()) {
+                    removedUserIndex = onlineFriendsLV.getItems().indexOf(listUser);
+                }
+            }
+            onlineFriendsLV.getItems().remove(removedUserIndex);
+
+        } else {
+            //          onlineFriends.add(user);
+            onlineFriendsLV.getItems().add(user);
         }
-    }    
+    }
 }

@@ -201,7 +201,10 @@ public class Server implements Request {
                     System.out.println(json);
                     Object object = NotificationFactory.getNotificationObject(type, json);
                     // method send object to view that responsable for deal with it
-                    sendOjbectToView(type, object);
+                    Platform.runLater(() -> {
+                        sendOjbectToView(type, object);
+
+                    });
 
                 }
                 if (readJson) {
@@ -261,7 +264,6 @@ public class Server implements Request {
                     ((OnlineFriendsController) View.getOnlineListLoader().getController()).notifyUserOnlineOrOffline((User) object, false);
                     break;
                 case REQUEST.FRIEND_OFFLINE:
-                    System.out.println("off");
                     ((OnlineFriendsController) View.getOnlineListLoader().getController()).notifyUserOnlineOrOffline((User) object, true);
                     break;
             }

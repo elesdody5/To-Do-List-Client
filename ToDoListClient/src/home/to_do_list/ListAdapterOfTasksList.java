@@ -15,6 +15,8 @@ import home.menu_bar.ConnectWithLoginView_MenuBar;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -25,6 +27,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
@@ -65,6 +68,17 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
             JFXCheckBox checkbox = new JFXCheckBox();
             setGraphic(checkbox);
             setText(task.getTitle());
+            checkbox.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+
+                try {
+                    updateTaskStatus(newValue, task, checkbox);
+                } catch (IOException ex) {
+                    Logger.getLogger(ListAdapterOfTasksList.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (JSONException ex) {
+                    Logger.getLogger(ListAdapterOfTasksList.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            });
             //  this.task=task;
             if (currntUser.getId() == todo.getOwnerId()) {
                 setContextMenu(createContextMenu(task));
@@ -209,12 +223,12 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
     static boolean isEdited() {
         return isEdit;
     }
+
     private ContextMenu createContextMenuOfSharedList(TaskInfo task) {
         ContextMenu contextMenu = new ContextMenu();
 
 //                    System.out.println(currentTask.getId());
         MenuItem edit = new MenuItem("Edit");
-       
 
         contextMenu.getItems().addAll(edit);
         edit.setOnAction((ActionEvent event) -> {
@@ -226,8 +240,46 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
             }
 
         });
-      
+
         return contextMenu;
+    }
+
+    private void updateTaskStatus(Boolean newValue, TaskInfo task, CheckBox checkBox) throws IOException, JSONException {
+        ProgressBar bar = new ProgressBar();
+        setGraphic(bar);
+        if (newValue) {
+            Server server = new Server();
+            JSONObject json = createJson(task);
+            json.put("status", true);
+            int result = server.put(new String[]{"task", task.getId() + ""}, json);
+            if (result != -1) {
+                setGraphic(checkBox);
+            } else {
+                showAlert();
+                checkBox.setSelected(false);
+                setGraphic(checkBox);
+
+            }
+        } else {
+             Server server = new Server();
+            JSONObject json = createJson(task);
+            json.put("status", false);
+            int result = server.put(new String[]{"task", task.getId() + ""}, json);
+            if (result != -1) {
+                setGraphic(checkBox);
+            } else {
+                showAlert();
+                checkBox.setSelected(true);
+                setGraphic(checkBox);
+
+            }
+        }
+    }
+
+    public void showAlert() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setContentText("Error update task");
+        alert.showAndWait();
     }
 
 }

@@ -9,6 +9,8 @@ import home.list.Adapter.ShareListAdapter;
 import home.list.Adapter.MyListAdapter;
 import Entity.User;
 import authontication.LoginController;
+import home.Notifications;
+import home.menu_bar.ConnectWithController_MenuBar;
 import home.to_do_list.ToDoList;
 import home.to_do_list.ToDoListController;
 import java.io.IOException;

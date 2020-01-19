@@ -231,6 +231,7 @@ public class MenuBarController implements Initializable {
     private void handleLogoutAction(ActionEvent event) {
         try {
             ((Stage)menu.getScene().getWindow()).close();
+            System.exit(0);
 //            FXMLLoader loader = new FXMLLoader(getClass().getResource("/authontication/login.fxml"));
 //            Parent root =  loader.load();
 //            //send stage to login controller
@@ -248,8 +249,8 @@ public class MenuBarController implements Initializable {
 
     void setListRequest(Notifications list) {
         notLists.add(list);
-        System.out.println(list.getId());
-        listsNotification.setItems(notLists);
+        System.out.println(list.getFromUserName());
+        listsNotification.getItems().add(list);
         listsNotification.setCellFactory((li) -> new ListRequestCell());
     }
 
