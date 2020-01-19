@@ -6,17 +6,14 @@
 package home.to_do_list;
 
 import Entity.User;
-import authontication.LoginController;
 import com.jfoenix.controls.JFXCheckBox;
-import home.HomeController;
-import home.list.FXMLListController;
-import home.list.ToDoForm;
 import home.menu_bar.ConnectWithLoginView_MenuBar;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -27,8 +24,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.control.ProgressIndicator;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -51,8 +47,7 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
     static TaskInfo currentTask = null;
     ToDoList todo = ToDoListController.getTodoList();
     ConnectWithLoginView_MenuBar c;
-        List<User> teamMemberAssigned;
-
+    List<User> teamMemberAssigned;
 
     public ListAdapterOfTasksList(ListView<TaskInfo> listviewOfTasks) {
         this.listviewOfTasks = listviewOfTasks;
@@ -69,28 +64,34 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
         if (task != null) {
             JFXCheckBox checkbox = new JFXCheckBox();
             setGraphic(checkbox);
-                            setText(task.getTitle());
+            setText(task.getTitle());
+            checkbox.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 
-            
+                try {
+                    updateTaskStatus(newValue, task, checkbox);
+                } catch (IOException ex) {
+                    Logger.getLogger(ListAdapterOfTasksList.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (JSONException ex) {
+                    Logger.getLogger(ListAdapterOfTasksList.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            });
+
             //  this.task=task;
             if (currntUser.getId() == todo.getOwnerId()) {
                 setContextMenu(createContextMenu(task));
             } else {
                 try {
                     teamMemberAssigned = getTaskMemberInToDo(task.getId());
-                    for(int i =0;i<teamMemberAssigned.size();i++)
-                    {
-                        if(currntUser.getId()==teamMemberAssigned.get(i).getId())
-                        {
-                             setText(task.getTitle()+"      (you are assigned to this task)");
-                             setContextMenu(createContextMenuOfSharedListifassign(task));
-                        }
-                        else
-                        {
+                    for (int i = 0; i < teamMemberAssigned.size(); i++) {
+                        if (currntUser.getId() == teamMemberAssigned.get(i).getId()) {
+                            setText(task.getTitle() + "      (you are assigned to this task)");
+                            setContextMenu(createContextMenuOfSharedListifassign(task));
+                        } else {
                             setContextMenu(createContextMenuOfSharedList(task));
 
                         }
-                       
+
                     }
                 } catch (JSONException ex) {
                     Logger.getLogger(ListAdapterOfTasksList.class.getName()).log(Level.SEVERE, null, ex);
@@ -208,7 +209,7 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
             int response = server.delete(new String[]{"task", String.valueOf(task.getId())});
             if (response != -1) {
                 listviewOfTasks.getItems().remove(task);
-                
+
                 showAleart(Alert.AlertType.INFORMATION, "Done ", "deleted Succefully");
             } else {
                 showAleart(Alert.AlertType.ERROR, "Error ", "cann't delete todo");
@@ -235,11 +236,11 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
     static boolean isEdited() {
         return isEdit;
     }
+
     private ContextMenu createContextMenuOfSharedList(TaskInfo task) {
         ContextMenu contextMenu = new ContextMenu();
 
         MenuItem edit = new MenuItem("Edit");
-       
 
         contextMenu.getItems().addAll(edit);
         edit.setOnAction((ActionEvent event) -> {
@@ -251,17 +252,17 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
             }
 
         });
-      
+
         return contextMenu;
     }
-   private ContextMenu createContextMenuOfSharedListifassign(TaskInfo task) {
+
+    private ContextMenu createContextMenuOfSharedListifassign(TaskInfo task) {
         ContextMenu contextMenu = new ContextMenu();
 
         MenuItem edit = new MenuItem("Edit");
         MenuItem leave = new MenuItem("Leave");
 
-
-        contextMenu.getItems().addAll(edit,leave);
+        contextMenu.getItems().addAll(edit, leave);
         edit.setOnAction((ActionEvent event) -> {
 
             try {
@@ -271,23 +272,24 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
             }
 
         });
-      leave.setOnAction((ActionEvent event) -> {
+        leave.setOnAction((ActionEvent event) -> {
 
-            int response=  leaveTask(currntUser);
-          if (response != -1){
-              setText(task.getTitle());}
-            
+            int response = leaveTask(currntUser);
+            if (response != -1) {
+                setText(task.getTitle());
+            }
 
         });
-      
+
         return contextMenu;
     }
-  private ArrayList<User> getTaskMemberInToDo(int currntTaskid) throws JSONException, IOException {
+
+    private ArrayList<User> getTaskMemberInToDo(int currntTaskid) throws JSONException, IOException {
 
         String[] typrOfRequest = new String[2];
         typrOfRequest[0] = "getTaskMemberInToDo";
         typrOfRequest[1] = String.valueOf(currntTaskid);
-Server server= new Server();
+        Server server = new Server();
         JSONObject resultOfGetTeamMember = server.get(typrOfRequest);
         ArrayList<User> taskMemberInfoList = null;
         if (resultOfGetTeamMember != null) {
@@ -312,11 +314,11 @@ Server server= new Server();
 
     private int leaveTask(User user) {
         int response = 0;
-                 try {
+        try {
             Server server = new Server();
-            response = server.delete(new String[]{"teammember",String.valueOf(user.getId())});
+            response = server.delete(new String[]{"teammember", String.valueOf(user.getId())});
             if (response != -1) {
-                
+
                 showAleart(Alert.AlertType.INFORMATION, "Done ", "deleted Succefully");
             } else {
                 showAleart(Alert.AlertType.ERROR, "Error ", "cann't delete todo");
@@ -325,7 +327,45 @@ Server server= new Server();
             showAleart(Alert.AlertType.ERROR, "Connection lost", "Error update  List");
 
         }
-                 return response;
-     }
+        return response;
+    }
+
+    private void updateTaskStatus(Boolean newValue, TaskInfo task, CheckBox checkBox) throws IOException, JSONException {
+        ProgressIndicator bar = new ProgressIndicator(0);
+        setGraphic(bar);
+        if (newValue) {
+            Server server = new Server();
+            task.setStatus(true);
+            int result = server.put(new String[]{"task", task.getId() + ""}, task.writeTaskInfoObjectAsJson());
+            if (result != -1) {
+                setGraphic(checkBox);
+            } else {
+                showAlert();
+                checkBox.setSelected(false);
+                setGraphic(checkBox);
+                task.setStatus(false);
+
+            }
+        } else {
+            Server server = new Server();
+            task.setStatus(false);
+            int result = server.put(new String[]{"task", task.getId() + ""}, task.writeTaskInfoObjectAsJson());
+            if (result != -1) {
+                setGraphic(checkBox);
+            } else {
+                showAlert();
+                checkBox.setSelected(true);
+                setGraphic(checkBox);
+                task.setStatus(true);
+
+            }
+        }
+    }
+
+    public void showAlert() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setContentText("Error update task");
+        alert.showAndWait();
+    }
 
 }

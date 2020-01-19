@@ -62,6 +62,7 @@ public class TaskInformationViewController implements Initializable {
     private JFXTextArea comment;
     private boolean edit = false;
     private TaskInfo CurrentTask;
+
     /**
      * Initializes the controller class.
      */
@@ -71,71 +72,62 @@ public class TaskInformationViewController implements Initializable {
         todolist = ToDoListController.getTodoList();
         memberList.setVisible(false);
         User user = new User();
-        ToDoList todolist = new ToDoList();
-        ArrayList<User> teamMateInToDo = null;
-        try {
-            teamMateInToDo = getTeamMemberInToDo();
-            if (teamMateInToDo != null) {
-                for (int i = 0; i < teamMateInToDo.size(); i++) {
-                    ListViewOfMember.getItems().add(teamMateInToDo.get(i));
-                    ListViewOfMember.setCellFactory((param)
-                            -> {
-                        return new ListAdapter();
-                    });
-                }
-            }
-        } catch (JSONException ex) {
-            Logger.getLogger(TaskInformationViewController.class.getName()).log(Level.SEVERE, null, ex);
 
-        }
-
+        ListViewOfMember.getItems().addAll(todolist.getCollaborator());
+        ListViewOfMember.setCellFactory((param)
+                -> {
+            return new ListAdapter();
+        });
     }
 
-    private ArrayList<User> getTeamMemberInToDo() throws JSONException {
-        String[] typrOfRequest = new String[2];
-        typrOfRequest[0] = "getTeamMemberInToDo";
-        typrOfRequest[1] = String.valueOf(todolist.getId());
-        Server server = null;
-        try {
-            server = new Server();
-        } catch (IOException ex) {
-            showAleart(Alert.AlertType.ERROR, "Connection lost", "Error update  List");
-        }
-        JSONObject resultOfGetTeamMember = server.get(typrOfRequest);
-        ArrayList<User> teamMemberInfoList = null;
-        if (resultOfGetTeamMember != null) {
-            JSONArray jsonArrayOfTeamMeber = resultOfGetTeamMember.getJSONArray("listOfTeamMember");
-            teamMemberInfoList = new ArrayList<User>();
-            for (int i = 0; i < jsonArrayOfTeamMeber.length(); i++) {
-                JSONObject teammember = jsonArrayOfTeamMeber.getJSONObject(i);
-                String username = teammember.getString("userName");
-                int userId = (int) teammember.get("id");
 
-                User TeamMember = new User();
-                TeamMember.setUserName(username);
-                TeamMember.setId(userId);
-                teamMemberInfoList.add(TeamMember);
 
-            }
-        }
-        return teamMemberInfoList;
 
-    }
+//    private ArrayList<User> getTeamMemberInToDo() throws JSONException {
+//        String[] typrOfRequest = new String[2];
+//        typrOfRequest[0] = "getTeamMemberInToDo";
+//        typrOfRequest[1] = String.valueOf(todolist.getId());
+//        Server server = null;
+//        try {
+//            server = new Server();
+//        } catch (IOException ex) {
+//            showAleart(Alert.AlertType.ERROR, "Connection lost", "Error update  List");
+//        }
+//        JSONObject resultOfGetTeamMember = server.get(typrOfRequest);
+//        ArrayList<User> teamMemberInfoList = null;
+//        if (resultOfGetTeamMember != null) {
+//            JSONArray jsonArrayOfTeamMeber = resultOfGetTeamMember.getJSONArray("listOfTeamMember");
+//            teamMemberInfoList = new ArrayList<User>();
+//            for (int i = 0; i < jsonArrayOfTeamMeber.length(); i++) {
+//                JSONObject teammember = jsonArrayOfTeamMeber.getJSONObject(i);
+//                String username = teammember.getString("userName");
+//                int userId = (int) teammember.get("id");
+//
+//                User TeamMember = new User();
+//                TeamMember.setUserName(username);
+//                TeamMember.setId(userId);
+//                teamMemberInfoList.add(TeamMember);
+//
+//            }
+//        }
+//        return teamMemberInfoList;
+//
+//    }
 
     static boolean isClicked = false;
 
     @FXML
-    private void saveTaskData(ActionEvent event) {
+        private void saveTaskData(ActionEvent event) {
         isClicked = true;
         TaskInfo addedTask = null;
-        if (!titleOfTask.getText().toString().equals("") && StartDatePicker.getValue() != null && endDatePicker.getValue() != null) {
+        if (!titleOfTask.getText().equals("") && StartDatePicker.getValue() != null && endDatePicker.getValue() != null) {
             addedTask = new TaskInfo();
-            addedTask.setTitle(titleOfTask.getText().toString());
+            addedTask.setTitle(titleOfTask.getText());
             addedTask.setListId(todolist.getId());
-            addedTask.setDescription(description.getText().toString());
+            addedTask.setDescription(description.getText());
             addedTask.setStartTime(StartDatePicker.getValue().toString());
             addedTask.setDeadLine(endDatePicker.getValue().toString());
-            addedTask.setComment(comment.getText().toString());
+            addedTask.setComment(comment.getText());
             toDoTaskJsonObject = addedTask.writeTaskInfoObjectAsJson();
         }
 
@@ -165,12 +157,12 @@ public class TaskInformationViewController implements Initializable {
 
         } else {
 
-            CurrentTask.setTitle(titleOfTask.getText().toString());
+            CurrentTask.setTitle(titleOfTask.getText());
             CurrentTask.setListId(todolist.getId());
-            CurrentTask.setDescription(description.getText().toString());
+            CurrentTask.setDescription(description.getText());
             CurrentTask.setStartTime(StartDatePicker.getValue().toString());
             CurrentTask.setDeadLine(endDatePicker.getValue().toString());
-            CurrentTask.setComment(comment.getText().toString());
+            CurrentTask.setComment(comment.getText());
             CurrentTask.setId(CurrentTask.getId());
             toDoTaskJsonObject = CurrentTask.writeTaskInfoObjectAsJson();
             updateInServer(toDoTaskJsonObject);
@@ -225,7 +217,7 @@ public class TaskInformationViewController implements Initializable {
    
 
     @FXML
-    private void setStartDate(Event event) throws ParseException {
+        private void setStartDate(Event event) throws ParseException {
         if (StartDatePicker.getValue() != null) {
             if (endDatePicker.getValue() != null) {
                 if (endDatePicker.getValue().compareTo(StartDatePicker.getValue()) <= 0 ) {
@@ -253,7 +245,7 @@ public class TaskInformationViewController implements Initializable {
     }
 
     @FXML
-    private void setEndate(Event event) throws ParseException {
+        private void setEndate(Event event) throws ParseException {
         if (StartDatePicker.getValue() != null) {
             if (endDatePicker.getValue() != null) {
                 if (endDatePicker.getValue().compareTo(StartDatePicker.getValue()) <= 0) {

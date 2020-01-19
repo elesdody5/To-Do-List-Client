@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -12,8 +13,6 @@ import home.Notifications;
 import home.View;
 import home.list.FXMLListController;
 import home.menu_bar.ConnectWithController_MenuBar;
-import home.menu_bar.ConnectWithLoginView_MenuBar;
-import home.menu_bar.MenuBarController;
 import home.to_do_list.ToDoList;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -259,6 +258,12 @@ public class Server implements Request {
                     ((FXMLListController) View.getListLoader().getController()).addSharedList((ToDoList) object);
                     break;
                 case REQUEST.NEWCOLLABORATOR: 
+                    break;
+                    case REQUEST.FRIEND_ONLINE:
+                    ((OnlineFriendsController) View.getOnlineListLoader().getController()).notifyUserOnlineOrOffline((User) object, true);
+                    break;
+                case REQUEST.FRIEND_OFFLINE:
+                    ((OnlineFriendsController) View.getOnlineListLoader().getController()).notifyUserOnlineOrOffline((User) object, false);
                     break;
             }
         }
