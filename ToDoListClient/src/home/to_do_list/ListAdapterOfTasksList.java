@@ -6,17 +6,14 @@
 package home.to_do_list;
 
 import Entity.User;
-import authontication.LoginController;
 import com.jfoenix.controls.JFXCheckBox;
-import home.HomeController;
-import home.list.FXMLListController;
-import home.list.ToDoForm;
 import home.menu_bar.ConnectWithLoginView_MenuBar;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -27,8 +24,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.control.ProgressIndicator;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -55,6 +51,9 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
     ConnectWithLoginView_MenuBar c;
     List<User> teamMemberAssigned;
     static boolean disableEdit=false;
+   /* ToDoList todo = ToDoListController.getTodoList();
+    ConnectWithLoginView_MenuBar c;
+    List<User> teamMemberAssigned;*/
 
     public ListAdapterOfTasksList(ListView<TaskInfo> listviewOfTasks) {
         this.listviewOfTasks = listviewOfTasks;
@@ -77,6 +76,20 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
             JFXCheckBox checkbox = new JFXCheckBox();
             setGraphic(checkbox);
             setText(task.getTitle());
+
+            checkbox.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+
+                try {
+                    updateTaskStatus(newValue, task, checkbox);
+                } catch (IOException ex) {
+                    Logger.getLogger(ListAdapterOfTasksList.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (JSONException ex) {
+                    Logger.getLogger(ListAdapterOfTasksList.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            });
+
+
             if (currntUser.getId() == todo.getOwnerId()) {
                 setContextMenu(createContextMenu(task));
             } else {
@@ -89,6 +102,10 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
                             setText(task.getTitle() + "       (you are assigned to this task)");
                             setContextMenu(createContextMenuOfSharedListifassign(task));
                         } 
+                            else {
+                            setContextMenu(createContextMenuOfSharedList(task));
+
+                        }
 
                     }
                 } catch (JSONException ex) {
@@ -238,6 +255,7 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
     static boolean isEdited() {
         return isEdit;
     }
+
     private ContextMenu createContextMenuOfSharedList(TaskInfo task) {
         ContextMenu contextMenu = new ContextMenu();
 
@@ -330,6 +348,45 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
 
         }
         return response;
+    }
+
+
+    private void updateTaskStatus(Boolean newValue, TaskInfo task, CheckBox checkBox) throws IOException, JSONException {
+        ProgressIndicator bar = new ProgressIndicator(0);
+        setGraphic(bar);
+        if (newValue) {
+            Server server = new Server();
+            task.setStatus(true);
+            int result = server.put(new String[]{"task", task.getId() + ""}, task.writeTaskInfoObjectAsJson());
+            if (result != -1) {
+                setGraphic(checkBox);
+            } else {
+                showAlert();
+                checkBox.setSelected(false);
+                setGraphic(checkBox);
+                task.setStatus(false);
+
+            }
+        } else {
+            Server server = new Server();
+            task.setStatus(false);
+            int result = server.put(new String[]{"task", task.getId() + ""}, task.writeTaskInfoObjectAsJson());
+            if (result != -1) {
+                setGraphic(checkBox);
+            } else {
+                showAlert();
+                checkBox.setSelected(true);
+                setGraphic(checkBox);
+                task.setStatus(true);
+
+            }
+        }
+    }
+
+    public void showAlert() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setContentText("Error update task");
+        alert.showAndWait();
     }
 
 }

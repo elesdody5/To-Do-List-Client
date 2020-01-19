@@ -10,4 +10,5 @@ public class NotificationKeys {
     public static int NORESPONSE_NOTIFICATION_REQUEST = 2;
     public static int SEND_RESPONSE_BACK_TO_SENDER_ACCEPT = 3;
     public static int SEND_RESPONSE_BACK_TO_SENDER_REJECT = 4;
+    public static int RESPONSE_BACK_IS_READ = 10;
 }

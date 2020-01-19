@@ -120,6 +120,7 @@ public class TaskInfo extends Observable{
             toDoTaskJsonObject.put("deadLine", deadLine);
             toDoTaskJsonObject.put("startTime", startTime);
             toDoTaskJsonObject.put("comment", comment);
+            toDoTaskJsonObject.put("status", status);
             toDoTaskJsonObject.put("id", id);
 
 

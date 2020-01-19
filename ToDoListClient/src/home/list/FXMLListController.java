@@ -9,6 +9,7 @@ import home.list.Adapter.ShareListAdapter;
 import home.list.Adapter.MyListAdapter;
 import Entity.User;
 import authontication.LoginController;
+import home.to_do_list.TaskInfo;
 import home.to_do_list.ToDoList;
 import home.to_do_list.ToDoListController;
 import java.io.IOException;
@@ -18,7 +19,6 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -69,7 +69,7 @@ public class FXMLListController implements Initializable {
         // TODO
         friendsList = new ArrayList<>();
         myTodos = new ArrayList<>();
-        currentToDo= new ToDoList();
+        currentToDo = new ToDoList();
         sharedTodos = new ArrayList<>();
         myListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         saredListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -238,5 +238,42 @@ public class FXMLListController implements Initializable {
 
     private void upadteCurrentTdo(ToDoList selectedItem) {
         toDoListController.updateCurrentTodo(selectedItem);
+    }
+
+    public void updateToDoTask(TaskInfo task) {
+
+        myListView.getItems().forEach((list) -> {
+            if (task.getListId() == list.getId()) {
+                int todoIndex;
+                int taskIndex = 0;
+                for (TaskInfo todoTask : list.getTasksInTODOList()) {
+                    if (todoTask.getId() == task.getId()) {
+                        todoTask = task;
+                        taskIndex = list.getTasksInTODOList().indexOf(todoTask);
+                    }
+
+                }
+                todoIndex = myListView.getItems().indexOf(list);
+                myTodos.get(todoIndex).getTasksInTODOList().set(taskIndex, task);
+            
+            }
+        });
+        saredListView.getItems().forEach((list) -> {
+            if (task.getListId() == list.getId()) {
+                int todoIndex;
+                int taskIndex = 0;
+                for (TaskInfo todoTask : list.getTasksInTODOList()) {
+                    if (todoTask.getId() == task.getId()) {
+                        todoTask = task;
+                        taskIndex = list.getTasksInTODOList().indexOf(todoTask);
+                    }
+
+                }
+                todoIndex = saredListView.getItems().indexOf(list);
+                sharedTodos.get(todoIndex).getTasksInTODOList().set(taskIndex, task);
+            
+            }
+        });
+
     }
 }
