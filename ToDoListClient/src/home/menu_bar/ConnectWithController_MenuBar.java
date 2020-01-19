@@ -24,7 +24,7 @@ import javafx.application.Platform;
  */
 public class ConnectWithController_MenuBar implements MenuBarModelInterface {
 
-    private boolean isName = false, isRequestAccepted = false, isTask = false, isFriendRequest = false, isPassword = false, isRequestRejected = false;
+    private boolean isName = false, isFriendRequest = false, isPassword = false;
     private int status = -1, friendStatus = -1, collStatus=-1 , taskStatus=-1;
     private String name;
     private String password;
@@ -441,18 +441,32 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
         return ConnectWithLoginView_MenuBar.getInastance().sendIdToView();
     }
 
-    public String removeFriend(int id){
+    public void removeFriend(int id){
            
             String[] requestType = {"removeFriend"};
-           
-            JSONObject friendJsonObject = new JSONObject();
+             Thread th = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+               JSONObject friendJsonObject = new JSONObject();
             try {
                 friendJsonObject.put("userID", id);
                 JSONObject resultJSONObject = s.post(requestType, friendJsonObject);
                 resultFriendRequest = resultJSONObject.getString("result");
             } catch (JSONException ex) {
-                System.out.println("file:ConnectWithController_MenuBar 164 cannot send friend request");
+                System.out.println("file:ConnectWithController_MenuBar  remove friend ");
             }
-            return  resultFriendRequest;
+            }
+        });
+        th.start();
+        try {
+            th.join();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ConnectWithController_MenuBar.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
+    public String getFriendRemoveResult (){
+       return  resultFriendRequest;
+    }
+    
 }
