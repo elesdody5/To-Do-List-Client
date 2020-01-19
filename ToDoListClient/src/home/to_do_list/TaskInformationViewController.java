@@ -11,9 +11,13 @@ import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.chrono.ChronoLocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -68,71 +72,62 @@ public class TaskInformationViewController implements Initializable {
         todolist = ToDoListController.getTodoList();
         memberList.setVisible(false);
         User user = new User();
-        ToDoList todolist = new ToDoList();
-        ArrayList<User> teamMateInToDo = null;
-        try {
-            teamMateInToDo = getTeamMemberInToDo();
-            if (teamMateInToDo != null) {
-                for (int i = 0; i < teamMateInToDo.size(); i++) {
-                    ListViewOfMember.getItems().add(teamMateInToDo.get(i));
-                    ListViewOfMember.setCellFactory((param)
-                            -> {
-                        return new ListAdapter();
-                    });
-                }
-            }
-        } catch (JSONException ex) {
-            Logger.getLogger(TaskInformationViewController.class.getName()).log(Level.SEVERE, null, ex);
 
-        }
-
+        ListViewOfMember.getItems().addAll(todolist.getCollaborator());
+        ListViewOfMember.setCellFactory((param)
+                -> {
+            return new ListAdapter();
+        });
     }
 
-    private ArrayList<User> getTeamMemberInToDo() throws JSONException {
-        String[] typrOfRequest = new String[2];
-        typrOfRequest[0] = "getTeamMemberInToDo";
-        typrOfRequest[1] = String.valueOf(todolist.getId());
-        Server server = null;
-        try {
-            server = new Server();
-        } catch (IOException ex) {
-            showAleart(Alert.AlertType.ERROR, "Connection lost", "Error update  List");
-        }
-        JSONObject resultOfGetTeamMember = server.get(typrOfRequest);
-        ArrayList<User> teamMemberInfoList = null;
-        if (resultOfGetTeamMember != null) {
-            JSONArray jsonArrayOfTeamMeber = resultOfGetTeamMember.getJSONArray("listOfTeamMember");
-            teamMemberInfoList = new ArrayList<User>();
-            for (int i = 0; i < jsonArrayOfTeamMeber.length(); i++) {
-                JSONObject teammember = jsonArrayOfTeamMeber.getJSONObject(i);
-                String username = teammember.getString("userName");
-                int userId = (int) teammember.get("id");
 
-                User TeamMember = new User();
-                TeamMember.setUserName(username);
-                TeamMember.setId(userId);
-                teamMemberInfoList.add(TeamMember);
 
-            }
-        }
-        return teamMemberInfoList;
 
-    }
+//    private ArrayList<User> getTeamMemberInToDo() throws JSONException {
+//        String[] typrOfRequest = new String[2];
+//        typrOfRequest[0] = "getTeamMemberInToDo";
+//        typrOfRequest[1] = String.valueOf(todolist.getId());
+//        Server server = null;
+//        try {
+//            server = new Server();
+//        } catch (IOException ex) {
+//            showAleart(Alert.AlertType.ERROR, "Connection lost", "Error update  List");
+//        }
+//        JSONObject resultOfGetTeamMember = server.get(typrOfRequest);
+//        ArrayList<User> teamMemberInfoList = null;
+//        if (resultOfGetTeamMember != null) {
+//            JSONArray jsonArrayOfTeamMeber = resultOfGetTeamMember.getJSONArray("listOfTeamMember");
+//            teamMemberInfoList = new ArrayList<User>();
+//            for (int i = 0; i < jsonArrayOfTeamMeber.length(); i++) {
+//                JSONObject teammember = jsonArrayOfTeamMeber.getJSONObject(i);
+//                String username = teammember.getString("userName");
+//                int userId = (int) teammember.get("id");
+//
+//                User TeamMember = new User();
+//                TeamMember.setUserName(username);
+//                TeamMember.setId(userId);
+//                teamMemberInfoList.add(TeamMember);
+//
+//            }
+//        }
+//        return teamMemberInfoList;
+//
+//    }
 
     static boolean isClicked = false;
 
     @FXML
-    private void saveTaskData(ActionEvent event) {
+        private void saveTaskData(ActionEvent event) {
         isClicked = true;
         TaskInfo addedTask = null;
-        if (!titleOfTask.getText().toString().equals("") && StartDatePicker.getValue() != null && endDatePicker.getValue() != null) {
+        if (!titleOfTask.getText().equals("") && StartDatePicker.getValue() != null && endDatePicker.getValue() != null) {
             addedTask = new TaskInfo();
-            addedTask.setTitle(titleOfTask.getText().toString());
+            addedTask.setTitle(titleOfTask.getText());
             addedTask.setListId(todolist.getId());
-            addedTask.setDescription(description.getText().toString());
+            addedTask.setDescription(description.getText());
             addedTask.setStartTime(StartDatePicker.getValue().toString());
             addedTask.setDeadLine(endDatePicker.getValue().toString());
-            addedTask.setComment(comment.getText().toString());
+            addedTask.setComment(comment.getText());
             toDoTaskJsonObject = addedTask.writeTaskInfoObjectAsJson();
         }
 
@@ -149,6 +144,12 @@ public class TaskInformationViewController implements Initializable {
                   // sendNotificationToDataBase(notificationDataJsonObject);
                     ((Stage) taskData.getScene().getWindow()).close();
                 }
+                else
+                {
+                     Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setContentText("you must enter title of the task , start date and deadline");
+                    alert.showAndWait(); 
+                }
 
             } catch (IOException ex) {
                 showAleart(Alert.AlertType.ERROR, "Connection lost", "Error update  List");
@@ -156,12 +157,12 @@ public class TaskInformationViewController implements Initializable {
 
         } else {
 
-            CurrentTask.setTitle(titleOfTask.getText().toString());
+            CurrentTask.setTitle(titleOfTask.getText());
             CurrentTask.setListId(todolist.getId());
-            CurrentTask.setDescription(description.getText().toString());
+            CurrentTask.setDescription(description.getText());
             CurrentTask.setStartTime(StartDatePicker.getValue().toString());
             CurrentTask.setDeadLine(endDatePicker.getValue().toString());
-            CurrentTask.setComment(comment.getText().toString());
+            CurrentTask.setComment(comment.getText());
             CurrentTask.setId(CurrentTask.getId());
             toDoTaskJsonObject = CurrentTask.writeTaskInfoObjectAsJson();
             updateInServer(toDoTaskJsonObject);
@@ -216,33 +217,57 @@ public class TaskInformationViewController implements Initializable {
    
 
     @FXML
-    private void setStartDate(Event event) {
+        private void setStartDate(Event event) throws ParseException {
         if (StartDatePicker.getValue() != null) {
             if (endDatePicker.getValue() != null) {
-                if (endDatePicker.getValue().compareTo(StartDatePicker.getValue()) < 0) {
+                if (endDatePicker.getValue().compareTo(StartDatePicker.getValue()) <= 0 ) {
 
                     Alert alert = new Alert(Alert.AlertType.WARNING);
                     alert.setContentText("Sorry the End Date must be after the start Date");
                     alert.showAndWait();
                     return;
                 }
+           
             }
+                  SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+           Date todoStart = format.parse(todolist.getStartTime());
+           Date taskStart = format.parse(StartDatePicker.getValue().toString());
+                 if (taskStart.compareTo(todoStart) < 0 ) {
+
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setContentText("Sorry the start Date must be after the todo start Date");
+                    alert.showAndWait();
+                    return;
+                }
 
         }
     }
 
     @FXML
-    private void setEndate(Event event) {
+        private void setEndate(Event event) throws ParseException {
         if (StartDatePicker.getValue() != null) {
             if (endDatePicker.getValue() != null) {
-                if (endDatePicker.getValue().compareTo(StartDatePicker.getValue()) < 0) {
+                if (endDatePicker.getValue().compareTo(StartDatePicker.getValue()) <= 0) {
                     endDatePicker.setValue(null);
                     Alert alert = new Alert(Alert.AlertType.WARNING);
                     alert.setContentText("Sorry the End Date must be after the start Date");
                     alert.showAndWait();
                 }
-
+   
             }
+            if (endDatePicker.getValue() != null) {
+           SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+           Date todoend = format.parse(todolist.getDeadLine());
+           Date taskend = format.parse(endDatePicker.getValue().toString());
+                 if (taskend.compareTo(todoend) > 0 ) {
+                    endDatePicker.setValue(null);
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setContentText("Sorry the end Date must be before the todo end Date");
+                    alert.showAndWait();
+                    return;
+                } }
         } else {
             endDatePicker.setValue(null);
             Alert alert = new Alert(Alert.AlertType.ERROR);

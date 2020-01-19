@@ -85,7 +85,10 @@
                                  <children>
                                     <TextField fx:id="friendRequestTextField" layoutX="17.0" layoutY="10.0" promptText="Enter Friend Name" />
                                     <Button fx:id="searchButton" layoutX="40.0" layoutY="60.0" mnemonicParsing="false" onAction="#sendFriendRequest" style="-fx-background-color: #6F4CBB;" text="Send Request" textFill="WHITE" />
-                                    <Label fx:id="resultLabel" layoutX="4.0" layoutY="100.0" maxHeight="-Infinity" maxWidth="200.0" prefHeight="17.0" prefWidth="200.0" style="-fx-max-width: 200;" textFill="#6f4cbb" />
+                                    <Label fx:id="resultLabel" layoutX="40.0" layoutY="100.0" prefHeight="17.0" prefWidth="178.0" style="-fx-max-width: 100;" textAlignment="CENTER" textFill="#6f4cbb" wrapText="true">
+                                       <font>
+                                          <Font size="10.0" />
+                                       </font></Label>
                                  </children>
                               </AnchorPane>
                            </content>
@@ -162,7 +165,7 @@
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
                                     <ListView fx:id="listsNotification" prefHeight="200.0" prefWidth="200.0" />
-                                    <VBox fx:id="notListBox" prefHeight="200.0" prefWidth="100.0" visible="false">
+                                    <VBox fx:id="notListBox" alignment="CENTER" prefHeight="200.0" prefWidth="150.0" visible="false">
                                        <children>
                                           <ImageView fitHeight="100.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
@@ -184,7 +187,7 @@
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
                                     <ListView fx:id="tasksNotification" prefHeight="200.0" prefWidth="200.0" />
-                                    <VBox fx:id="notTaskBox" prefHeight="200.0" prefWidth="100.0">
+                                    <VBox fx:id="notTaskBox" alignment="CENTER" prefHeight="200.0" prefWidth="150.0">
                                        <children>
                                           <ImageView fitHeight="100.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
@@ -206,9 +209,9 @@
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
                                     <ListView fx:id="friendRequestsNotification" prefHeight="200.0" prefWidth="200.0" />
-                                    <VBox fx:id="notFriendBox" prefHeight="200.0" prefWidth="100.0">
+                                    <VBox fx:id="notFriendBox" alignment="CENTER" prefHeight="200.0" prefWidth="150.0">
                                        <children>
-                                          <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                                          <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
                                                 <Image url="@icons/not.jpg" />
                                              </image>

@@ -92,7 +92,7 @@ public class HomeController implements Initializable {
             connect.setUserName(user.getUserName());
             connect.setId(user.getId() + "");
             connect.loadAllLists(friendsList, notifications);
-            FXMLLoader menuloader = new FXMLLoader(getClass().getResource("/home/menu_bar/MenuBar.fxml"));
+            FXMLLoader menuloader = View.getMenuLoader();
             Parent menuBar = menuloader.load();
 
             // create left list 
