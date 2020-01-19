@@ -50,7 +50,6 @@ public class TeamMemberController implements Initializable {
     private AnchorPane listView;
     @FXML
     private AnchorPane initialimage;
-
     /**
      * Initializes the controller class.
      */
@@ -96,30 +95,7 @@ public class TeamMemberController implements Initializable {
 
         }
         try {
-            //////
-            /*   try {
-            notificationsList=getNotification();
-            for (int i = 0; i < notificationsList.size(); i++) {
-            if(notificationsList.get(i).getStatus()==1)
-            {
-            User user;
-            String[] typrOfRequest = new String[2];
-            typrOfRequest[0] = "getUser";
-            typrOfRequest[1] = String.valueOf(notificationsList.get(i).getToUserId());
-            JSONObject resultOfGetUser= server.get(typrOfRequest);
-            String userName=resultOfGetUser.getString("user name");
-            int id =notificationsList.get(i).getToUserId();
-            user =new User();
-            user.setUserName(userName);
-            user.setId(id);
-            teamMemberAssigned.add(user);
-            listViewOfTeamMember.getItems().remove(user);
-            }
-            }
-            
-            } catch (JSONException ex) {
-            Logger.getLogger(TeamMemberController.class.getName()).log(Level.SEVERE, null, ex);
-            }*/
+          
             teamMemberAssigned = getTaskMemberInToDo();
         } catch (JSONException ex) {
             Logger.getLogger(TeamMemberController.class.getName()).log(Level.SEVERE, null, ex);
@@ -261,16 +237,21 @@ public class TeamMemberController implements Initializable {
         teamMemberAssigned = new ArrayList<User>();
     }
 
-    public void sendNotificationToDataBase(JSONObject notificationDataJsonObject) {
-        Server server;
-        try {
-            server = new Server();
-            server.post(new String[]{"Assignnotification"}, notificationDataJsonObject);
+    public void sendNotificationToDataBase(JSONObject notificationDataJsonObject) throws JSONException {
 
-        } catch (IOException ex) {
-            showAleart(Alert.AlertType.ERROR, "Connection lost", "Error update  List");
-        }
-
+           JSONObject res= server.post(new String[]{"Assignnotification"}, notificationDataJsonObject);
+         String isNotifayBefore=res.getString("Notify_before");
+         if(isNotifayBefore.equals("yes"))
+         {
+           showAleart(Alert.AlertType.ERROR, "pay attention", "you send request to this user before");
+  
+         }
+    }
+    public int isNotificationExistBefor(JSONObject notificationDataJsonObject)
+    {
+        int response=0;
+        
+        return response;
     }
 
 }

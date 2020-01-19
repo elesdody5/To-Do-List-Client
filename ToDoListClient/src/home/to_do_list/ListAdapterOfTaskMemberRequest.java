@@ -43,7 +43,6 @@ public class ListAdapterOfTaskMemberRequest extends ListCell<User> {
             image.setFitHeight(30);
             image.setFitWidth(30);
             Button btn=new Button("remove");
-            
             setText(user.getUserName());
             setGraphic(btn);
             btn.setOnAction(new EventHandler() {

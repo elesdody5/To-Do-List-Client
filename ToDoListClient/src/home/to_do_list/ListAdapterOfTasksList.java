@@ -44,53 +44,52 @@ import server_request.Server;
  */
 public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
 
+
     private ListView<TaskInfo> listviewOfTasks;
     private static TaskInfo task;
     static boolean isEdit;
     User currntUser;
     static TaskInfo currentTask = null;
-    ToDoList todo = ToDoListController.getTodoList();
-    ConnectWithLoginView_MenuBar c;
-        List<User> teamMemberAssigned;
+    ToDoList todo;
 
+    ConnectWithLoginView_MenuBar c;
+    List<User> teamMemberAssigned;
+    static boolean disableEdit=false;
 
     public ListAdapterOfTasksList(ListView<TaskInfo> listviewOfTasks) {
         this.listviewOfTasks = listviewOfTasks;
         c = ConnectWithLoginView_MenuBar.getInastance();
         currntUser = new User();
+      
 
     }
 
+    static boolean disableEditFun() {
+        return disableEdit;
+    }
     @Override
     protected void updateItem(TaskInfo task, boolean empty) {
         currntUser.setUserName(c.sendDataToView());
-        currntUser.setId(Integer.parseInt(c.sendIdToView()));
+        currntUser.setId(Integer.parseInt(c.sendIdToView()));   
+        todo = ToDoListController.getTodoList();
         super.updateItem(task, empty);
         if (task != null) {
             JFXCheckBox checkbox = new JFXCheckBox();
             setGraphic(checkbox);
-                            setText(task.getTitle());
-
-            
-            //  this.task=task;
+            setText(task.getTitle());
             if (currntUser.getId() == todo.getOwnerId()) {
                 setContextMenu(createContextMenu(task));
             } else {
+              setContextMenu(createContextMenuOfSharedList(task));
+              disableEdit=false;
                 try {
                     teamMemberAssigned = getTaskMemberInToDo(task.getId());
-                    for(int i =0;i<teamMemberAssigned.size();i++)
-                    {
-                        if(currntUser.getId()==teamMemberAssigned.get(i).getId())
-                        {
-                             setText(task.getTitle()+"      (you are assigned to this task)");
-                             setContextMenu(createContextMenuOfSharedListifassign(task));
-                        }
-                        else
-                        {
-                            setContextMenu(createContextMenuOfSharedList(task));
+                    for (int i = 0; i < teamMemberAssigned.size(); i++) {
+                        if (currntUser.getId() == teamMemberAssigned.get(i).getId()) {
+                            setText(task.getTitle() + "       (you are assigned to this task)");
+                            setContextMenu(createContextMenuOfSharedListifassign(task));
+                        } 
 
-                        }
-                       
                     }
                 } catch (JSONException ex) {
                     Logger.getLogger(ListAdapterOfTasksList.class.getName()).log(Level.SEVERE, null, ex);
@@ -156,6 +155,8 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
     }
 
     private void openForm(TaskInfo task) throws IOException {
+
+        
         FXMLLoader loader = new FXMLLoader(getClass().getResource("taskInformationView.fxml"));
         Parent form = loader.load();
         TaskInformationViewController taskInformationViewController = loader.getController();
@@ -179,6 +180,8 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
         stage.setOnHidden((WindowEvent event) -> {
             setText(task.getTitle());
             isEdit = false;
+           disableEdit=false;
+
         });
     }
 
@@ -208,7 +211,7 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
             int response = server.delete(new String[]{"task", String.valueOf(task.getId())});
             if (response != -1) {
                 listviewOfTasks.getItems().remove(task);
-                
+
                 showAleart(Alert.AlertType.INFORMATION, "Done ", "deleted Succefully");
             } else {
                 showAleart(Alert.AlertType.ERROR, "Error ", "cann't delete todo");
@@ -239,29 +242,29 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
         ContextMenu contextMenu = new ContextMenu();
 
         MenuItem edit = new MenuItem("Edit");
-       
 
         contextMenu.getItems().addAll(edit);
         edit.setOnAction((ActionEvent event) -> {
 
             try {
+                disableEdit=true;
                 openForm(task);
             } catch (IOException ex) {
                 Logger.getLogger(ListAdapterOfTasksList.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         });
-      
+
         return contextMenu;
     }
-   private ContextMenu createContextMenuOfSharedListifassign(TaskInfo task) {
+
+    private ContextMenu createContextMenuOfSharedListifassign(TaskInfo task) {
         ContextMenu contextMenu = new ContextMenu();
 
         MenuItem edit = new MenuItem("Edit");
         MenuItem leave = new MenuItem("Leave");
 
-
-        contextMenu.getItems().addAll(edit,leave);
+        contextMenu.getItems().addAll(edit, leave);
         edit.setOnAction((ActionEvent event) -> {
 
             try {
@@ -271,23 +274,24 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
             }
 
         });
-      leave.setOnAction((ActionEvent event) -> {
+        leave.setOnAction((ActionEvent event) -> {
 
-            int response=  leaveTask(currntUser);
-          if (response != -1){
-              setText(task.getTitle());}
-            
+            int response = leaveTask(currntUser);
+            if (response != -1) {
+                setText(task.getTitle());
+            }
 
         });
-      
+
         return contextMenu;
     }
-  private ArrayList<User> getTaskMemberInToDo(int currntTaskid) throws JSONException, IOException {
+
+    private ArrayList<User> getTaskMemberInToDo(int currntTaskid) throws JSONException, IOException {
 
         String[] typrOfRequest = new String[2];
         typrOfRequest[0] = "getTaskMemberInToDo";
         typrOfRequest[1] = String.valueOf(currntTaskid);
-Server server= new Server();
+        Server server = new Server();
         JSONObject resultOfGetTeamMember = server.get(typrOfRequest);
         ArrayList<User> taskMemberInfoList = null;
         if (resultOfGetTeamMember != null) {
@@ -312,11 +316,11 @@ Server server= new Server();
 
     private int leaveTask(User user) {
         int response = 0;
-                 try {
+        try {
             Server server = new Server();
-            response = server.delete(new String[]{"teammember",String.valueOf(user.getId())});
+            response = server.delete(new String[]{"teammember", String.valueOf(user.getId())});
             if (response != -1) {
-                
+
                 showAleart(Alert.AlertType.INFORMATION, "Done ", "deleted Succefully");
             } else {
                 showAleart(Alert.AlertType.ERROR, "Error ", "cann't delete todo");
@@ -325,7 +329,7 @@ Server server= new Server();
             showAleart(Alert.AlertType.ERROR, "Connection lost", "Error update  List");
 
         }
-                 return response;
-     }
+        return response;
+    }
 
 }
