@@ -5,6 +5,7 @@
  */
 package home.menu_bar;
 
+import Entity.User;
 import Utility.AlertDialog;
 import authontication.LoginController;
 import java.io.IOException;
@@ -33,7 +34,7 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
     Notifications request ;
     String friendRequestName, resultFriendRequest;
     String id = ConnectWithLoginView_MenuBar.getInastance().sendIdToView();
-    String currentName = ConnectWithLoginView_MenuBar.getInastance().sendDataToView();
+    String currentName = ConnectWithLoginView_MenuBar.getInastance().sendNameToView();
 
     private ConnectWithController_MenuBar() {
 
@@ -118,6 +119,7 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
                     public void run() {
                          int status = RequestAcceptedServer(req, "friend");
                                if(status == 1) {
+                                   System.out.println("friend thread accepting: "+ status);
                                    friendStatus = status;
                                }else{
                                  AlertDialog.showInfoDialog("Cannot update notification table", "Error Updating status", "");
@@ -228,7 +230,20 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
         th.start();
 
     }
+ public  void setNewFriend (User obj){
+     Thread th = new Thread(new Runnable() {
 
+            @Override
+            public void run() {
+                MenuBarController instance = View.getMenuLoader().getController();
+                instance.setFriendList(obj);
+                System.out.println("inside thread friend list : "+ obj.getUserName() );
+          
+            }
+        });
+        th.start();
+ 
+ }
     class ServerThread extends Thread {
 
         public void run() {
@@ -358,7 +373,7 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
                     objSenderNotification.put("fromUserId", request.getToUserId());
                     objSenderNotification.put("toUserId", request.getFromUserId());
                     objSenderNotification.put("dataId", request.getDataId());
-                    objSenderNotification.put("fromUserName", ConnectWithLoginView_MenuBar.getInastance().sendDataToView());
+                    objSenderNotification.put("fromUserName", ConnectWithLoginView_MenuBar.getInastance().sendNameToView());
                     objSenderNotification.put("toUserName", currentName);
                     JSONObject res = s.post(keySender, objSenderNotification);
                    if( res.getInt("status") == 1){
@@ -398,7 +413,7 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
         isFriendRequest = false;
         ConnectWithLoginView_MenuBar getInstance = ConnectWithLoginView_MenuBar.getInastance();
         String[] requestType = {"sendFriendRequest"};
-        String name = getInstance.sendDataToView();
+        String name = getInstance.sendNameToView();
         JSONObject friendJsonObject = new JSONObject();
         try {
             friendJsonObject.put("currentUserID", sendIdToView());
@@ -407,7 +422,7 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
             JSONObject resultJSONObject = s.post(requestType, friendJsonObject);
             resultFriendRequest = resultJSONObject.getString("result");
         } catch (JSONException ex) {
-            System.out.println("file:ConnectWithController_MenuBar 253");
+            System.out.println("file:ConnectWithController_MenuBar");
         }
     }
 
@@ -432,8 +447,8 @@ public class ConnectWithController_MenuBar implements MenuBarModelInterface {
     }
 
     @Override
-    public String sendDataToView() {
-      return  ConnectWithLoginView_MenuBar.getInastance().sendDataToView();
+    public String sendNameToView() {
+      return  ConnectWithLoginView_MenuBar.getInastance().sendNameToView();
     }
 
     @Override

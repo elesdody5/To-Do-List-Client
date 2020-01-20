@@ -12,6 +12,7 @@ import com.google.gson.JsonObject;
 import home.NotificationKeys;
 import home.Notifications;
 import home.list.*;
+import home.menu_bar.ConnectWithController_MenuBar;
 import home.to_do_list.ToDoList;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,6 +64,8 @@ public class ListAdapter extends ListCell<User> {
                 notificationData.setType(NotificationKeys.ASSIGIN_TASK_MEMBER);
                 notificationData.setStatus(NotificationKeys.NORESPONSE_NOTIFICATION_REQUEST);
                 notificationData.setDataId(currntTask.getId());
+                notificationData.setFromUserName(ConnectWithController_MenuBar.getInastance().sendNameToView());
+                notificationData.setData(currntTask.getTitle());
                 notificationList.add(notificationData);
 
                 // sendNotificationToDataBase(notificationDataJsonObject);

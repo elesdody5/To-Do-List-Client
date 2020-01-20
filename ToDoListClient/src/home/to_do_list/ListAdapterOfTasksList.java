@@ -68,7 +68,7 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
     }
     @Override
     protected void updateItem(TaskInfo task, boolean empty) {
-        currntUser.setUserName(c.sendDataToView());
+        currntUser.setUserName(c.sendNameToView());
         currntUser.setId(Integer.parseInt(c.sendIdToView()));   
         todo = ToDoListController.getTodoList();
         super.updateItem(task, empty);
@@ -89,7 +89,7 @@ public class ListAdapterOfTasksList extends ListCell<TaskInfo> {
 
             });
 
-
+                setContextMenu(createContextMenu(task));
             if (currntUser.getId() == todo.getOwnerId()) {
                 setContextMenu(createContextMenu(task));
             } else {

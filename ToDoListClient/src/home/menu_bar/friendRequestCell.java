@@ -5,6 +5,7 @@
  */
 package home.menu_bar;
 
+import Entity.User;
 import home.NotificationKeys;
 import home.Notifications;
 import javafx.event.ActionEvent;
@@ -57,6 +58,9 @@ public class friendRequestCell extends ListCell<Notifications> {
             if( instance.getFriendStatus() == 1){
                 updateItem(not, true);
                 
+                User u = new User(not.getFromUserId(),not.getFromUserName());
+                System.out.println("name: "+ not.getFromUserName( ));
+                instance.setNewFriend(u);
             }
         });
         reject.setOnAction(new EventHandler<ActionEvent>() {
@@ -69,7 +73,7 @@ public class friendRequestCell extends ListCell<Notifications> {
                 instance.sendNotificationResponse(not);
                   if( instance.getFriendStatus() == 1){
                    updateItem(not, true);
-               
+                   
                }
             }
         });

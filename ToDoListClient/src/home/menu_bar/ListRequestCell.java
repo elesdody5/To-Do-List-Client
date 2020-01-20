@@ -39,8 +39,8 @@ import javafx.scene.text.TextAlignment;
  */
 public class ListRequestCell extends ListCell<Notifications> {
 
-    Button accept= new Button();
-    Button reject = new Button();
+    Button accept;
+    Button reject ;
     Notifications not;
 
     public ListRequestCell() {
@@ -52,15 +52,9 @@ public class ListRequestCell extends ListCell<Notifications> {
                 //do something                  
             }
         });
-     
-       
-    }
-
-    @Override
-    protected void updateItem(Notifications not, boolean empty) {
-        super.updateItem(not, empty);
-        this.not = not;  
-        accept.setVisible(false);
+        accept = new Button();
+        reject = new Button();
+       accept.setVisible(false);
         reject.setVisible(false);
         accept.setTextFill(Paint.valueOf("white"));
         accept.setBackground(new Background(new BackgroundFill(Paint.valueOf("#6F4CBB"), new CornerRadii(5), Insets.EMPTY)));
@@ -96,6 +90,14 @@ public class ListRequestCell extends ListCell<Notifications> {
                }
             }
         });
+       
+    }
+
+    @Override
+    protected void updateItem(Notifications not, boolean empty) {
+        super.updateItem(not, empty);
+        this.not = not;  
+        
         setWrapText(true);
         Label txt = new Label();
         txt.setMaxWidth(180);

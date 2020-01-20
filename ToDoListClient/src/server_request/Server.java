@@ -52,7 +52,7 @@ public class Server implements Request {
             startnewThread();
         }
     }
-    
+
     @Override
     public JSONObject post(String[] paramters, JSONObject body) {
         ps.println(REQUEST.POST);
@@ -175,7 +175,7 @@ public class Server implements Request {
 
         ps.println();
         //listener.stop();
-          System.exit(0);
+        System.exit(0);
     }
 
     private void startnewThread() {
@@ -189,15 +189,16 @@ public class Server implements Request {
         JSONObject json;
         boolean readJson = false;
         boolean serverResoponse = false;
+        String type;
 
         @Override
         public void run() {
             try {
-                
+
                 data = in.readLine();
                 // read if notification at real time not server response
                 if (!serverResoponse) {
-                    String type = data;
+                    type = data;
                     data = "";
                     readJson();
                     Object object = NotificationFactory.getNotificationObject(type, json);
@@ -228,6 +229,10 @@ public class Server implements Request {
 
         void readJson() throws IOException, JSONException {
             StringBuilder body = new StringBuilder();
+            System.out.println(data);
+//            if (data.contains("{") && data.indexOf("{") != 0) {
+//                data = data.substring(data.indexOf("{"));
+//            }
 
             while (!data.equals(REQUEST.END)) {
 
@@ -235,8 +240,13 @@ public class Server implements Request {
                 data = in.readLine();
 
             }
+//            System.out.println(body.toString());
+//            if (type!=null&&body.toString().contains(type)) {
+//                body = new StringBuilder(body.substring(0, type.length()));
+//            }
             System.out.println(body.toString());
-            json = new JSONObject(body.toString());
+          //  if(body.charAt(0) == '{')
+                json = new JSONObject(body.toString());
         }
 
         private void close() throws IOException {
@@ -251,7 +261,7 @@ public class Server implements Request {
 
                 case REQUEST.NOTIFICATION:
 
-                    ConnectWithController_MenuBar controller_MenuBar =  ConnectWithController_MenuBar.getInastance();
+                    ConnectWithController_MenuBar controller_MenuBar = ConnectWithController_MenuBar.getInastance();
                     controller_MenuBar.setNotificationRequest((Notifications) object);
                     break;
                 case REQUEST.TASK:
@@ -259,16 +269,20 @@ public class Server implements Request {
                 case REQUEST.SHAREDTODO:
                     ((FXMLListController) View.getListLoader().getController()).addSharedList((ToDoList) object);
                     break;
-                case REQUEST.NEWCOLLABORATOR: 
+                case REQUEST.NEWCOLLABORATOR:
                     break;
-                    case REQUEST.FRIEND_ONLINE:
+                case REQUEST.FRIEND_ONLINE:
                     ((OnlineFriendsController) View.getOnlineListLoader().getController()).notifyUserOnlineOrOffline((User) object, true);
                     break;
                 case REQUEST.FRIEND_OFFLINE:
                     ((OnlineFriendsController) View.getOnlineListLoader().getController()).notifyUserOnlineOrOffline((User) object, false);
                     break;
                 case REQUEST.ACCEPT_FRIEND:
-                    ((MenuBarController)View.getMenuLoader().getController()).notifyAcceptingFriend((User) object);
+                    ConnectWithController_MenuBar instance = ConnectWithController_MenuBar.getInastance();
+                    instance.setNewFriend((User) object);
+                    ((FXMLListController) View.getListLoader().getController()).addFriend((User) object);
+                    //  ((MenuBarController) View.getMenuLoader().getController()).notifyAcceptingFriend((User) object);
+                    break;
             }
         }
     }

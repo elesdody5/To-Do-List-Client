@@ -116,6 +116,7 @@ public class ToDoListController implements Initializable {
             tasksListView.setVisible(true);
             initialStatePane.setVisible(false);
             todo=toDoList;
+            System.out.println(toDoList.getTasksInTODOList().size());
             setTodoList(toDoList);
         }
 

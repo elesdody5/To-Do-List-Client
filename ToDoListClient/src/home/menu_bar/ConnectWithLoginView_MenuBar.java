@@ -124,7 +124,7 @@ public class ConnectWithLoginView_MenuBar implements MenuBarModelInterface {
     }
 
     @Override
-    public String sendDataToView() {
+    public String sendNameToView() {
         return name;
 
     }

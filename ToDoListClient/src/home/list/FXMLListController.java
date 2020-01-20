@@ -256,7 +256,7 @@ public class FXMLListController implements Initializable {
                 }
                 todoIndex = myListView.getItems().indexOf(list);
                 myTodos.get(todoIndex).getTasksInTODOList().set(taskIndex, task);
-            
+
             }
         });
         saredListView.getItems().forEach((list) -> {
@@ -272,9 +272,14 @@ public class FXMLListController implements Initializable {
                 }
                 todoIndex = saredListView.getItems().indexOf(list);
                 sharedTodos.get(todoIndex).getTasksInTODOList().set(taskIndex, task);
-            
+
             }
         });
 
+    }
+
+    public void addFriend(User user) {
+
+        friendsList.add(user);
     }
 }

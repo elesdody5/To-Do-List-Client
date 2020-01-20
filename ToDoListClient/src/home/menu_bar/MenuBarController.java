@@ -8,6 +8,7 @@ package home.menu_bar;
 
 import Entity.User;
 import home.Notifications;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -26,10 +27,16 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.WindowEvent;
 import server_request.Server;
 
 /**
@@ -37,7 +44,7 @@ import server_request.Server;
  *
  * @author Elesdody
  */
-public class MenuBarController implements Initializable ,RemoveItemInterface {
+public class MenuBarController implements Initializable, RemoveItemInterface {
 
     //labels
     @FXML
@@ -121,9 +128,6 @@ public class MenuBarController implements Initializable ,RemoveItemInterface {
         return instance;
     }
 
-
-
-
     //to hide label after specific time
     class ProcessService extends Service<Void> {
 
@@ -143,20 +147,33 @@ public class MenuBarController implements Initializable ,RemoveItemInterface {
     Service service = new ProcessService();
 
     @FXML
+    private void refresh(MouseEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/home/Home.fxml"));
+            Parent root = (Parent) loader.load();
+            Scene scene = new Scene(root);
+            //
+            ((Stage)menu.getScene().getWindow()).setScene(scene);
+        } catch (IOException ex) {
+            Logger.getLogger(MenuBarController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @FXML
     private void handleChangeNameAction(ActionEvent event) {
         ConnectWithController_MenuBar.getInastance().setNewName(newName.getText());
     }
-    public void setResultChangeName (String result){
-      if(result.equals("true")){
-          userName.setText(newName.getText());
+
+    public void setResultChangeName(String result) {
+        if (result.equals("true")) {
+            userName.setText(newName.getText());
             userImage.setText(("" + newName.getText().charAt(0)).toUpperCase());
             userNameIns.setText(newName.getText());
             userImageIns.setText(("" + newName.getText().charAt(0)).toUpperCase());
             newName.setText("");
-      
-      
-      }else if(result.equals("nameFound")){
-          if (!service.isRunning()) {
+
+        } else if (result.equals("nameFound")) {
+            if (!service.isRunning()) {
                 service.start();
             }
             newName.setText("");
@@ -167,8 +184,8 @@ public class MenuBarController implements Initializable ,RemoveItemInterface {
                 //reset service
                 service.reset();
             });
-      }else {
-           if (!service.isRunning()) {
+        } else {
+            if (!service.isRunning()) {
                 service.start();
             }
             newName.setText("");
@@ -179,10 +196,9 @@ public class MenuBarController implements Initializable ,RemoveItemInterface {
                 //reset service
                 service.reset();
             });
-      }
-    
+        }
+
     }
-    
 
     @FXML
     private void handleChangePasswordAction(ActionEvent event) {
@@ -201,42 +217,44 @@ public class MenuBarController implements Initializable ,RemoveItemInterface {
             });
         }
     }
-    public void setResultChangePassword (String result ){
-        if(result.equals("true")){
+
+    public void setResultChangePassword(String result) {
+        if (result.equals("true")) {
             if (!service.isRunning()) {
-                    service.start();
-                }
-                status.setVisible(true);
-                status.setText("your password is changed");
-                newPassword.setText("");
-                verfiyNewPassword.setText("");
-                service.setOnSucceeded(e -> {
-                    status.setVisible(false);
-                    //reset service
-                    service.reset();
-                });      
-        }else{
-               if (!service.isRunning()) {
-                    service.start();
-                }
-                newPassword.setText("");
-                verfiyNewPassword.setText("");
-                status.setVisible(true);
-                status.setText("your Password cannot be changed");
-                service.setOnSucceeded(e -> {
-                    status.setVisible(false);
-                    //reset service
-                    service.reset();
-                });
+                service.start();
+            }
+            status.setVisible(true);
+            status.setText("your password is changed");
+            newPassword.setText("");
+            verfiyNewPassword.setText("");
+            service.setOnSucceeded(e -> {
+                status.setVisible(false);
+                //reset service
+                service.reset();
+            });
+        } else {
+            if (!service.isRunning()) {
+                service.start();
+            }
+            newPassword.setText("");
+            verfiyNewPassword.setText("");
+            status.setVisible(true);
+            status.setText("your Password cannot be changed");
+            service.setOnSucceeded(e -> {
+                status.setVisible(false);
+                //reset service
+                service.reset();
+            });
         }
     }
+
     @FXML
     private void handleLogoutAction(ActionEvent event) {
         try {
             ((Stage) menu.getScene().getWindow()).close();
             Server server = new Server();
             server.logOut();
-          
+
 //            FXMLLoader loader = new FXMLLoader(getClass().getResource("/authontication/login.fxml"));
 //            Parent root =  loader.load();
 //            //send stage to login controller
@@ -245,7 +263,6 @@ public class MenuBarController implements Initializable ,RemoveItemInterface {
 //            Stage stage = new Stage();
 //            stage.setScene(scene);
 //            stage.show();
-
         } catch (Exception ex) {
             Logger.getLogger(MenuBarController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -253,10 +270,10 @@ public class MenuBarController implements Initializable ,RemoveItemInterface {
     }
 
     void setListRequest(Notifications list) {
-        
+
         notLists.add(0, list);
-        System.out.println("show List : "+list.getFromUserName() + list.getData());
-        notListBox.setVisible(false);  
+        System.out.println("show List : " + list.getFromUserName() + list.getData());
+        notListBox.setVisible(false);
         listsNotification.setItems(notLists);
         listsNotification.setVisible(true);
         listsNotification.setCellFactory((li) -> new ListRequestCell());
@@ -272,13 +289,11 @@ public class MenuBarController implements Initializable ,RemoveItemInterface {
 
     public void setFriendRequest(Notifications friend) {
         notFriendBox.setVisible(false);
-        notFriendRequests.add(0,friend);
+        notFriendRequests.add(0, friend);
         friendRequestsNotification.setItems(notFriendRequests);
         friendRequestsNotification.setVisible(true);
         friendRequestsNotification.setCellFactory((fr) -> new friendRequestCell());
     }
-
-   
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -289,7 +304,7 @@ public class MenuBarController implements Initializable ,RemoveItemInterface {
         // get data of the instance created by login 
         //get name
         ConnectWithLoginView_MenuBar getInstance = ConnectWithLoginView_MenuBar.getInastance();
-        String name = getInstance.sendDataToView();
+        String name = getInstance.sendNameToView();
         userName.setText(name);
         userImage.setText(("" + name.charAt(0)).toUpperCase());
         userNameIns.setText(name);
@@ -340,7 +355,7 @@ public class MenuBarController implements Initializable ,RemoveItemInterface {
         /*Aml Start*/
         //get friend list 
 
-        friendObservableList = FXCollections.observableArrayList();
+       // friendObservableList = FXCollections.observableArrayList();
         friends = getInstance.sendFriendListToView();
         for (User user : friends) {
             friendObservableList.add(user);
@@ -349,10 +364,7 @@ public class MenuBarController implements Initializable ,RemoveItemInterface {
 
         friendsLV.setCellFactory((listView) -> new FriendListViewCell(this));
 
-
-
         /*Aml End */
-
     }
 
     /*start Aml Functions */
@@ -361,7 +373,7 @@ public class MenuBarController implements Initializable ,RemoveItemInterface {
 
         String friendRequestName = friendRequestTextField.getText().trim();
         ConnectWithLoginView_MenuBar getInstance = ConnectWithLoginView_MenuBar.getInastance();
-        String name = getInstance.sendDataToView();
+        String name = getInstance.sendNameToView();
         String result = "";
         boolean userInFriendList = false;
         for (int i = 0; i < friends.size(); i++) {
@@ -379,7 +391,7 @@ public class MenuBarController implements Initializable ,RemoveItemInterface {
             }
         }
     }
-     
+
     public void setResultLabelFriendRequest(String res) {
         resultLabel.setMaxWidth(100);
         resultLabel.setWrapText(true);
@@ -388,20 +400,31 @@ public class MenuBarController implements Initializable ,RemoveItemInterface {
         searchButton.setDisable(false);
     }
 
-    public void notifyAcceptingFriend(User friendUser) {
-        friendsLV.getItems().add(friendUser);
+//    public void notifyAcceptingFriend(User friendUser) {
+//        friendsLV.getItems().add(friendUser);
+//
+//    }
 
+    @Override
+    public void removeItem(User friend) {
+        
+        ConnectWithController_MenuBar instance = ConnectWithController_MenuBar.getInastance();
+        instance.removeFriend(friend.getId());
+        String res = instance.getFriendRemoveResult();
+        if (res.equals("success remove friend")) {
+            friendsLV.getItems().remove(friend);
+        }else{
+             
+        }
+        System.out.println("result" + res);
+    }
+    public void setFriendList (User friend){
+            friendObservableList.add(friend);
+            friendsLV.setItems(friendObservableList);
+             friendsLV.setCellFactory((listView) -> new FriendListViewCell(this));
+    
     }
     
-        @Override
-    public void removeItem(User friend) {  
-            System.out.println("ggg"+friend.getId());
-         ConnectWithController_MenuBar instance = ConnectWithController_MenuBar.getInastance();
-                instance.removeFriend(friend.getId());
-          String res = instance.getFriendRemoveResult();
-          if (res.equals("success remove friend"))
-               friendsLV.getItems().remove(friend);
-            System.out.println("result"+res);   
-    }  
+    
     /*end Aml*/
 }

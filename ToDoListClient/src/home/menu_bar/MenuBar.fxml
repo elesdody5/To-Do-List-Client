@@ -20,7 +20,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<MenuBar fx:id="menu" prefHeight="40.0" prefWidth="681.0" style="-fx-background-color: #6F4CBB;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.menu_bar.MenuBarController">
+<MenuBar fx:id="menu" prefHeight="40.0" prefWidth="681.0" style="-fx-background-color: #6F4CBB;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="home.menu_bar.MenuBarController">
   <menus>
       <Menu mnemonicParsing="false">
          <graphic>
@@ -41,9 +41,9 @@
          <graphic>
             <ToolBar disable="true" pickOnBounds="false" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB #6F4CBB#6F4CBB;">
                <items>
-                  <ImageView disable="true" fitHeight="30.0" fitWidth="30.0" preserveRatio="true">
+                  <ImageView disable="true" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#refresh" preserveRatio="true">
                      <image>
-                        <Image url="@icons/true.png" />
+                        <Image url="@icons/refresh.png" />
                      </image>
                   </ImageView>
                </items>

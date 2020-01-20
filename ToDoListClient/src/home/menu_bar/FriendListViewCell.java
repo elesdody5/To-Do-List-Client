@@ -41,6 +41,7 @@ public class FriendListViewCell extends ListCell<User> {
             public void handle(ActionEvent event) {
                 System.out.println(lastItem + " : " + event);
                 removeItemInterface.removeItem(friend);
+                button.setDisable(true);
             }
         });
     }

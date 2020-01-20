@@ -59,6 +59,7 @@ public class OnlineFriendsController implements Initializable {
                 if (onlineFriendsLV.getItems().get(i).getId() == user.getId())
                     removedItem = i ;
             }
+            if(removedItem!=-8)
              onlineFriendsLV.getItems().remove(removedItem);
 
         }

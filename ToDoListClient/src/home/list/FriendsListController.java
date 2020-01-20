@@ -155,7 +155,7 @@ public class FriendsListController implements Initializable {
     private JSONObject createJson(int friendId) throws JSONException {
         JSONObject json = new JSONObject();
         json.put("fromUserId", LoginController.UserId);
-        json.put("fromUserName", ConnectWithLoginView_MenuBar.getInastance().sendDataToView());
+        json.put("fromUserName", ConnectWithLoginView_MenuBar.getInastance().sendNameToView());
         json.put("toUserId", friendId);
         json.put("status", NotificationKeys.NORESPONSE_NOTIFICATION_REQUEST);
         json.put("type", NotificationKeys.ADD_COLLABORATOR);
